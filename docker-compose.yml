@@ -1,0 +1,63 @@
+#version: '2'
+services:
+
+    # PHP Service
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: php:8.4-fpm
+        container_name: app_dto
+        restart: unless-stopped
+        tty: true
+        environment:
+            SERVICE_NAME: app
+            SERVICE_TAGS: dev
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+            - ./php/php.ini:/usr/local/etc/php/php.ini
+        networks:
+            - app-network
+
+    # Nginx Service
+    webserver:
+        image: nginx:alpine
+        container_name: web_dto
+        restart: unless-stopped
+        tty: true
+        ports:
+            #            - "80:80"
+            # - "443:443"
+            - "8800:80"
+        volumes:
+            - ./:/var/www
+            - ./nginx/conf.d:/etc/nginx/conf.d
+        networks:
+            - app-network
+
+    # MySQL Service
+    db_dto:
+        image: mysql:8.0.19
+        volumes:
+            - ./mysql/data:/var/lib/mysql
+        container_name: db_dto
+        restart: unless-stopped
+        tty: true
+        user: root
+        ports:
+            - "3310:3306"
+        environment:
+            MYSQL_DATABASE: shop_api2
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+            #MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+            #MYSQL_PASSWORD: 1234
+            MYSQL_ROOT_PASSWORD: "1234"
+        networks:
+            - app-network
+
+# Docker Networks
+networks:
+    app-network:
+        driver: bridge
