@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Modules\Auth\Tests\Unit\Modules\Auth\Domain\Entities;
+namespace App\Modules\Auth\Tests\Unit\Domain\Entities;
 
 use App\Modules\Auth\Domain\Entities\UserEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
-use App\Modules\Auth\Domain\ValueObjects\RoleName;
-
+use DateTimeImmutable;
 use Illuminate\Foundation\Testing\TestCase;
 use InvalidArgumentException;
-use DateTimeImmutable;
+use PHPUnit\Framework\Attributes\Test;
+
 class UserTest extends TestCase
 {
     private Email $email;
@@ -22,7 +22,7 @@ class UserTest extends TestCase
         $this->password = HashedPassword::fromPlainText('password123');
     }
 
-    /** @test */
+    #[Test]
     public function it_can_be_created_with_minimum_required_fields(): void
     {
         $user = new UserEntity($this->email, $this->password);
@@ -36,7 +36,7 @@ class UserTest extends TestCase
         $this->assertEmpty($user->roles);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_set_and_get_id(): void
     {
         $user = new UserEntity( $this->email, $this->password);
@@ -45,7 +45,7 @@ class UserTest extends TestCase
         $this->assertEquals(42, $user->id);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_verify_email(): void
     {
         $user = new UserEntity( $this->email, $this->password);
@@ -56,7 +56,7 @@ class UserTest extends TestCase
         $this->assertInstanceOf(DateTimeImmutable::class, $user->emailVerifiedAt);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_set_email_verified_at_manually(): void
     {
         $user = new UserEntity( $this->email, $this->password);
@@ -67,7 +67,7 @@ class UserTest extends TestCase
         $this->assertEquals($date, $user->emailVerifiedAt);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_validate_password(): void
     {
         $user = new UserEntity( $this->email, $this->password);
@@ -76,7 +76,7 @@ class UserTest extends TestCase
         $this->assertFalse($user->validatePassword('wrongpassword'));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_update_password(): void
     {
         $user = new UserEntity( $this->email, $this->password);
@@ -89,7 +89,7 @@ class UserTest extends TestCase
         $this->assertEquals($newPassword->getHash(), $user->getPasswordHash());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_set_and_get_remember_token(): void
     {
         $user = new UserEntity( $this->email, $this->password);
@@ -100,7 +100,7 @@ class UserTest extends TestCase
         $this->assertEquals($token, $user->rememberToken);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_set_profileable_relation(): void
     {
         $user = new UserEntity( $this->email, $this->password);
@@ -110,7 +110,7 @@ class UserTest extends TestCase
         $this->assertEquals(100, $user->profileableId);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_manage_roles(): void
     {
         $user = new UserEntity( $this->email, $this->password);
@@ -120,7 +120,7 @@ class UserTest extends TestCase
         $this->assertEquals($roles, $user->roles);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_has_specific_role(): void
     {
         $user = new UserEntity( $this->email, $this->password);
@@ -133,7 +133,7 @@ class UserTest extends TestCase
 //        $this->assertFalse($user->hasRole(new RoleName('editor')));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_admin(): void
     {
         $user = new UserEntity( $this->email, $this->password);
@@ -144,14 +144,14 @@ class UserTest extends TestCase
 
     // Тесты на исключения при создании Email и Password находятся в отдельных тестах для Value Objects,
     // но мы можем проверить, что исключения пробрасываются корректно.
-    /** @test */
+    #[Test]
     public function it_throws_exception_when_creating_with_invalid_email(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Email('invalid-email');
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_exception_when_creating_with_short_password(): void
     {
         $this->expectException(InvalidArgumentException::class);

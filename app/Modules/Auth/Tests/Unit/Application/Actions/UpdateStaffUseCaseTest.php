@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Auth\Tests\Unit\Modules\Auth\Application\Actions;
+namespace App\Modules\Auth\Tests\Unit\Application\Actions;
 
 use App\Modules\Auth\Application\Actions\Staff\UpdateStaffUseCase;
 use App\Modules\Auth\Application\DTOs\StaffUpdateData;
@@ -9,10 +9,11 @@ use App\Modules\Auth\Domain\Entities\StaffEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
-use PHPUnit\Framework\TestCase;
-use Mockery;
-use InvalidArgumentException;
 use DateTimeImmutable;
+use InvalidArgumentException;
+use Mockery;
+use PHPUnit\Framework\TestCase;
+
 class UpdateStaffUseCaseTest extends TestCase
 {
     private StaffRepositoryInterface $staffRepo;
@@ -106,8 +107,8 @@ class UpdateStaffUseCaseTest extends TestCase
         $dto = new StaffUpdateData(
             lastName: 'Иванов',
             firstName: 'Иван',
-            middleName: 'Иванович',
             position: 'Должность',
+            middleName: 'Иванович',
         );
 
         $result = $this->useCase->execute(1, $dto);
@@ -134,8 +135,8 @@ class UpdateStaffUseCaseTest extends TestCase
         $dto = new StaffUpdateData(
             lastName: 'Иванов',
             firstName: 'Иван',
-            middleName: null,
             position: 'Должность',
+            middleName: null,
             terminated: true,
         );
 
@@ -146,8 +147,8 @@ class UpdateStaffUseCaseTest extends TestCase
         $dto2 = new StaffUpdateData(
             lastName: 'Иванов',
             firstName: 'Иван',
-            middleName: null,
             position: 'Должность',
+            middleName: null,
             terminated: false,
         );
 
@@ -171,8 +172,8 @@ class UpdateStaffUseCaseTest extends TestCase
         $dto = new StaffUpdateData(
             lastName: 'Иванов',
             firstName: 'Иван',
-            middleName: null,
             position: 'Должность',
+            middleName: null,
         );
 
         $this->useCase->execute(999, $dto);

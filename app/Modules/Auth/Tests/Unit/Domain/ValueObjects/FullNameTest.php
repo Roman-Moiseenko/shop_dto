@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Auth\Tests\Unit\Modules\Auth\Domain\ValueObjects;
+namespace App\Modules\Auth\Tests\Unit\Domain\ValueObjects;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -107,8 +107,7 @@ class FullNameTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Каждая часть имени должна быть не короче 2 символов');
-        new FullName('Ив Иван'); // фамилия "Ив" – 2 символа допустимо, а должно быть не короче 2? По коду проверка: < 2. Значит 2 символа проходит. Чтобы вызвать ошибку нужно слово из 1 буквы.
-        // Поправим: new FullName('Иванов И'); // имя "И" – 1 символ, вызовет исключение.
+        new FullName('Иванов И');
     }
 
     public function test_throws_exception_on_invalid_characters(): void

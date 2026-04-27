@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Modules\Auth\Tests\Unit\Modules\Auth\Domain\Entities;
+namespace App\Modules\Auth\Tests\Unit\Domain\Entities;
 use App\Modules\Auth\Domain\Entities\StaffEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
-use Illuminate\Foundation\Testing\TestCase;
-use InvalidArgumentException;
 use DateTimeImmutable;
+use Illuminate\Foundation\Testing\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class StaffTest extends TestCase
 {
@@ -23,7 +23,7 @@ class StaffTest extends TestCase
         $this->workEmail = new Email('ivanov@example.com');
     }
 
-    /** @test */
+    #[Test]
     public function it_can_be_created_with_minimum_required_fields(): void
     {
         $staff = new StaffEntity(
@@ -49,7 +49,7 @@ class StaffTest extends TestCase
         $this->assertNull($staff->notes);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_set_and_get_id(): void
     {
         $staff = new StaffEntity($this->fullName, 'Менеджер');
@@ -57,7 +57,7 @@ class StaffTest extends TestCase
         $this->assertEquals(42, $staff->id);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_set_hire_date(): void
     {
         $staff = new StaffEntity($this->fullName, 'Менеджер');
@@ -66,7 +66,7 @@ class StaffTest extends TestCase
         $this->assertEquals($hireDate, $staff->hireDate);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_set_birth_date(): void
     {
         $staff = new StaffEntity($this->fullName, 'Менеджер');
@@ -75,7 +75,7 @@ class StaffTest extends TestCase
         $this->assertEquals($birthDate, $staff->birthDate);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_set_personal_phone(): void
     {
         $staff = new StaffEntity($this->fullName, 'Менеджер');
@@ -84,7 +84,7 @@ class StaffTest extends TestCase
         $this->assertEquals($phone, $staff->personalPhone);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_set_telegram_chat_id(): void
     {
         $staff = new StaffEntity($this->fullName, 'Менеджер');
@@ -93,7 +93,7 @@ class StaffTest extends TestCase
     }
 
 
-    /** @test */
+    #[Test]
     public function it_can_set_notes(): void
     {
         $staff = new StaffEntity($this->fullName, 'Менеджер');
@@ -101,7 +101,7 @@ class StaffTest extends TestCase
         $this->assertEquals('Важный сотрудник', $staff->notes);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_terminate_and_rehire(): void
     {
         $staff = new StaffEntity($this->fullName, 'Менеджер');
@@ -119,7 +119,7 @@ class StaffTest extends TestCase
         $this->assertNull($staff->terminationDate);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_update_full_name(): void
     {
         $staff = new StaffEntity($this->fullName, 'Менеджер');
@@ -128,7 +128,7 @@ class StaffTest extends TestCase
         $this->assertEquals($newFullName, $staff->fullName);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_update_position_and_department(): void
     {
         $staff = new StaffEntity($this->fullName, 'Менеджер', 'Продажи');

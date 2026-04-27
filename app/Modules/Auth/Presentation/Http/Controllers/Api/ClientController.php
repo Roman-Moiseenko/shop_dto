@@ -21,7 +21,6 @@ class ClientController extends Controller
     public function __construct(
         private readonly ClientRepositoryInterface $clientRepository,
         private readonly CreateClientUseCase       $createClientUseCase,
-        private readonly UpdateClientUseCase       $updateClientUseCase,
         private readonly UserRepositoryInterface   $userRepository
     ) {}
 

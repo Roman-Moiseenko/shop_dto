@@ -19,10 +19,11 @@ class StaffCreateData extends Data
         public readonly string $lastName,
         #[Required, StringType, Max(255)]
         public readonly string $firstName,
-        #[Nullable, StringType, Max(255)]
-        public readonly ?string $middleName = null,
         #[Required, StringType, Max(255)]
         public readonly string $position,
+        #[Nullable, StringType, Max(255)]
+        public readonly ?string $middleName = null,
+
     ) {}
 
     public static function fromEntity(StaffEntity $staff): static

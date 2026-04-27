@@ -29,11 +29,8 @@ class RegisterStaffUserUseCase
             HashedPassword::fromPlainText($dto->password),
         );
 
-        //if ($dto->profileableType && $dto->profileableId) {
         $user->setProfile(Staff::class, $staffId);
-        //} else {
-//            throw new InvalidCredentialsException("Не задан тип пользователя Client, Staff или Freelance");
-  ///      }
+
         //Если роль не задана (с сайта), то используем по умолчанию - клиент
         $user->roles = empty($dto->roleNames) ? [RoleName::CLIENT] : $dto->roleNames;
 

@@ -3,9 +3,7 @@
 namespace App\Modules\Auth\Presentation\Console\Commands;
 
 use App\Modules\Auth\Application\Actions\User\RegisterAdminUseCase;
-use App\Modules\Auth\Application\Actions\User\RegisterUserUseCase;
 use App\Modules\Auth\Application\DTOs\AdminData;
-use App\Modules\Auth\Application\DTOs\RegisterUserData;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Infrastructure\Models\Staff;
 use App\Modules\Auth\Infrastructure\Models\User;

@@ -20,7 +20,6 @@ class UpdateUserUseCase
     public function execute(int $staffId, UpdateUserData $dto): UserEntity
     {
         $user = $this->userRepository->findByStaffId($staffId);
-        //$user = $this->userRepository->findById($userId);
         if (!$user) {
             throw new InvalidArgumentException('Пользователь не найден');
         }
@@ -35,10 +34,15 @@ class UpdateUserUseCase
         if ($dto->password !== null)
             $user->updatePassword(HashedPassword::fromPlainText($dto->password));
 
-        if (!$user->hasRole(RoleName::CLIENT) && empty($dto->roleNames))
-            throw new InvalidArgumentException('Роли пользователя не определены');
-        if (empty($dto->roleNames)) {
-            $user->roles = $dto->roleNames;
+
+        if (!$user->hasRole(RoleName::CLIENT)) {
+            if(empty($dto->roleNames)) {
+                throw new InvalidArgumentException('Роли пользователя не определены');
+            } else {
+                if (in_array(RoleName::CLIENT, $dto->roleNames))
+                    throw new InvalidArgumentException('Нельзя назначить роль client');
+                $user->roles = $dto->roleNames;
+            }
         }
 
         if ($dto->active) {
@@ -46,7 +50,6 @@ class UpdateUserUseCase
         } else {
             $user->ban();
         }
-
 
         return $this->userRepository->save($user);
     }

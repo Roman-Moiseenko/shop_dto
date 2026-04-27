@@ -94,11 +94,19 @@ final class FullName
     {
         // Удаляем лишние пробелы и приводим к нижнему регистру
         $value = mb_strtolower(trim(preg_replace('/\s+/', ' ', $value)));
-        // Каждое слово с заглавной буквы
+
+        // Разбиваем на слова
         $words = explode(' ', $value);
+
+        // Каждое слово: разбиваем по дефису, делаем заглавными первые буквы
         $words = array_map(function ($word) {
-            return mb_strtoupper(mb_substr($word, 0, 1)) . mb_substr($word, 1);
+            $parts = explode('-', $word);
+            $capitalizedParts = array_map(function ($part) {
+                return mb_strtoupper(mb_substr($part, 0, 1)) . mb_substr($part, 1);
+            }, $parts);
+            return implode('-', $capitalizedParts);
         }, $words);
+
         return implode(' ', $words);
     }
 
@@ -123,7 +131,7 @@ final class FullName
 
         // Проверяем, что каждое слово не короче 2 символов (кроме инициалов, если они будут)
         foreach ($parts as $part) {
-            if (mb_strlen($part) < 2 && !preg_match('/^[A-ZА-ЯЁ]\.?$/u', $part)) {
+            if (mb_strlen($part) < 2 && !preg_match('/^[A-ZА-ЯЁ]\.$/u', $part)) {
                 throw new InvalidArgumentException('Каждая часть имени должна быть не короче 2 символов');
             }
         }

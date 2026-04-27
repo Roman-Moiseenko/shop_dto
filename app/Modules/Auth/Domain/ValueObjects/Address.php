@@ -1,22 +1,35 @@
 <?php
 
 namespace App\Modules\Auth\Domain\ValueObjects;
+
 use InvalidArgumentException;
+
 final class Address
 {
-    private string $country;
-    private ?string $region;
-    private string $city;
-    private string $street;
-    private ?string $postalCode;
+    public string $country {
+        get => $this->country;
+    }
+    public ?string $region {
+        get => $this->region;
+    }
+    public string $city {
+        get => $this->city;
+    }
+    public string $street {
+        get => $this->street;
+    }
+    public ?string $postalCode {
+        get => $this->postalCode;
+    }
 
     public function __construct(
-        string $country,
-        string $city,
-        string $street,
+        string  $country,
+        string  $city,
+        string  $street,
         ?string $region = null,
         ?string $postalCode = null
-    ) {
+    )
+    {
         $this->country = trim($country);
         $this->city = trim($city);
         $this->street = trim($street);
@@ -27,12 +40,6 @@ final class Address
             throw new InvalidArgumentException('Страна, город и улица обязательны');
         }
     }
-
-    public function getCountry(): string { return $this->country; }
-    public function getRegion(): ?string { return $this->region; }
-    public function getCity(): string { return $this->city; }
-    public function getStreet(): string { return $this->street; }
-    public function getPostalCode(): ?string { return $this->postalCode; }
 
     public function getFullAddress(): string
     {

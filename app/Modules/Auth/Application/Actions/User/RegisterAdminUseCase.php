@@ -24,7 +24,6 @@ class RegisterAdminUseCase
             throw new UserAlreadyExistsException("Пользователь с email {$dto->email} уже существует");
         }
         $user = new UserEntity(
-            $dto->name,
             $email,
             HashedPassword::fromPlainText($dto->password),
         );

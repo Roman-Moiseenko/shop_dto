@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Modules\Auth\Tests\Unit\Modules\Auth\Application\Actions;
+namespace App\Modules\Auth\Tests\Unit\Application\Actions;
 
 use App\Modules\Auth\Application\Actions\Staff\CreateStaffUseCase;
 use App\Modules\Auth\Application\DTOs\StaffCreateData;
 use App\Modules\Auth\Application\Interfaces\StaffRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\StaffEntity;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -72,8 +71,8 @@ class CreateStaffUseCaseTest extends TestCase
         $dto = new StaffCreateData(
             lastName: 'Петров',
             firstName: 'Пётр',
-            middleName: null,
             position: 'Менеджер',
+            middleName: null,
         );
 
         $this->staffRepo->shouldReceive('save')

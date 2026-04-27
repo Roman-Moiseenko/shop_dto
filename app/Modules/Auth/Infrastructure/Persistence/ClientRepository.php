@@ -35,11 +35,11 @@ class ClientRepository implements ClientRepositoryInterface
 
         $address = $client->getAddress();
         if ($address) {
-            $model->country = $address->getCountry();
-            $model->region = $address->getRegion();
-            $model->city = $address->getCity();
-            $model->street = $address->getStreet();
-            $model->postal_code = $address->getPostalCode();
+            $model->country = $address->country;
+            $model->region = $address->region;
+            $model->city = $address->city;
+            $model->street = $address->street;
+            $model->postal_code = $address->postalCode;
         } else {
             $model->country = $model->region = $model->city = $model->street = $model->postal_code = null;
         }

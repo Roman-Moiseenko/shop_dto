@@ -1,14 +1,13 @@
 <?php
 
 namespace App\Modules\Auth\Domain\ValueObjects;
+
 use InvalidArgumentException;
 
 final class Email
 {
-    private string $value {
-        get {
-            return $this->value;
-        }
+    public string $value {
+        get => $this->value;
     }
 
     /**

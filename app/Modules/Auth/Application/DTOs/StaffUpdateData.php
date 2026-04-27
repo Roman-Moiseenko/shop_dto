@@ -19,10 +19,10 @@ class StaffUpdateData extends Data
         public readonly string $lastName,
         #[Required, StringType, Max(255)]
         public readonly string $firstName,
-        #[Nullable, StringType, Max(255)]
-        public readonly ?string $middleName = null,
         #[Required, StringType, Max(255)]
         public readonly string $position,
+        #[Nullable, StringType, Max(255)]
+        public readonly ?string $middleName = null,
         #[Nullable, StringType, Max(255)]
         public readonly ?string $department = null,
         #[Nullable, StringType, Max(255)]
