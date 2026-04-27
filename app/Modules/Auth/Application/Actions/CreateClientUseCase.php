@@ -1,23 +1,23 @@
 <?php
 
 namespace App\Modules\Auth\Application\Actions;
+use App\Modules\Auth\Application\DTOs\Client\ClientUserData;
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\ClientEntity as DomainClient;
 use App\Modules\Auth\Domain\Entities\UserEntity as DomainUser;
-use App\Modules\Auth\Domain\ValueObjects\FullName;
-use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
-use App\Modules\Auth\Domain\ValueObjects\Email as EmailVO;
-use App\Modules\Auth\Domain\ValueObjects\Gender;
 use App\Modules\Auth\Domain\ValueObjects\Address;
+use App\Modules\Auth\Domain\ValueObjects\Email as EmailVO;
+use App\Modules\Auth\Domain\ValueObjects\FullName;
+use App\Modules\Auth\Domain\ValueObjects\Gender;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
-use App\Modules\Auth\Application\DTOs\ClientDTO;
-
+use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Infrastructure\Models\Client;
 use App\Modules\Auth\Infrastructure\Models\User;
 use DateTimeImmutable;
 use Illuminate\Support\Facades\DB;
+
 class CreateClientUseCase
 {
     public function __construct(
@@ -25,7 +25,7 @@ class CreateClientUseCase
         private readonly UserRepositoryInterface $userRepository
     ) {}
 
-    public function execute(ClientDTO $dto): DomainClient
+    public function execute(ClientUserData $dto): DomainClient
     {
         $emailVO = new EmailVO($dto->userEmail);
         if ($this->userRepository->emailExists($emailVO)) {
@@ -64,7 +64,7 @@ class CreateClientUseCase
                 $dto->agreeToNewsletter,
                 $dto->preferredLanguage
             );
-            $client->setExternalId($dto->externalId);
+            $client->externalId = $dto->externalId;
 
             $savedClient = $this->clientRepository->save($client);
 

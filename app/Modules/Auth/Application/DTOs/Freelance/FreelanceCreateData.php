@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Modules\Auth\Application\DTOs;
+namespace App\Modules\Auth\Application\DTOs\Freelance;
 
 use App\Modules\Auth\Domain\Entities\FreelanceEntity;
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Data;
 
 class FreelanceCreateData extends Data
 {

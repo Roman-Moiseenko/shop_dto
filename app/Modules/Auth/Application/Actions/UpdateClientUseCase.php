@@ -1,15 +1,16 @@
 <?php
 
 namespace App\Modules\Auth\Application\Actions;
-use App\Modules\Auth\Application\DTOs\ClientDTO;
+use App\Modules\Auth\Application\DTOs\Client\ClientUserData;
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
-use App\Modules\Auth\Domain\ValueObjects\FullName;
-use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
-use App\Modules\Auth\Domain\ValueObjects\Email as EmailVO;
-use App\Modules\Auth\Domain\ValueObjects\Gender;
 use App\Modules\Auth\Domain\ValueObjects\Address;
+use App\Modules\Auth\Domain\ValueObjects\Email as EmailVO;
+use App\Modules\Auth\Domain\ValueObjects\FullName;
+use App\Modules\Auth\Domain\ValueObjects\Gender;
+use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
 use DateTimeImmutable;
 use InvalidArgumentException;
+
 class UpdateClientUseCase
 {
     public function __construct(
@@ -19,7 +20,7 @@ class UpdateClientUseCase
     /**
      * @throws \DateMalformedStringException
      */
-    public function execute(int $clientId, ClientDTO $dto): void
+    public function execute(int $clientId, ClientUserData $dto): void
     {
         $client = $this->clientRepository->findById($clientId);
         if (!$client) {
@@ -31,11 +32,11 @@ class UpdateClientUseCase
             $dto->firstName,
             $dto->middleName,
         ])));
-        $client->setFullName($fullName);
-        $client->setPhone(new PhoneNumber($dto->phone));
-        $client->setEmail($dto->email ? new EmailVO($dto->email) : null);
-        $client->setBirthDate($dto->birthDate ? new DateTimeImmutable($dto->birthDate) : null);
-        $client->setGender($dto->gender ? new Gender($dto->gender) : null);
+        $client->fullName = $fullName;
+        $client->phone = new PhoneNumber($dto->phone);
+        $client->email = $dto->email ? new EmailVO($dto->email) : null;
+        $client->birthDate = $dto->birthDate ? new DateTimeImmutable($dto->birthDate) : null;
+        $client->gender = $dto->gender ? new Gender($dto->gender) : null;
 
         $address = null;
         if ($dto->country && $dto->city && $dto->street) {
@@ -47,10 +48,10 @@ class UpdateClientUseCase
                 $dto->postalCode
             );
         }
-        $client->setAddress($address);
-        $client->setAgreeToNewsletter($dto->agreeToNewsletter);
-        $client->setPreferredLanguage($dto->preferredLanguage);
-        $client->setExternalId($dto->externalId);
+        $client->address = $address;
+        $client->agreeToNewsletter = $dto->agreeToNewsletter;
+        $client->preferredLanguage = $dto->preferredLanguage;
+        $client->externalId = $dto->externalId;
 
         $this->clientRepository->save($client);
     }

@@ -2,7 +2,7 @@
 
 namespace App\Modules\Auth\Application\Actions\Freelance;
 
-use App\Modules\Auth\Application\DTOs\FreelanceCreateData;
+use App\Modules\Auth\Application\DTOs\Freelance\FreelanceCreateData;
 use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\FreelanceEntity;
 use App\Modules\Auth\Domain\ValueObjects\FullName;

@@ -8,6 +8,7 @@ use App\Modules\Auth\Domain\Entities\UserEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Infrastructure\Models\Freelance;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 use InvalidArgumentException;
@@ -35,7 +36,7 @@ class RegisterFreelanceUserUseCaseTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function it_creates_user_with_valid_roles(): void
     {
         $dto = new UpdateUserData(
@@ -69,7 +70,7 @@ class RegisterFreelanceUserUseCaseTest extends TestCase
         $this->assertEquals($freelanceId, $result->profileableId);
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_exception_when_roles_are_empty(): void
     {
         $dto = new UpdateUserData(
@@ -90,7 +91,7 @@ class RegisterFreelanceUserUseCaseTest extends TestCase
         $this->useCase->execute($freelanceId, $dto);
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_exception_when_client_role_is_included(): void
     {
         $dto = new UpdateUserData(
@@ -110,7 +111,7 @@ class RegisterFreelanceUserUseCaseTest extends TestCase
         $this->useCase->execute($freelanceId, $dto);
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_exception_if_email_already_exists(): void
     {
         $dto = new UpdateUserData(

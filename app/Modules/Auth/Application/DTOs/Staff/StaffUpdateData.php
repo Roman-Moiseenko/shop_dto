@@ -1,34 +1,28 @@
 <?php
 
-namespace App\Modules\Auth\Application\DTOs;
+namespace App\Modules\Auth\Application\DTOs\Staff;
 
 use App\Modules\Auth\Domain\Entities\StaffEntity;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\Email;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\Email;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Data;
 
-/**
- * DTO для возврата данных на фронтенд
- */
-class StaffUserData extends Data
+class StaffUpdateData extends Data
 {
     public function __construct(
-        #[Required, IntegerType]
-        public int $id,
         #[Required, StringType, Max(255)]
         public readonly string $lastName,
         #[Required, StringType, Max(255)]
         public readonly string $firstName,
-        #[Nullable, StringType, Max(255)]
-        public readonly ?string $middleName = null,
         #[Required, StringType, Max(255)]
         public readonly string $position,
+        #[Nullable, StringType, Max(255)]
+        public readonly ?string $middleName = null,
         #[Nullable, StringType, Max(255)]
         public readonly ?string $department = null,
         #[Nullable, StringType, Max(255)]
@@ -49,14 +43,11 @@ class StaffUserData extends Data
         public readonly ?string $notes = null,
         #[BooleanType]
         public readonly bool $terminated = false,
-        #[Nullable]
-        public readonly ?UserData $user = null,
     ) {}
 
-    public static function fromEntity(StaffEntity $staff): self
+    public static function fromEntity(StaffEntity $staff): static
     {
         return new self(
-            $staff->id,
             $staff->fullName->getLastName(),
             $staff->fullName->getFirstName(),
             $staff->fullName->getMiddleName(),
@@ -70,8 +61,8 @@ class StaffUserData extends Data
             $staff->telegramChatId,
             $staff->maxChatId,
             $staff->notes,
-            !$staff->isActive,
-            $staff->user ? UserData::fromEntity($staff->user) : null,
+            !$staff->isActive
         );
     }
+
 }

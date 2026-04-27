@@ -2,16 +2,17 @@
 
 namespace App\Modules\Auth\Tests\Unit\Application\Actions;
 use App\Modules\Auth\Application\Actions\Freelance\UpdateFreelanceUseCase;
-use App\Modules\Auth\Application\DTOs\FreelanceUpdateData;
+use App\Modules\Auth\Application\DTOs\Freelance\FreelanceUpdateData;
 use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\FreelanceEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
-use PHPUnit\Framework\TestCase;
-use Mockery;
-use InvalidArgumentException;
 use DateTimeImmutable;
+use InvalidArgumentException;
+use Mockery;
+use PHPUnit\Framework\TestCase;
+
 class UpdateFreelanceUseCaseTest extends TestCase
 {
     private FreelanceRepositoryInterface $freelanceRepo;

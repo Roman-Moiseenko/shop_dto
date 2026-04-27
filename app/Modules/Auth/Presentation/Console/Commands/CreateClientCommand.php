@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Modules\Auth\Presentation\Console\Commands;
-use Illuminate\Console\Command;
 use App\Modules\Auth\Application\Actions\CreateClientUseCase;
-use App\Modules\Auth\Application\DTOs\ClientDTO;
+use App\Modules\Auth\Application\DTOs\Client\ClientUserData;
+use Illuminate\Console\Command;
+
 class CreateClientCommand extends Command
 {
     protected $signature = 'auth:create-client
@@ -25,7 +26,7 @@ class CreateClientCommand extends Command
 
     public function handle(): int
     {
-        $dto = new ClientDTO(
+        $dto = new ClientUserData(
             lastName: $this->option('last-name') ?? $this->ask('Фамилия'),
             firstName: $this->option('first-name') ?? $this->ask('Имя'),
             middleName: $this->option('middle-name'),

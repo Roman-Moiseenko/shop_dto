@@ -1,23 +1,23 @@
 <?php
 
-namespace App\Modules\Auth\Application\DTOs;
+namespace App\Modules\Auth\Application\DTOs\Staff;
 
-use App\Modules\Auth\Domain\Entities\FreelanceEntity;
+use App\Modules\Auth\Application\DTOs\UserData;
 use App\Modules\Auth\Domain\Entities\StaffEntity;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\Email;
 use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\Email;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Data;
 
 /**
  * DTO для возврата данных на фронтенд
  */
-class FreelanceUserData extends Data
+class StaffUserData extends Data
 {
     public function __construct(
         #[Required, IntegerType]
@@ -31,11 +31,17 @@ class FreelanceUserData extends Data
         #[Required, StringType, Max(255)]
         public readonly string $position,
         #[Nullable, StringType, Max(255)]
+        public readonly ?string $department = null,
+        #[Nullable, StringType, Max(255)]
+        public readonly ?string $workPhone = null,
+        #[Nullable, StringType, Max(255)]
         public readonly ?string $personalPhone = null,
         #[Nullable, Email, Max(255)]
-        public readonly ?string $personalEmail = null,
+        public readonly ?string $workEmail = null,
         #[Nullable, Date]
         public readonly ?string $hireDate = null,
+        #[Nullable, Date]
+        public readonly ?string $birthDate = null,
         #[Nullable, StringType, Max(255)]
         public readonly ?string $telegramChatId = null,
         #[Nullable, StringType, Max(255)]
@@ -48,22 +54,25 @@ class FreelanceUserData extends Data
         public readonly ?UserData $user = null,
     ) {}
 
-    public static function fromEntity(FreelanceEntity $freelanceEntity): self
+    public static function fromEntity(StaffEntity $staff): self
     {
         return new self(
-            $freelanceEntity->id,
-            $freelanceEntity->fullName->getLastName(),
-            $freelanceEntity->fullName->getFirstName(),
-            $freelanceEntity->fullName->getMiddleName(),
-            $freelanceEntity->position,
-            $freelanceEntity->personalPhone,
-            $freelanceEntity->personalEmail,
-            $freelanceEntity->hireDate,
-            $freelanceEntity->telegramChatId,
-            $freelanceEntity->maxChatId,
-            $freelanceEntity->notes,
-            !$freelanceEntity->isActive,
-            $freelanceEntity->user ? UserData::fromEntity($freelanceEntity->user) : null,
+            $staff->id,
+            $staff->fullName->getLastName(),
+            $staff->fullName->getFirstName(),
+            $staff->fullName->getMiddleName(),
+            $staff->position,
+            $staff->department,
+            $staff->workPhone,
+            $staff->personalPhone,
+            $staff->workEmail,
+            $staff->hireDate,
+            $staff->birthDate,
+            $staff->telegramChatId,
+            $staff->maxChatId,
+            $staff->notes,
+            !$staff->isActive,
+            $staff->user ? UserData::fromEntity($staff->user) : null,
         );
     }
 }

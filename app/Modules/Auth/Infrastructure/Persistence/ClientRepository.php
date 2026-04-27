@@ -16,24 +16,24 @@ class ClientRepository implements ClientRepositoryInterface
 {
     public function save(DomainClient $client): DomainClient
     {
-        $model = $client->getId()
-            ? EloquentClient::find($client->getId())
+        $model = $client->id
+            ? EloquentClient::find($client->id)
             : new EloquentClient();
 
-        $fullName = $client->getFullName();
+        $fullName = $client->fullName;
         $model->last_name = $fullName->getLastName();
         $model->first_name = $fullName->getFirstName();
         $model->middle_name = $fullName->getMiddleName();
-        $model->phone = (string) $client->getPhone();
-        $model->email = (string) $client->getEmail();
-        $model->birth_date = $client->getBirthDate();
-        $model->gender = $client->getGender()?->getValue();
-        $model->is_active = $client->isActive();
-        $model->agree_to_newsletter = $client->getAgreeToNewsletter();
-        $model->preferred_language = $client->getPreferredLanguage();
-        $model->external_id = $client->getExternalId();
+        $model->phone = (string)$client->phone;
+        $model->email = (string)$client->email;
+        $model->birth_date = $client->birthDate;
+        $model->gender = $client->gender?->getValue();
+        $model->is_active = $client->isActive;
+        $model->agree_to_newsletter = $client->agreeToNewsletter;
+        $model->preferred_language = $client->preferredLanguage;
+        $model->external_id = $client->externalId;
 
-        $address = $client->getAddress();
+        $address = $client->address;
         if ($address) {
             $model->country = $address->country;
             $model->region = $address->region;
@@ -107,7 +107,7 @@ class ClientRepository implements ClientRepositoryInterface
             $model->preferred_language
         );
         $client->setId($model->id);
-        $client->setExternalId($model->external_id);
+        $client->externalId = $model->external_id;
         if (!$model->is_active) {
             $client->deactivate();
         }

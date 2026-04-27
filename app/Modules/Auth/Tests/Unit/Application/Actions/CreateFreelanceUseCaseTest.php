@@ -2,11 +2,12 @@
 
 namespace App\Modules\Auth\Tests\Unit\Application\Actions;
 use App\Modules\Auth\Application\Actions\Freelance\CreateFreelanceUseCase;
-use App\Modules\Auth\Application\DTOs\FreelanceCreateData;
+use App\Modules\Auth\Application\DTOs\Freelance\FreelanceCreateData;
 use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\FreelanceEntity;
-use PHPUnit\Framework\TestCase;
 use Mockery;
+use PHPUnit\Framework\TestCase;
+
 class CreateFreelanceUseCaseTest extends TestCase
 {
     private FreelanceRepositoryInterface $freelanceRepo;

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Modules\Auth\Application\DTOs;
+namespace App\Modules\Auth\Application\DTOs\Client;
 
 use Spatie\LaravelData\Data;
 
-class ClientDTO extends Data
+class ClientUserData extends Data
 {
     public function __construct(
         public readonly string $lastName,

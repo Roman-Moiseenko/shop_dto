@@ -3,9 +3,8 @@
 namespace App\Modules\Auth\Presentation\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Modules\Auth\Application\Actions\CreateClientUseCase;
-use App\Modules\Auth\Application\Actions\UpdateClientUseCase;
+use App\Modules\Auth\Application\DTOs\Client\ClientUserData;
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
-use App\Modules\Auth\Application\DTOs\ClientDTO;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Infrastructure\Models\Client;
 use App\Modules\Auth\Infrastructure\Models\User;
@@ -41,7 +40,7 @@ class ClientController extends Controller
 
     public function store(StoreClientRequest $request): JsonResponse
     {
-        $dto = new ClientDTO(
+        $dto = new ClientUserData(
             lastName: $request->last_name,
             firstName: $request->first_name,
             middleName: $request->middle_name,
@@ -74,7 +73,7 @@ class ClientController extends Controller
      */
     public function update(UpdateClientRequest $request, int $id): JsonResponse
     {
-        $dto = new ClientDTO(
+        $dto = new ClientUserData(
             lastName: $request->last_name,
             firstName: $request->first_name,
             middleName: $request->middle_name,
@@ -148,7 +147,7 @@ class ClientController extends Controller
             return response()->json(['message' => 'Профиль клиента не найден'], Response::HTTP_NOT_FOUND);
         }
 
-        $dto = new ClientDTO(
+        $dto = new ClientUserData(
             lastName: $request->last_name,
             firstName: $request->first_name,
             middleName: $request->middle_name,
