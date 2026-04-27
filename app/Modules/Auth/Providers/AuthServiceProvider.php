@@ -3,9 +3,11 @@
 namespace App\Modules\Auth\Providers;
 
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
+use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\StaffRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Infrastructure\Persistence\ClientRepository;
+use App\Modules\Auth\Infrastructure\Persistence\FreelanceRepository;
 use App\Modules\Auth\Infrastructure\Persistence\StaffRepository;
 use App\Modules\Auth\Infrastructure\Persistence\UserRepository;
 use App\Modules\Auth\Presentation\Console\Commands\AdminCreateCommand;
@@ -104,6 +106,10 @@ class AuthServiceProvider extends ServiceProvider
         $this->app->bind(
             ClientRepositoryInterface::class,
             ClientRepository::class
+        );
+        $this->app->bind(
+            FreelanceRepositoryInterface::class,
+            FreelanceRepository::class
         );
         // Register module-specific services
     }

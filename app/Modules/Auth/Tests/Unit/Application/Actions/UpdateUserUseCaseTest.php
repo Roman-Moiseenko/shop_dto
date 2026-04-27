@@ -26,9 +26,7 @@ class UpdateUserUseCaseTest extends TestCase
         $this->userRepo = Mockery::mock(UserRepositoryInterface::class);
         $this->useCase = new UpdateUserUseCase($this->userRepo);
 
-        // Гибкий мок хеширования
         Hash::shouldReceive('make')->andReturn('$2y$10$mockedhashvalue');
-        //Hash::shouldReceive('make')->andReturnUsing(fn($plain) => 'hashed_' . $plain);
     }
 
     protected function tearDown(): void
@@ -86,7 +84,7 @@ class UpdateUserUseCaseTest extends TestCase
         $result = $this->useCase->execute($staffId, $dto);
 
         $this->assertEquals('new@example.com', $result->email->value);
-        $this->assertSame('$2y$10$mockedhashvalue', $result->getPasswordHash()); //hashed_newpassword
+        $this->assertSame('$2y$10$mockedhashvalue', $result->getPasswordHash());
         // Роли остались неизменны
         $this->assertEquals([RoleName::CLIENT], $result->roles);
     }
@@ -117,7 +115,7 @@ class UpdateUserUseCaseTest extends TestCase
         $user = $this->createStaffUser();
 
         $this->userRepo->shouldReceive('findByStaffId')->once()->andReturn($user);
-        // email передан (обязателен), поэтому emailExists будет вызван
+
         $this->userRepo->shouldReceive('emailExists')
             ->once()
             ->with(Mockery::on(fn(Email $e) => $e->value === 'staff@example.com'), $user->id)

@@ -5,7 +5,7 @@ namespace App\Modules\Auth\Application\Actions\Staff;
 use App\Modules\Auth\Application\DTOs\StaffUpdateData;
 use App\Modules\Auth\Application\Interfaces\StaffRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\StaffEntity;
-use App\Modules\Auth\Domain\ValueObjects\Email as EmailVO;
+use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
 use DateTimeImmutable;
@@ -35,7 +35,7 @@ readonly class UpdateStaffUseCase
         $staff->department = $dto->department;
         $staff->workPhone = $dto->workPhone ? new PhoneNumber($dto->workPhone) : null;
         $staff->personalPhone = $dto->personalPhone ? new PhoneNumber($dto->personalPhone) : null;
-        $staff->workEmail = $dto->workEmail ? new EmailVO($dto->workEmail) : null;
+        $staff->workEmail = $dto->workEmail ? new Email($dto->workEmail) : null;
         $staff->hireDate = $dto->hireDate ? new DateTimeImmutable($dto->hireDate) : null;
         $staff->birthDate = $dto->birthDate ? new DateTimeImmutable($dto->birthDate) : null;
         $staff->telegramChatId = $dto->telegramChatId;

@@ -64,8 +64,8 @@ class UpdateStaffUseCaseTest extends TestCase
         $dto = new StaffUpdateData(
             lastName: 'Петров',
             firstName: 'Пётр',
-            middleName: 'Петрович',
             position: 'Новая должность',
+            middleName: 'Петрович',
             department: 'Новый отдел',
             workPhone: '+79001112233',
             personalPhone: '+79004445566',

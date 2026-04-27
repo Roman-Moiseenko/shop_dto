@@ -95,7 +95,7 @@ class StaffRepository implements StaffRepositoryInterface
                 new Email($model->user->email),
                 HashedPassword::fromHash($model->user->password),
             );
-
+            $staff->user->id = $model->user->id;
             $staff->user->roles = $model->user->getRoleNames()->toArray();
         }
         return $staff;

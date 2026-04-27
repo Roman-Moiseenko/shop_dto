@@ -1,31 +1,32 @@
 <?php
 
 namespace App\Modules\Auth\Tests\Unit\Application\Actions;
-use App\Modules\Auth\Application\Actions\User\RegisterStaffUserUseCase;
+use App\Modules\Auth\Application\Actions\User\RegisterFreelanceUserUseCase;
 use App\Modules\Auth\Application\DTOs\UpdateUserData;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
-use App\Modules\Auth\Domain\ValueObjects\RoleName;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
-use App\Modules\Auth\Infrastructure\Models\Staff;
-use Illuminate\Support\Facades\Hash;
-use InvalidArgumentException;
-use Mockery;
-use PHPUnit\Framework\Attributes\Test;
+use App\Modules\Auth\Infrastructure\Models\Freelance;
 use PHPUnit\Framework\TestCase;
-class RegisterStaffUserUseCaseTest extends TestCase
+use Mockery;
+use InvalidArgumentException;
+use Illuminate\Support\Facades\Hash;
+class RegisterFreelanceUserUseCaseTest extends TestCase
 {
     private UserRepositoryInterface $userRepo;
-    private RegisterStaffUserUseCase $useCase;
+    private RegisterFreelanceUserUseCase $useCase;
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Изолируем фасад Hash
         Hash::shouldReceive('make')
             ->andReturn('$2y$10$mockedhashvalue');
+
         $this->userRepo = Mockery::mock(UserRepositoryInterface::class);
-        $this->useCase = new RegisterStaffUserUseCase($this->userRepo);
+        $this->useCase = new RegisterFreelanceUserUseCase($this->userRepo);
     }
 
     protected function tearDown(): void
@@ -34,105 +35,95 @@ class RegisterStaffUserUseCaseTest extends TestCase
         parent::tearDown();
     }
 
-    #[Test]
+    /** @test */
     public function it_creates_user_with_valid_roles(): void
     {
         $dto = new UpdateUserData(
             active: true,
-            email: 'staff@example.com',
+            email: 'freelancer@example.com',
             password: 'password123',
-            roleNames: ['staff', 'editor']
+            roleNames: ['editor', 'moderator']
         );
-        $staffId = 1;
+        $freelanceId = 5;
 
         $this->userRepo->shouldReceive('emailExists')
             ->once()
-            ->with(Mockery::on(fn(Email $e) => $e->value === 'staff@example.com'))
+            ->with(Mockery::on(fn(Email $e) => $e->value === 'freelancer@example.com'))
             ->andReturn(false);
 
         $this->userRepo->shouldReceive('save')
             ->once()
             ->with(Mockery::type(UserEntity::class))
             ->andReturnUsing(function (UserEntity $user) {
-                $user->id = 42;
+                $user->id = 30;
                 return $user;
             });
 
-        $result = $this->useCase->execute($staffId, $dto);
+        $result = $this->useCase->execute($freelanceId, $dto);
 
-        $this->assertEquals(42, $result->id);
-        $this->assertEquals('staff@example.com', $result->email->value);
+        $this->assertEquals(30, $result->id);
+        $this->assertEquals('freelancer@example.com', $result->email->value);
         $this->assertSame('$2y$10$mockedhashvalue', $result->getPasswordHash());
-        $this->assertEquals(['staff', 'editor'], $result->roles);
-        $this->assertEquals(Staff::class, $result->profileableType);
-        $this->assertEquals($staffId, $result->profileableId);
+        $this->assertEquals(['editor', 'moderator'], $result->roles);
+        $this->assertEquals(Freelance::class, $result->profileableType);
+        $this->assertEquals($freelanceId, $result->profileableId);
     }
 
-    #[Test]
+    /** @test */
     public function it_throws_exception_when_roles_are_empty(): void
     {
         $dto = new UpdateUserData(
             active: true,
-            email: 'staff@example.com',
+            email: 'freelancer@example.com',
             password: 'password123',
             roleNames: []
         );
-        $staffId = 1;
+        $freelanceId = 1;
 
-        // emailExists всё ещё вызывается, т.к. проверка до ролей
-        $this->userRepo->shouldReceive('emailExists')
-            ->once()
-            ->with(Mockery::on(fn(Email $e) => $e->value === 'staff@example.com'))
-            ->andReturn(false);
-
-        // save не должен вызываться
+        // emailExists вызывается до проверки ролей
+        $this->userRepo->shouldReceive('emailExists')->once()->andReturn(false);
         $this->userRepo->shouldNotReceive('save');
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Роли пользователя не определены');
 
-        $this->useCase->execute($staffId, $dto);
+        $this->useCase->execute($freelanceId, $dto);
     }
 
-    #[Test]
+    /** @test */
     public function it_throws_exception_when_client_role_is_included(): void
     {
         $dto = new UpdateUserData(
             active: true,
-            email: 'staff@example.com',
+            email: 'freelancer@example.com',
             password: 'password123',
-            roleNames: ['staff', 'client']
+            roleNames: ['editor', 'client']
         );
-        $staffId = 1;
+        $freelanceId = 2;
 
-        $this->userRepo->shouldReceive('emailExists')
-            ->once()
-            ->with(Mockery::on(fn(Email $e) => $e->value === 'staff@example.com'))
-            ->andReturn(false);
-
+        $this->userRepo->shouldReceive('emailExists')->once()->andReturn(false);
         $this->userRepo->shouldNotReceive('save');
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Нельзя назначить роль client');
 
-        $this->useCase->execute($staffId, $dto);
+        $this->useCase->execute($freelanceId, $dto);
     }
 
-    #[Test]
+    /** @test */
     public function it_throws_exception_if_email_already_exists(): void
     {
         $dto = new UpdateUserData(
             active: true,
             email: 'existing@example.com',
             password: 'password123',
-            roleNames: ['staff']
+            roleNames: ['editor']
         );
 
         $this->userRepo->shouldReceive('emailExists')
             ->once()
             ->with(Mockery::on(fn(Email $e) => $e->value === 'existing@example.com'))
             ->andReturn(true);
-
         $this->userRepo->shouldNotReceive('save');
 
         $this->expectException(UserAlreadyExistsException::class);

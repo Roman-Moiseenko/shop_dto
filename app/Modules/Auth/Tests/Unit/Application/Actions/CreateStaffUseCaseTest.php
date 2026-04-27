@@ -10,11 +10,9 @@ use App\Modules\Auth\Domain\ValueObjects\FullName;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
-//use Tests\TestCase;
 
 class CreateStaffUseCaseTest extends TestCase
 {
-//    use RefreshDatabase;
     private StaffRepositoryInterface $staffRepo;
     private CreateStaffUseCase $useCase;
 
@@ -33,16 +31,13 @@ class CreateStaffUseCaseTest extends TestCase
 
     public function test_creates_staff_from_dto_and_saves(): void
     {
-        // Arrange
         $dto = new StaffCreateData(
             lastName: 'Иванов',
             firstName: 'Иван',
-            middleName: 'Иванович',
             position: 'Разработчик',
-        // любые другие поля, если нужны, но они игнорируются use case
+            middleName: 'Иванович',
         );
 
-        // Мок репозитория: принимает StaffEntity, устанавливает ему ID и возвращает
         $this->staffRepo->shouldReceive('save')
             ->once()
             ->with(Mockery::type(StaffEntity::class))
@@ -51,10 +46,8 @@ class CreateStaffUseCaseTest extends TestCase
                 return $staff;
             });
 
-        // Act
         $result = $this->useCase->execute($dto);
 
-        // Assert
         $this->assertInstanceOf(StaffEntity::class, $result);
         $this->assertEquals(42, $result->id);
         $fullName = $result->fullName; // предположим, что геттер существует
@@ -94,8 +87,8 @@ class CreateStaffUseCaseTest extends TestCase
         $dto = new StaffCreateData(
             lastName: 'Иванов',
             firstName: 'Иван',
-            middleName: null,
             position: 'Разработчик',
+            middleName: null,
         );
 
         $this->staffRepo->shouldReceive('save')
