@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Auth\Tests\Unit\Application\Actions;
+namespace App\Modules\Auth\Tests\Unit\Application\Actions\Staff;
 
 use App\Modules\Auth\Application\Actions\Staff\UpdateStaffUseCase;
 use App\Modules\Auth\Application\DTOs\Staff\StaffUpdateData;

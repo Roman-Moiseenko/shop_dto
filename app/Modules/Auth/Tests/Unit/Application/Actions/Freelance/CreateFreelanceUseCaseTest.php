@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Auth\Tests\Unit\Application\Actions;
+namespace App\Modules\Auth\Tests\Unit\Application\Actions\Freelance;
 use App\Modules\Auth\Application\Actions\Freelance\CreateFreelanceUseCase;
 use App\Modules\Auth\Application\DTOs\Freelance\FreelanceCreateData;
 use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;

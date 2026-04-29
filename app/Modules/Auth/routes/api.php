@@ -33,10 +33,13 @@ Route::prefix('v1/auth')->group(function () {
         // Админские маршруты для управления клиентами
         Route::middleware(['role:admin'])->group(function () {
             Route::apiResource('client', ClientController::class);
-            Route::post('/client/{id}/user', [ClientController::class, 'user']);
+
+            Route::post('/client/{id}/register', [ClientController::class, 'register']);
         });
 
         // Клиент может управлять своим профилем
+        Route::post('/credentials', [ClientController::class, 'credentials']); //смена регистр.данных
+
         Route::get('/client/profile', [ClientController::class, 'profile']);
         Route::put('/client/profile', [ClientController::class, 'updateProfile']);
     });
@@ -44,7 +47,7 @@ Route::prefix('v1/auth')->group(function () {
     Route::group([
         'prefix' => 'client',
     ], function () {
-        Route::post('/{id}/user/create', [ClientController::class, 'user_create']);
+        Route::post('/registration', [ClientController::class, 'registration']);
         Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
         Route::post('/reset-password', [AuthController::class, 'resetPassword']);
     });

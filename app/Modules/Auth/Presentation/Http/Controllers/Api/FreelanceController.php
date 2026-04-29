@@ -11,8 +11,8 @@ use App\Modules\Auth\Application\Actions\User\UpdateUserUseCase;
 use App\Modules\Auth\Application\DTOs\Freelance\FreelanceCreateData;
 use App\Modules\Auth\Application\DTOs\Freelance\FreelanceUpdateData;
 use App\Modules\Auth\Application\DTOs\Freelance\FreelanceUserData;
-use App\Modules\Auth\Application\DTOs\UpdateUserData;
-use App\Modules\Auth\Application\DTOs\UserData;
+use App\Modules\Auth\Application\DTOs\User\UpdateUserData;
+use App\Modules\Auth\Application\DTOs\User\UserData;
 use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;
 use App\Modules\Auth\Infrastructure\Models\Freelance;
 use App\Modules\Auth\Presentation\Http\Resources\FreelanceResource;
@@ -47,7 +47,7 @@ class FreelanceController extends Controller
         if (!$freelance) {
             return response()->json(['message' => 'Сотрудник не найден'], Response::HTTP_NOT_FOUND);
         }
-        return response()->json(FreelanceUserData::fromEntity($freelance), Response::HTTP_CREATED);
+        return response()->json(FreelanceUserData::fromEntity($freelance), Response::HTTP_OK);
     }
 
     /**

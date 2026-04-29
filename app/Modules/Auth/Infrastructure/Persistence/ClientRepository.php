@@ -3,35 +3,35 @@
 namespace App\Modules\Auth\Infrastructure\Persistence;
 
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
-use App\Modules\Auth\Domain\Entities\ClientEntity as DomainClient;
-use App\Modules\Auth\Infrastructure\Models\Client as EloquentClient;
+use App\Modules\Auth\Domain\Entities\ClientEntity;
+use App\Modules\Auth\Domain\ValueObjects\PersonalDataConsent;
+use App\Modules\Auth\Infrastructure\Models\Client;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
-use App\Modules\Auth\Domain\ValueObjects\Email as EmailVO;
+use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\Gender;
 use App\Modules\Auth\Domain\ValueObjects\Address;
+use App\Modules\Auth\Infrastructure\Models\User;
 use DateTimeImmutable;
 
 class ClientRepository implements ClientRepositoryInterface
 {
-    public function save(DomainClient $client): DomainClient
+    public function save(ClientEntity $client): ClientEntity
     {
         $model = $client->id
-            ? EloquentClient::find($client->id)
-            : new EloquentClient();
+            ? Client::find($client->id)
+            : new Client();
 
         $fullName = $client->fullName;
         $model->last_name = $fullName->getLastName();
         $model->first_name = $fullName->getFirstName();
         $model->middle_name = $fullName->getMiddleName();
-        $model->phone = (string)$client->phone;
-        $model->email = (string)$client->email;
+
+        $model->email = (string) $client->email;
+        $model->phone = $client->phone ? (string) $client->phone : null;
+
         $model->birth_date = $client->birthDate;
         $model->gender = $client->gender?->getValue();
-        $model->is_active = $client->isActive;
-        $model->agree_to_newsletter = $client->agreeToNewsletter;
-        $model->preferred_language = $client->preferredLanguage;
-        $model->external_id = $client->externalId;
 
         $address = $client->address;
         if ($address) {
@@ -44,50 +44,103 @@ class ClientRepository implements ClientRepositoryInterface
             $model->country = $model->region = $model->city = $model->street = $model->postal_code = null;
         }
 
+        $model->banned_at = $client->bannedAt;
+
+        $consent = $client->dataConsent;
+        if ($consent !== null) {
+            $model->consented = true;
+            $model->consented_at = $consent->consentedAt;
+            $model->policy_version = $consent->policyVersion;
+            $model->action_identifier = $consent->actionIdentifier;
+            $model->consent_active = $consent->active;
+        } else {
+            $model->consented = false;
+            $model->consented_at = null;
+            $model->policy_version = null;
+            $model->action_identifier = null;
+            $model->consent_active = false;
+        }
+
         $model->save();
 
         return $this->hydrate($model);
     }
 
-    public function findById(int $id): ?DomainClient
+    public function findById(int $id): ?ClientEntity
     {
-        $model = EloquentClient::find($id);
+        $model = Client::find($id);
         return $model ? $this->hydrate($model) : null;
     }
 
-    public function findByPhone(PhoneNumber $phone): ?DomainClient
+    public function findByPhone(PhoneNumber $phone): ?ClientEntity
     {
-        $model = EloquentClient::where('phone', (string) $phone)->first();
+        $model = Client::where('phone', (string) $phone)->first();
         return $model ? $this->hydrate($model) : null;
     }
 
-    public function findByUserId(int $userId): ?DomainClient
+    public function findByUserId(int $userId): ?ClientEntity
     {
-        $user = \Modules\Auth\Infrastructure\Models\User::find($userId);
-        if (!$user || $user->profileable_type !== EloquentClient::class) {
+        $user = User::find($userId);
+        if (!$user || $user->profileable_type !== Client::class) {
             return null;
         }
-        $model = EloquentClient::find($user->profileable_id);
+        $model = Client::find($user->profileable_id);
         return $model ? $this->hydrate($model) : null;
+    }
+
+    public function emailExists(Email $email, ?int $excludeId = null): bool
+    {
+        $query = Client::where('email', (string) $email);
+        if ($excludeId) {
+            $query->where('id', '!=', $excludeId);
+        }
+        return $query->exists();
+    }
+
+    public function phoneExists(PhoneNumber $phone, ?int $excludeId = null): bool
+    {
+        $query = Client::where('phone', (string) $phone);
+        if ($excludeId) {
+            $query->where('id', '!=', $excludeId);
+        }
+        return $query->exists();
     }
 
     public function delete(int $id): bool
     {
-        $model = EloquentClient::find($id);
+        $model = Client::find($id);
         return $model ? $model->delete() : false;
     }
 
-    private function hydrate(EloquentClient $model): DomainClient
+    private function hydrate(Client $model): ClientEntity
     {
-        $fullName = new FullName($model->full_name);
-        $phone = new PhoneNumber($model->phone);
-        $email = $model->email ? new EmailVO($model->email) : null;
-        $birthDate = $model->birth_date ? DateTimeImmutable::createFromMutable($model->birth_date) : null;
-        $gender = $model->gender ? new Gender($model->gender) : null;
+        $fullName = new FullName(
+            new FullName(
+                implode(' ', array_filter([
+                    $model->last_name,
+                    $model->first_name,
+                    $model->middle_name,
+                ]))
+            )
+        );
 
-        $address = null;
+        $client = new ClientEntity(
+            fullName: $fullName,
+            email: new Email($model->email),
+            phone: $model->phone ? new PhoneNumber($model->phone) : null,
+        );
+
+        $client->id = $model->id;
+
+        if ($model->birth_date) {
+            $client->birthDate = DateTimeImmutable::createFromMutable($model->birth_date);
+        }
+        if ($model->gender) {
+            $client->gender = new Gender($model->gender);
+        }
+
         if ($model->country && $model->city && $model->street) {
-            $address = new Address(
+            $client->address = new Address(
                 $model->country,
                 $model->city,
                 $model->street,
@@ -96,21 +149,25 @@ class ClientRepository implements ClientRepositoryInterface
             );
         }
 
-        $client = new DomainClient(
-            $fullName,
-            $phone,
-            $email,
-            $birthDate,
-            $gender,
-            $address,
-            $model->agree_to_newsletter,
-            $model->preferred_language
-        );
-        $client->setId($model->id);
-        $client->externalId = $model->external_id;
-        if (!$model->is_active) {
-            $client->deactivate();
+        if ($model->banned_at) {
+            $client->bannedAt = DateTimeImmutable::createFromMutable($model->banned_at);
         }
+
+        // Восстановление согласия
+        if ($model->consented && $model->policy_version) {
+            $client->dataConsent = new PersonalDataConsent(
+                policyVersion: $model->policy_version,
+                actionIdentifier: $model->action_identifier,
+                active: $model->consent_active
+            );
+
+            if ($model->consented_at)
+                $client->dataConsent->consentedAt = DateTimeImmutable::createFromMutable($model->consented_at);
+
+        } else {
+            $client->dataConsent = null;
+        }
+
         return $client;
     }
 }

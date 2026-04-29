@@ -2,17 +2,27 @@
 
 namespace App\Modules\Auth\Presentation\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
-use App\Modules\Auth\Application\Actions\CreateClientUseCase;
+use App\Modules\Auth\Application\Actions\Client\CreateClientUseCase;
+use App\Modules\Auth\Application\Actions\Client\CreateClientWithConsentUseCase;
+use App\Modules\Auth\Application\Actions\Client\UpdateClientUseCase;
+use App\Modules\Auth\Application\Actions\User\ChangeUserCredentialsUseCase;
+use App\Modules\Auth\Application\Actions\User\ConfirmEmailUseCase;
+use App\Modules\Auth\Application\Actions\User\RegisterUserClientUseCase;
+use App\Modules\Auth\Application\DTOs\Client\ClientCreateData;
+use App\Modules\Auth\Application\DTOs\Client\ClientCreateWithConsentData;
+use App\Modules\Auth\Application\DTOs\Client\ClientUpdateData;
 use App\Modules\Auth\Application\DTOs\Client\ClientUserData;
+use App\Modules\Auth\Application\DTOs\User\ChangeUserCredentialsData;
+use App\Modules\Auth\Application\DTOs\User\RegisterUserData;
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Infrastructure\Models\Client;
 use App\Modules\Auth\Infrastructure\Models\User;
-use App\Modules\Auth\Presentation\Http\Requests\StoreClientRequest;
-use App\Modules\Auth\Presentation\Http\Requests\UpdateClientRequest;
 use App\Modules\Auth\Presentation\Http\Resources\ClientResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
 class ClientController extends Controller
@@ -20,7 +30,12 @@ class ClientController extends Controller
     public function __construct(
         private readonly ClientRepositoryInterface $clientRepository,
         private readonly CreateClientUseCase       $createClientUseCase,
-        private readonly UserRepositoryInterface   $userRepository
+        private readonly CreateClientWithConsentUseCase  $createClientWithConsentUseCase,
+        private readonly RegisterUserClientUseCase  $registerUserClientUseCase,
+        private readonly UserRepositoryInterface   $userRepository,
+        private readonly ChangeUserCredentialsUseCase  $changeUserCredentialsUseCase,
+        private readonly ConfirmEmailUseCase  $confirmEmailUseCase,
+        private readonly UpdateClientUseCase $updateClientUseCase,
     ) {}
 
     public function index(): JsonResponse
@@ -32,69 +47,116 @@ class ClientController extends Controller
     public function show(int $id): JsonResponse
     {
         $client = $this->clientRepository->findById($id);
-        if (!$client) {
+        if (!$client)
             return response()->json(['message' => 'Клиент не найден'], Response::HTTP_NOT_FOUND);
-        }
-        return new ClientResource($client)->response();
-    }
 
-    public function store(StoreClientRequest $request): JsonResponse
-    {
-        $dto = new ClientUserData(
-            lastName: $request->last_name,
-            firstName: $request->first_name,
-            middleName: $request->middle_name,
-            phone: $request->phone,
-            email: $request->email,
-            birthDate: $request->birth_date,
-            gender: $request->gender,
-            country: $request->country,
-            city: $request->city,
-            street: $request->street,
-            region: $request->region,
-            postalCode: $request->postal_code,
-            agreeToNewsletter: $request->agree_to_newsletter ?? false,
-            preferredLanguage: $request->preferred_language ?? 'ru',
-            externalId: $request->external_id,
-            name: $request->name,
-            userEmail: $request->user_email,
-            password: $request->password,
-            roleNames: $request->role_names ?? ['client']
-        );
-
-        $client = $this->createClientUseCase->execute($dto);
-        return new ClientResource($client)
-            ->response()
-            ->setStatusCode(Response::HTTP_CREATED);
+        return response()->json(ClientUserData::fromEntity($client), Response::HTTP_OK);
     }
 
     /**
+     * Создание клиента менеджером
+     */
+    public function store(Request $request): JsonResponse
+    {
+        try {
+        $dto = ClientCreateData::validateAndCreate($request->all());
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $client = $this->createClientUseCase->execute($dto);
+        return response()->json(ClientUserData::fromEntity($client), Response::HTTP_CREATED);
+    }
+
+    /**
+     * Регистрация клиента самостоятельно
+     * @throws \Throwable
+     */
+    public function registration(Request $request): JsonResponse
+    {
+        try {
+            $dtoClient = ClientCreateWithConsentData::validateAndCreate($request->all());
+            $dtoUser = RegisterUserData::validateAndCreate($request->all());
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return DB::transaction(function () use ($dtoClient, $dtoUser) {
+            $client = $this->createClientWithConsentUseCase->execute(
+                $dtoClient
+            );
+            $user = $this->registerUserClientUseCase->execute(
+                $client->id,
+                $dtoUser
+            );
+            $client->user = $user;
+            return response()->json(ClientUserData::fromEntity($client), Response::HTTP_OK);
+        });
+    }
+
+    /**
+     * Смена регистрационных данных клиентом
+     */
+    public function credentials(int $id, Request $request): JsonResponse
+    {
+        $client = $this->clientRepository->findById($id);
+        if (!$client)
+            return response()->json(['message' => 'Клиент не найден'], Response::HTTP_NOT_FOUND);
+        try {
+            $dto = ChangeUserCredentialsData::validateAndCreate($request->all());
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $this->changeUserCredentialsUseCase->execute($client->user->id, $dto);
+        return response()->json(null, Response::HTTP_OK);
+    }
+
+    /**
+     * Подтверждение почты
+     */
+    public function verifyEmail(Request $request): JsonResponse
+    {
+        $request->validate(['token' => 'required|string']);
+        try {
+            $this->confirmEmailUseCase->execute($request->token);
+            return response()->json(['message' => 'Email успешно подтверждён']);
+        } catch (\InvalidArgumentException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+    }
+
+    /**
+     * Регистрация клиента менеджером, если клиент уже был создан ранее
+     */
+    public function register(string $password, int $id): JsonResponse
+    {
+        $client = $this->clientRepository->findById($id);
+        if (!$client) {
+            return response()->json(['message' => 'Клиент не найден'], Response::HTTP_NOT_FOUND);
+        }
+        $dto = new RegisterUserData($client->email->value, $password);
+        $user = $this->registerUserClientUseCase->execute($id, $dto);
+        $client->user = $user;
+        return response()->json(ClientUserData::fromEntity($client), Response::HTTP_OK);
+    }
+
+    /**
+     * Изменение клиента менеджером
      * @throws \DateMalformedStringException
      */
-    public function update(UpdateClientRequest $request, int $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
-        $dto = new ClientUserData(
-            lastName: $request->last_name,
-            firstName: $request->first_name,
-            middleName: $request->middle_name,
-            phone: $request->phone,
-            email: $request->email,
-            birthDate: $request->birth_date,
-            gender: $request->gender,
-            country: $request->country,
-            city: $request->city,
-            street: $request->street,
-            region: $request->region,
-            postalCode: $request->postal_code,
-            agreeToNewsletter: $request->agree_to_newsletter ?? false,
-            preferredLanguage: $request->preferred_language ?? 'ru',
-            externalId: $request->external_id,
-            name: $request->name ?? '',
-            userEmail: $request->user_email ?? '',
-            password: $request->password ?? ''
-        );
+        $client = $this->clientRepository->findById($id);
+        if (!$client)
+            return response()->json(['message' => 'Клиент не найден'], 404);
 
+        try {
+            $dto = ClientUpdateData::validateAndCreate($request->all());
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         $this->updateClientUseCase->execute($id, $dto);
+
         return response()->json(['message' => 'Клиент обновлён']);
     }
 
@@ -125,81 +187,35 @@ class ClientController extends Controller
             return response()->json(['message' => 'Профиль клиента не найден'], Response::HTTP_NOT_FOUND);
         }
 
-        return new ClientResource($client)->response();
+        return response()->json(ClientUserData::fromEntity($client), Response::HTTP_CREATED);
     }
 
     /**
      * Обновить профиль текущего аутентифицированного клиента.
      * @throws \DateMalformedStringException
      */
-    public function updateProfile(UpdateClientRequest $request): JsonResponse
+    public function updateProfile(Request $request): JsonResponse
     {
         /** @var User $user */
         $user = $request->user();
 
-        if (!$user->hasRole('client')) {
-            return response()->json(['message' => 'Доступ запрещён'], Response::HTTP_FORBIDDEN);
+        // 1. Проверяем, что пользователь привязан к профилю клиента
+        if ($user->profileable_type !== Client::class) {
+            return response()->json(['message' => 'Доступ запрещён'], 403);
         }
 
-        $client = $this->clientRepository->findByUserId($user->id);
-
-        if (!$client) {
-            return response()->json(['message' => 'Профиль клиента не найден'], Response::HTTP_NOT_FOUND);
+        // 2. Получаем ID клиента из собственного профиля пользователя
+        $clientId = $user->profileable_id;
+        try {
+            $dto = ClientUpdateData::validateAndCreate($request->all());
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $dto = new ClientUserData(
-            lastName: $request->last_name,
-            firstName: $request->first_name,
-            middleName: $request->middle_name,
-            phone: $request->phone,
-            email: $request->email,
-            birthDate: $request->birth_date,
-            gender: $request->gender,
-            country: $request->country,
-            city: $request->city,
-            street: $request->street,
-            region: $request->region,
-            postalCode: $request->postal_code,
-            agreeToNewsletter: $request->agree_to_newsletter ?? false,
-            preferredLanguage: $request->preferred_language ?? 'ru',
-            externalId: $request->external_id,
-            name: $request->name ?? $user->name,
-            userEmail: $request->user_email ?? $user->email,
-            password: $request->password ?? ''
-        );
+            // 3. Вызываем тот же Use Case, но с ID, полученным из аутентификации
+        $this->updateClientUseCase->execute($clientId, $dto);
 
-        $this->updateClientUseCase->execute($client->getId(), $dto);
-
-        // Обновляем также данные User, если они были изменены
-        if ($request->has('name') || $request->has('user_email') || $request->has('password')) {
-            $domainUser = $this->userRepository->findById($user->id);
-            if ($domainUser) {
-                // Используем существующий Use Case для обновления пользователя или обновим здесь
-                // Для простоты обновим модель Eloquent напрямую (можно вынести в UserUpdateUseCase)
-                if ($request->has('name')) {
-                    $user->name = $request->name;
-                }
-                if ($request->has('user_email')) {
-                    $user->email = $request->user_email;
-                }
-                if ($request->filled('password')) {
-                    $user->password = bcrypt($request->password);
-                }
-                $user->save();
-            }
-        }
-
-        $updatedClient = $this->clientRepository->findById($client->getId());
-        return (new ClientResource($updatedClient))->response();
+        return response()->json(['message' => 'Профиль успешно обновлён']);
     }
 
-    public function user_create(string $id)
-    {
-
-    }
-
-    public function user(string $id)
-    {
-
-    }
 }

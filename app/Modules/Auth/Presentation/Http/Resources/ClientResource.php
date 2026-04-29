@@ -11,27 +11,20 @@ class ClientResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'id' => $this->resource->getId(),
-            'full_name' => (string)$this->resource,
-            'last_name' => $this->resource->getLastName(),
-            'first_name' => $this->resource->getFirstName(),
-            'middle_name' => $this->resource->getMiddleName(),
-            'phone' => (string)$this->resource,
-            'email' => (string)$this->resource,
-            'birth_date' => $this->resource?->format('Y-m-d'),
-            'gender' => $this->resource?->getValue(),
-            'address' => $this->resource ? [
-                'country' => $this->resource,
-                'region' => $this->resource,
-                'city' => $this->resource,
-                'street' => $this->resource,
-                'postal_code' => $this->resource,
-                'full' => (string)$this->resource,
+            'id' => $this->resource->id,
+            'full_name' => (string)$this->resource->fullName,
+            'phone' => (string)$this->resource->phone,
+            'email' => (string)$this->resource->email,
+
+            'gender' => $this->resource?->gender->getValue(),
+            'address' => $this->resource->address ? [
+                'country' => $this->resource->address->country,
+                'region' => $this->resource->address->region,
+                'city' => $this->resource->address->city,
+                'street' => $this->resource->address->street,
             ] : null,
-            'is_active' => $this->resource,
-            'agree_to_newsletter' => $this->resource,
-            'preferred_language' => $this->resource,
-            'external_id' => $this->resource,
+            'is_active' => $this->resource->isActive,
+            'is_consent' => $this->resource->dataConsent->active,
         ];
     }
 }

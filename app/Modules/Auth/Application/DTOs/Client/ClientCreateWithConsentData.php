@@ -9,7 +9,10 @@ use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Data;
 
-class ClientCreateData extends Data
+/**
+ * Для создание клиента из сайта
+ */
+class ClientCreateWithConsentData extends Data
 {
     public function __construct(
         #[Required, StringType, Max(255)]
@@ -18,6 +21,10 @@ class ClientCreateData extends Data
         public readonly string $firstName,
         #[Required, Email]
         public readonly string $email,
+        #[Required, StringType, Max(255)]
+        public string $policyVersion,
+        #[Required, StringType, Max(255)]
+        public string $actionIdentifier,
         //Необязательные поля
         #[Nullable, StringType, Max(255)]
         public readonly ?string $middleName = null,
@@ -25,3 +32,4 @@ class ClientCreateData extends Data
         public readonly ?string $phone = null,
     ) {}
 }
+

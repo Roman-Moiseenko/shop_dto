@@ -15,4 +15,10 @@ interface UserRepositoryInterface
 
     public function fromRequest(Request $request): ?UserEntity;
     public function findByStaffId(int $id): ?UserEntity;
+
+    public function saveEmailVerification(int $userId, Email $newEmail, string $token, ?\DateTimeImmutable $expiresAt = null): void;
+    public function findEmailVerificationByToken(string $token): ?object; // возвращает DTO/stdClass с полями user_id, new_email, expires_at
+    public function deleteEmailVerification(string $token): void;
+
+
 }

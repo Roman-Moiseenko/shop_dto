@@ -11,6 +11,9 @@ final class PersonalDataConsent
 
     public DateTimeImmutable $consentedAt {
         get => $this->consentedAtValue;
+        set {
+            if (!is_null($value)) $this->consentedValue = $value;
+        }
     }
 
     public string $policyVersion {
@@ -20,16 +23,15 @@ final class PersonalDataConsent
     public ?string $actionIdentifier {
         get => $this->actionIdentifierValue;
     }
-
     public bool $active {
-        get => $this->activeValue;
+        get => $this->active;
     }
 
     private bool $consentedValue;
     private DateTimeImmutable $consentedAtValue;
     private string $policyVersionValue;
     private ?string $actionIdentifierValue;
-    private bool $activeValue;
+  //  private bool $activeValue;
 
     public function __construct(
         string $policyVersion,
@@ -40,7 +42,7 @@ final class PersonalDataConsent
         $this->consentedAtValue = new DateTimeImmutable(); // всегда текущая дата/время
         $this->policyVersionValue = $this->validatePolicyVersion($policyVersion);
         $this->actionIdentifierValue = $actionIdentifier ? trim($actionIdentifier) : null;
-        $this->activeValue = $active;
+        $this->active = $active;
     }
 
     /**
@@ -61,7 +63,7 @@ final class PersonalDataConsent
             && $this->consentedAtValue == $other->consentedAtValue
             && $this->policyVersionValue === $other->policyVersionValue
             && $this->actionIdentifierValue === $other->actionIdentifierValue
-            && $this->activeValue === $other->activeValue;
+            && $this->active === $other->active;
     }
 
     private function validatePolicyVersion(string $version): string

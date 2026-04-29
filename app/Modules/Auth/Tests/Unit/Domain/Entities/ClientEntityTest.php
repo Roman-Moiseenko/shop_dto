@@ -28,10 +28,7 @@ class ClientEntityTest extends TestCase
         $client = new ClientEntity(
             $this->fullName,
             $this->email,
-            '№1 от 01.01.2026',
-            '127.0.0.1'
         );
-
         $this->assertNull($client->id);
         $this->assertEquals($this->fullName, $client->fullName);
         $this->assertEquals($this->email, $client->email);
@@ -41,13 +38,6 @@ class ClientEntityTest extends TestCase
         $this->assertNull($client->address);
         $this->assertNull($client->bannedAt);
         $this->assertTrue($client->isActive);
-        $this->assertNotNull($client->dataConsent);
-        $this->assertTrue($client->dataConsent->consented);
-        $this->assertTrue($client->dataConsent->active);
-        $this->assertSame('№1 от 01.01.2026', $client->dataConsent->policyVersion);
-        $this->assertSame('127.0.0.1', $client->dataConsent->actionIdentifier);
-        // consentedAt должно быть примерно равно текущему времени
-        $this->assertLessThanOrEqual(1, new DateTimeImmutable()->getTimestamp() - $client->dataConsent->consentedAt->getTimestamp());
     }
 
     public function test_creates_client_with_optional_phone(): void
@@ -56,8 +46,6 @@ class ClientEntityTest extends TestCase
         $client = new ClientEntity(
             $this->fullName,
             $this->email,
-            '№1 от 01.01.2026',
-            null,
             $phone
         );
 
@@ -69,7 +57,6 @@ class ClientEntityTest extends TestCase
         $client = new ClientEntity(
             $this->fullName,
             $this->email,
-            '№1 от 01.01.2026'
         );
 
         $this->assertTrue($client->isActive);
@@ -89,7 +76,6 @@ class ClientEntityTest extends TestCase
         $client = new ClientEntity(
             $this->fullName,
             $this->email,
-            '№1 от 01.01.2026'
         );
 
         $birthDate = new DateTimeImmutable('1990-05-20');
@@ -110,7 +96,6 @@ class ClientEntityTest extends TestCase
         $client = new ClientEntity(
             $this->fullName,
             $this->email,
-            '№1 от 01.01.2026'
         );
 
         $this->assertNull($client->user);

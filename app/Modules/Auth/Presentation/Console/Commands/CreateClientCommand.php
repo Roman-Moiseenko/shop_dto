@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Modules\Auth\Presentation\Console\Commands;
-use App\Modules\Auth\Application\Actions\CreateClientUseCase;
+use App\Modules\Auth\Application\Actions\Client\CreateClientUseCase;
 use App\Modules\Auth\Application\DTOs\Client\ClientUserData;
 use Illuminate\Console\Command;
 

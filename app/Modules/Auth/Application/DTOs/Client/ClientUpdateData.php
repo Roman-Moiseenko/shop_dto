@@ -17,18 +17,17 @@ class ClientUpdateData extends Data
         public readonly string $lastName,
         #[Required, StringType, Max(255)]
         public readonly string $firstName,
-        #[Required, Email]
-        public readonly string $email,
-        //Необязательные поля
         #[Nullable, StringType, Max(255)]
         public readonly ?string $middleName = null,
         #[Nullable, StringType, Max(255)]
         public readonly ?string $phone = null,
+        #[Nullable, Email, Max(255)]
+        public readonly ?string $email = null,  // контактный email клиента
         #[Nullable, Date]
         public readonly ?string $birthDate = null,
-        #[Nullable, StringType, Max(255)]
+        #[Nullable, StringType, Max(10)]
         public readonly ?string $gender = null,
-        //Адрес
+        // Адрес
         #[Nullable, StringType, Max(255)]
         public readonly ?string $country = null,
         #[Nullable, StringType, Max(255)]
@@ -37,8 +36,7 @@ class ClientUpdateData extends Data
         public readonly ?string $city = null,
         #[Nullable, StringType, Max(255)]
         public readonly ?string $street = null,
-        #[Nullable, StringType, Max(255)]
+        #[Nullable, StringType, Max(20)]
         public readonly ?string $postalCode = null,
-
     ) {}
 }

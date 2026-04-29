@@ -50,21 +50,19 @@ class ClientEntity
     public bool $isActive {
         get => $this->bannedAt == null;
     }
-    public PersonalDataConsent $dataConsent {
+    public ?PersonalDataConsent $dataConsent {
         get => $this->dataConsent;
+        set => $this->dataConsent = $value;
     }
     public function __construct(
         FullName $fullName,
         Email $email,
-        string $policyVersion,
-        ?string $actionIdentifier = null,
         ?PhoneNumber $phone = null,
     )
     {
         $this->fullName = $fullName;
         $this->email = $email;
         $this->phone = $phone;
-        $this->dataConsent = new PersonalDataConsent($policyVersion, $actionIdentifier, true);
     }
 
     public function ban(): void
@@ -76,5 +74,4 @@ class ClientEntity
     {
         $this->bannedAt = null;
     }
-
 }

@@ -2,7 +2,7 @@
 
 namespace App\Modules\Auth\Application\Actions\User;
 
-use App\Modules\Auth\Application\DTOs\UpdateUserData;
+use App\Modules\Auth\Application\DTOs\User\UpdateUserData;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;

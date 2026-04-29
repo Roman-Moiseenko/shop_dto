@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Modules\Auth\Tests\Unit\Application\Actions;
+namespace App\Modules\Auth\Tests\Unit\Application\Actions\User;
 use App\Modules\Auth\Application\Actions\User\UpdateUserUseCase;
-use App\Modules\Auth\Application\DTOs\UpdateUserData;
+use App\Modules\Auth\Application\DTOs\User\UpdateUserData;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
@@ -10,8 +10,8 @@ use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use Illuminate\Support\Facades\Hash;
-use Mockery;
 use InvalidArgumentException;
+use Mockery;
 use PHPUnit\Framework\TestCase;
 
 class UpdateUserUseCaseTest extends TestCase

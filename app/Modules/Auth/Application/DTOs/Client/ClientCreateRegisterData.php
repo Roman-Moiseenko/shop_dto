@@ -9,7 +9,7 @@ use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Data;
 
-class ClientClientRegisterData extends Data
+class ClientCreateRegisterData extends Data
 {
     public function __construct(
         #[Required, StringType, Max(255)]
@@ -31,3 +31,4 @@ class ClientClientRegisterData extends Data
         public ?string $actionIdentifier = null,
     ) {}
 }
+

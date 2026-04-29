@@ -2,7 +2,7 @@
 
 namespace App\Modules\Auth\Application\DTOs\Freelance;
 
-use App\Modules\Auth\Application\DTOs\UserData;
+use App\Modules\Auth\Application\DTOs\User\UserData;
 use App\Modules\Auth\Domain\Entities\FreelanceEntity;
 use Spatie\LaravelData\Attributes\Validation\BooleanType;
 use Spatie\LaravelData\Attributes\Validation\Date;

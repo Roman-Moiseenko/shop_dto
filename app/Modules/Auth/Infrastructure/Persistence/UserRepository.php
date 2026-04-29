@@ -6,6 +6,7 @@ use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
+use App\Modules\Auth\Infrastructure\Models\EmailVerification;
 use App\Modules\Auth\Infrastructure\Models\Staff;
 use App\Modules\Auth\Infrastructure\Models\User;
 
@@ -88,4 +89,29 @@ class UserRepository implements UserRepositoryInterface
         return $this->findById($id);
     }
 
+    public function saveEmailVerification(int $userId, Email $newEmail, string $token, ?\DateTimeImmutable $expiresAt = null): void
+    {
+        EmailVerification::create([
+            'user_id' => $userId,
+            'new_email' => (string) $newEmail,
+            'token' => $token,
+            'expires_at' => $expiresAt ?? now()->addHour(),
+        ]);
+    }
+
+    public function findEmailVerificationByToken(string $token): ?object
+    {
+        $model = EmailVerification::where('token', $token)->first();
+        if (!$model) return null;
+        return (object) [
+            'user_id' => $model->user_id,
+            'new_email' => $model->new_email,
+            'expires_at' => $model->expires_at,
+        ];
+    }
+
+    public function deleteEmailVerification(string $token): void
+    {
+        EmailVerification::where('token', $token)->delete();
+    }
 }
