@@ -27,7 +27,6 @@ class ChangeUserCredentialsUseCaseTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        // Mock Hash and Str as before
 
         $this->passwordHasher = Mockery::mock(PasswordHasherInterface::class);
         $this->passwordHasher->shouldReceive('make')
@@ -37,17 +36,10 @@ class ChangeUserCredentialsUseCaseTest extends TestCase
                 return $hash === 'hashed_' . $plain;
             });
 
-//        Hash::shouldReceive('make')->andReturn('$2y$10$mockedhashvalue');
-     //   Hash::shouldReceive('check')->andReturnUsing(fn($p, $h) => $p === 'correct_pass');
 
         $strMock = Mockery::mock('alias:' . Str::class);
         $strMock->shouldReceive('random')->andReturn('change_token');
 
-        // Добавляем alias-мок для фасада Config
-     /*   Config::shouldReceive('get')
-            ->with('app.frontend_url')
-            ->andReturn('https://example.com');
-*/
         $this->userRepo = Mockery::mock(UserRepositoryInterface::class);
         $this->mailService = Mockery::mock(MailServiceInterface::class);
         $this->useCase = new ChangeUserCredentialsUseCase(

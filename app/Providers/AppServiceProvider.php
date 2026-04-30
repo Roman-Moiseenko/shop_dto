@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Modules\Auth\Application\Services\Utils;
+use App\Modules\Mailing\Infrastructure\Services\FakeMailService;
+use App\Modules\Shared\Application\Interfaces\Mail\MailServiceInterface;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
@@ -22,7 +24,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        //Регистрируем почтовый сервис для всех
+        if (app()->environment('local', 'testing')) {
+            $this->app->bind(MailServiceInterface::class, FakeMailService::class);
+        }
     }
 
     /**

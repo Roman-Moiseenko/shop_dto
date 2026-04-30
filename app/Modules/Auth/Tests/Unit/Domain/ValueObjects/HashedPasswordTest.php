@@ -3,6 +3,7 @@
 namespace App\Modules\Auth\Tests\Unit\Domain\ValueObjects;
 use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
+use Illuminate\Support\Facades\Facade;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 //use Tests\TestCase;
@@ -22,7 +23,7 @@ class HashedPasswordTest extends TestCase
     protected function tearDown(): void
     {
         // Сбрасываем фасад Hash и закрываем Mockery
-        \Illuminate\Support\Facades\Facade::clearResolvedInstance('hash');
+        Facade::clearResolvedInstance('hash');
         Mockery::close();
         parent::tearDown();
     }
