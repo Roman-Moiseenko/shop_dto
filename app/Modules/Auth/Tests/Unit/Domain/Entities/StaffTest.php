@@ -17,7 +17,7 @@ class StaffTest extends TestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
+       // parent::setUp();
         $this->fullName = new FullName('Иванов Иван Иванович');
         $this->workPhone = new PhoneNumber('+79001234567');
         $this->workEmail = new Email('ivanov@example.com');

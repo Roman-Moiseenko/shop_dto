@@ -6,6 +6,7 @@ use App\Modules\Auth\Application\DTOs\User\RegisterUserData;
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
+use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Infrastructure\Exceptions\ClientNotFoundException;
@@ -24,6 +25,8 @@ readonly class RegisterUserClientUseCase
         private UserRepositoryInterface   $userRepository,
         private ClientRepositoryInterface $clientRepository,
         private readonly MailServiceInterface $mailService,
+        private readonly string $frontendUrl,
+        private readonly PasswordHasherInterface $passwordHasher
     ) {}
 
     public function execute(int $clientId, RegisterUserData $dto): UserEntity
@@ -43,7 +46,7 @@ readonly class RegisterUserClientUseCase
 
         $user = new UserEntity(
             $email,
-            HashedPassword::fromPlainText($dto->password),
+            HashedPassword::fromPlainText($dto->password, $this->passwordHasher),
         );
 
         $user->setProfile(Client::class, $clientId);
@@ -54,7 +57,7 @@ readonly class RegisterUserClientUseCase
         $token = Str::random(60);
         $this->userRepository->saveEmailVerification($savedUser->id, $email, $token);
 
-        $verificationUrl = config('app.frontend_url') . '/verify-email?token=' . $token;
+        $verificationUrl = $this->frontendUrl . '/verify-email?token=' . $token;
         $this->mailService->send(
             'auth.verify_email',
             ['verificationUrl' => $verificationUrl],

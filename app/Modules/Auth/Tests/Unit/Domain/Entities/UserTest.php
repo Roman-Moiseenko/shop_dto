@@ -3,10 +3,14 @@
 namespace App\Modules\Auth\Tests\Unit\Domain\Entities;
 
 use App\Modules\Auth\Domain\Entities\UserEntity;
+use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use DateTimeImmutable;
-use Illuminate\Foundation\Testing\TestCase;
+use Mockery;
+use PHPUnit\Framework\TestCase;
+//use Tests\TestCase;
+use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -14,13 +18,68 @@ class UserTest extends TestCase
 {
     private Email $email;
     private HashedPassword $password;
+    private PasswordHasherInterface $passwordHasher;
 
     protected function setUp(): void
     {
         parent::setUp();
+        $this->passwordHasher = Mockery::mock(PasswordHasherInterface::class);
+        $this->passwordHasher->shouldReceive('make')
+            ->andReturnUsing(fn($plain) => 'hashed_' . $plain);
+        $this->passwordHasher->shouldReceive('check')
+            ->andReturnUsing(function ($plain, $hash) {
+                return $hash === 'hashed_' . $plain;
+            });
+  /*      Hash::shouldReceive('make')
+            ->andReturnUsing(fn($plain) => 'hashed_' . $plain);
+        Hash::shouldReceive('check')
+            ->andReturnUsing(fn($plain, $hash) => $hash === 'hashed_' . $plain);
+*/
         $this->email = new Email('test@example.com');
-        $this->password = HashedPassword::fromPlainText('password123');
+        $this->password = HashedPassword::fromPlainText('password123', $this->passwordHasher);
     }
+
+    protected function tearDown(): void
+    {
+        \Illuminate\Support\Facades\Facade::clearResolvedInstance('hash');
+        Mockery::close();
+        parent::tearDown();
+    }
+
+    #[Test]
+    public function it_can_validate_password(): void
+    {
+        $user = new UserEntity($this->email, $this->password);
+
+        $this->assertTrue($user->validatePassword('password123', $this->passwordHasher));
+        $this->assertFalse($user->validatePassword('wrongpassword', $this->passwordHasher));
+    }
+
+    #[Test]
+    public function test_it_can_update_password(): void
+    {
+        $user = new UserEntity($this->email, $this->password);
+        $oldHash = $user->getPasswordHash();
+
+        $newPassword = HashedPassword::fromPlainText('new_secure_password', $this->passwordHasher);
+        $user->updatePassword($newPassword);
+
+        $this->assertNotEquals($oldHash, $user->getPasswordHash());
+        $this->assertEquals('hashed_new_secure_password', $user->getPasswordHash());
+    }
+
+    #[Test]
+    public function it_can_set_and_verify_email(): void
+    {
+        $user = new UserEntity($this->email, $this->password);
+        $this->assertSame('test@example.com', $user->email->value);
+
+        $newEmail = new Email('new@example.com');
+        $user->email = $newEmail;
+        $this->assertSame('new@example.com', $user->email->value);
+    }
+
+
 
     #[Test]
     public function it_can_be_created_with_minimum_required_fields(): void
@@ -67,27 +126,7 @@ class UserTest extends TestCase
         $this->assertEquals($date, $user->emailVerifiedAt);
     }
 
-    #[Test]
-    public function it_can_validate_password(): void
-    {
-        $user = new UserEntity( $this->email, $this->password);
 
-        $this->assertTrue($user->validatePassword('password123'));
-        $this->assertFalse($user->validatePassword('wrongpassword'));
-    }
-
-    #[Test]
-    public function it_can_update_password(): void
-    {
-        $user = new UserEntity( $this->email, $this->password);
-        $newPassword = HashedPassword::fromPlainText('new_secure_password');
-
-        $user->updatePassword($newPassword);
-
-        $this->assertTrue($user->validatePassword('new_secure_password'));
-        $this->assertFalse($user->validatePassword('password123'));
-        $this->assertEquals($newPassword->getHash(), $user->getPasswordHash());
-    }
 
     #[Test]
     public function it_can_set_and_get_remember_token(): void
@@ -128,9 +167,6 @@ class UserTest extends TestCase
         $this->assertTrue($user->hasRole( 'admin'));
         $this->assertTrue($user->hasRole('client'));
         $this->assertFalse($user->hasRole('editor'));
-  //      $this->assertTrue($user->hasRole(new RoleName('admin')));
- //       $this->assertTrue($user->hasRole(new RoleName('client')));
-//        $this->assertFalse($user->hasRole(new RoleName('editor')));
     }
 
     #[Test]
@@ -142,8 +178,6 @@ class UserTest extends TestCase
         $this->assertTrue($user->isAdmin());
     }
 
-    // Тесты на исключения при создании Email и Password находятся в отдельных тестах для Value Objects,
-    // но мы можем проверить, что исключения пробрасываются корректно.
     #[Test]
     public function it_throws_exception_when_creating_with_invalid_email(): void
     {
@@ -155,6 +189,6 @@ class UserTest extends TestCase
     public function it_throws_exception_when_creating_with_short_password(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        HashedPassword::fromPlainText('short');
+        HashedPassword::fromPlainText('short', $this->passwordHasher);
     }
 }

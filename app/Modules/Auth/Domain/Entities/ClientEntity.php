@@ -50,7 +50,7 @@ class ClientEntity
     public bool $isActive {
         get => $this->bannedAt == null;
     }
-    public ?PersonalDataConsent $dataConsent {
+    public ?PersonalDataConsent $dataConsent = null {
         get => $this->dataConsent;
         set => $this->dataConsent = $value;
     }

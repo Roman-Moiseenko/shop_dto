@@ -4,6 +4,7 @@ namespace App\Modules\Auth\Application\Actions\User;
 
 use App\Modules\Auth\Application\DTOs\User\ChangeUserCredentialsData;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
+use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Infrastructure\Exceptions\InvalidCredentialsException;
@@ -20,6 +21,8 @@ readonly class ChangeUserCredentialsUseCase
     public function __construct(
         private UserRepositoryInterface $userRepository,
         private MailServiceInterface    $mailService,
+        private readonly string $frontendUrl,
+        private readonly PasswordHasherInterface $passwordHasher
     ) {}
 
     /**
@@ -33,7 +36,7 @@ readonly class ChangeUserCredentialsUseCase
         }
 
         // Проверяем текущий пароль
-        if (!$user->validatePassword($dto->currentPassword)) {
+        if (!$user->validatePassword($dto->currentPassword, $this->passwordHasher)) {
             throw new InvalidCredentialsException('Неверный текущий пароль');
         }
 
@@ -41,7 +44,7 @@ readonly class ChangeUserCredentialsUseCase
 
         // Смена пароля (без подтверждения)
         if ($dto->newPassword) {
-            $user->updatePassword(HashedPassword::fromPlainText($dto->newPassword));
+            $user->updatePassword(HashedPassword::fromPlainText($dto->newPassword, $this->passwordHasher));
             $this->userRepository->save($user);
         }
 
@@ -59,7 +62,7 @@ readonly class ChangeUserCredentialsUseCase
             $this->userRepository->saveEmailVerification($userId, $newEmail, $token);
 
             // Формируем ссылку подтверждения
-            $verificationUrl = config('app.frontend_url') . '/verify-email?token=' . $token;
+            $verificationUrl = $this->frontendUrl . '/verify-email?token=' . $token;
 
             // Отправляем письмо через общий почтовый сервис
             $this->mailService->send(

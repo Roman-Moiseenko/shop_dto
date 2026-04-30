@@ -5,6 +5,7 @@ use App\Modules\Auth\Application\Actions\User\UpdateUserUseCase;
 use App\Modules\Auth\Application\DTOs\User\UpdateUserData;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
+use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
@@ -18,15 +19,18 @@ class UpdateUserUseCaseTest extends TestCase
 {
     private UserRepositoryInterface $userRepo;
     private UpdateUserUseCase $useCase;
-
+    private PasswordHasherInterface $passwordHasher;
     protected function setUp(): void
     {
         parent::setUp();
-
+        $this->passwordHasher = Mockery::mock(PasswordHasherInterface::class);
+        $this->passwordHasher->shouldReceive('make')
+            ->andReturnUsing(fn($plain) => 'hashed_' . $plain);
         $this->userRepo = Mockery::mock(UserRepositoryInterface::class);
-        $this->useCase = new UpdateUserUseCase($this->userRepo);
+        $this->useCase = new UpdateUserUseCase($this->userRepo,
+            $this->passwordHasher);
 
-        Hash::shouldReceive('make')->andReturn('$2y$10$mockedhashvalue');
+        //Hash::shouldReceive('make')->andReturn('$2y$10$mockedhashvalue');
     }
 
     protected function tearDown(): void
@@ -40,7 +44,7 @@ class UpdateUserUseCaseTest extends TestCase
     {
         $user = new UserEntity(
             new Email('client@example.com'),
-            HashedPassword::fromPlainText('clientpass')
+            HashedPassword::fromPlainText('clientpass', $this->passwordHasher)
         );
         $user->id = $id;
         $user->roles = [RoleName::CLIENT];
@@ -52,7 +56,7 @@ class UpdateUserUseCaseTest extends TestCase
     {
         $user = new UserEntity(
             new Email('staff@example.com'),
-            HashedPassword::fromPlainText('staffpass')
+            HashedPassword::fromPlainText('staffpass', $this->passwordHasher)
         );
         $user->id = $id;
         $user->roles = ['staff'];
@@ -84,7 +88,7 @@ class UpdateUserUseCaseTest extends TestCase
         $result = $this->useCase->execute($staffId, $dto);
 
         $this->assertEquals('new@example.com', $result->email->value);
-        $this->assertSame('$2y$10$mockedhashvalue', $result->getPasswordHash());
+        $this->assertSame('hashed_newpassword', $result->getPasswordHash());
         // Роли остались неизменны
         $this->assertEquals([RoleName::CLIENT], $result->roles);
     }

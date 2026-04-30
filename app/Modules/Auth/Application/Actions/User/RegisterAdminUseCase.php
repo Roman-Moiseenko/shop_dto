@@ -5,6 +5,7 @@ namespace App\Modules\Auth\Application\Actions\User;
 use App\Modules\Auth\Application\DTOs\AdminData;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
+use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
@@ -12,7 +13,9 @@ use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 
 class RegisterAdminUseCase
 {
-    public function __construct(private readonly UserRepositoryInterface $userRepository) {}
+    public function __construct(private readonly UserRepositoryInterface $userRepository,
+                                private readonly PasswordHasherInterface $passwordHasher
+    ) {}
 
     public function execute(AdminData $dto): UserEntity
     {
@@ -23,7 +26,7 @@ class RegisterAdminUseCase
         }
         $user = new UserEntity(
             $email,
-            HashedPassword::fromPlainText($dto->password),
+            HashedPassword::fromPlainText($dto->password, $this->passwordHasher),
         );
 
         $user->roles = [RoleName::ADMIN];

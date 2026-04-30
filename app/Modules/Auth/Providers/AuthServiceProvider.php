@@ -2,14 +2,18 @@
 
 namespace App\Modules\Auth\Providers;
 
+use App\Modules\Auth\Application\Actions\User\ChangeUserCredentialsUseCase;
+use App\Modules\Auth\Application\Actions\User\RegisterUserClientUseCase;
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\StaffRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
+use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Infrastructure\Persistence\ClientRepository;
 use App\Modules\Auth\Infrastructure\Persistence\FreelanceRepository;
 use App\Modules\Auth\Infrastructure\Persistence\StaffRepository;
 use App\Modules\Auth\Infrastructure\Persistence\UserRepository;
+use App\Modules\Auth\Infrastructure\Services\LaravelPasswordHasher;
 use App\Modules\Auth\Presentation\Console\Commands\AdminCreateCommand;
 use App\Modules\Auth\Presentation\Console\Commands\CreateClientCommand;
 use App\Modules\Auth\Presentation\Console\Commands\RoleAssignCommand;
@@ -111,6 +115,16 @@ class AuthServiceProvider extends ServiceProvider
             FreelanceRepositoryInterface::class,
             FreelanceRepository::class
         );
+        $this->app->bind(
+            PasswordHasherInterface::class,
+            LaravelPasswordHasher::class
+        );
+        $this->app->when(ChangeUserCredentialsUseCase::class)
+            ->needs('$frontendUrl')
+            ->give(config('app.frontend_url'));
+        $this->app->when(RegisterUserClientUseCase::class)
+            ->needs('$frontendUrl')
+            ->give(config('app.frontend_url'));
         // Register module-specific services
     }
 

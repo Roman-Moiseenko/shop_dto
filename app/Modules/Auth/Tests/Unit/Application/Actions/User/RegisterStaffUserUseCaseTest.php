@@ -5,6 +5,7 @@ use App\Modules\Auth\Application\Actions\User\RegisterStaffUserUseCase;
 use App\Modules\Auth\Application\DTOs\User\UpdateUserData;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
+use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Infrastructure\Models\Staff;
@@ -18,14 +19,19 @@ class RegisterStaffUserUseCaseTest extends TestCase
 {
     private UserRepositoryInterface $userRepo;
     private RegisterStaffUserUseCase $useCase;
+    private PasswordHasherInterface $passwordHasher;
 
     protected function setUp(): void
     {
         parent::setUp();
-        Hash::shouldReceive('make')
-            ->andReturn('$2y$10$mockedhashvalue');
+
+        $this->passwordHasher = Mockery::mock(PasswordHasherInterface::class);
+        $this->passwordHasher->shouldReceive('make')
+            ->andReturnUsing(fn($plain) => 'hashed_' . $plain);
+        //Hash::shouldReceive('make')->andReturn('$2y$10$mockedhashvalue');
         $this->userRepo = Mockery::mock(UserRepositoryInterface::class);
-        $this->useCase = new RegisterStaffUserUseCase($this->userRepo);
+        $this->useCase = new RegisterStaffUserUseCase($this->userRepo,
+            $this->passwordHasher);
     }
 
     protected function tearDown(): void
@@ -62,7 +68,7 @@ class RegisterStaffUserUseCaseTest extends TestCase
 
         $this->assertEquals(42, $result->id);
         $this->assertEquals('staff@example.com', $result->email->value);
-        $this->assertSame('$2y$10$mockedhashvalue', $result->getPasswordHash());
+        $this->assertSame('hashed_password123', $result->getPasswordHash());
         $this->assertEquals(['staff', 'editor'], $result->roles);
         $this->assertEquals(Staff::class, $result->profileableType);
         $this->assertEquals($staffId, $result->profileableId);

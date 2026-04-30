@@ -4,20 +4,23 @@ namespace App\Modules\Auth\Application\Actions\Auth;
 
 use App\Modules\Auth\Application\DTOs\LoginData;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
+use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Infrastructure\Exceptions\InvalidCredentialsException;
+use App\Modules\Shared\Application\Interfaces\Mail\MailServiceInterface;
 use Illuminate\Support\Facades\Auth;
 
 class LoginUserUseCase
 {
-    public function __construct(private readonly UserRepositoryInterface $userRepository) {}
+    public function __construct(private readonly UserRepositoryInterface $userRepository,
+    private readonly PasswordHasherInterface $passwordHasher,) {}
 
     public function execute(LoginData $dto): string
     {
         $email = new Email($dto->email);
         $user = $this->userRepository->findByEmail($email);
 
-        if (!$user || !$user->validatePassword($dto->password)) {
+        if (!$user || !$user->validatePassword($dto->password, $this->passwordHasher)) {
             throw new InvalidCredentialsException('Неверный email или пароль');
         }
 

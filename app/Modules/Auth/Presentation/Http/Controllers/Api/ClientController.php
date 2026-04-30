@@ -4,6 +4,7 @@ namespace App\Modules\Auth\Presentation\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Modules\Auth\Application\Actions\Client\CreateClientUseCase;
 use App\Modules\Auth\Application\Actions\Client\CreateClientWithConsentUseCase;
+use App\Modules\Auth\Application\Actions\Client\RemoveClientUseCase;
 use App\Modules\Auth\Application\Actions\Client\UpdateClientUseCase;
 use App\Modules\Auth\Application\Actions\User\ChangeUserCredentialsUseCase;
 use App\Modules\Auth\Application\Actions\User\ConfirmEmailUseCase;
@@ -36,6 +37,7 @@ class ClientController extends Controller
         private readonly ChangeUserCredentialsUseCase  $changeUserCredentialsUseCase,
         private readonly ConfirmEmailUseCase  $confirmEmailUseCase,
         private readonly UpdateClientUseCase $updateClientUseCase,
+        private readonly RemoveClientUseCase $removeClientUseCase,
     ) {}
 
     public function index(): JsonResponse
@@ -162,11 +164,15 @@ class ClientController extends Controller
 
     public function destroy(int $id): JsonResponse
     {
-        $deleted = $this->clientRepository->delete($id);
-        if (!$deleted) {
-            return response()->json(['message' => 'Клиент не найден'], Response::HTTP_NOT_FOUND);
-        }
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        $client = $this->clientRepository->findById($id);
+        if (!$client) return response()->json(['message' => 'Клиент не найден'], Response::HTTP_NOT_FOUND);
+
+        $deleted = $this->removeClientUseCase->execute($id);
+
+        if (!$deleted)
+            return response()->json(['message' => 'Ошибка удаления клиента'], Response::HTTP_NOT_MODIFIED);
+
+        return response()->json(null, Response::HTTP_OK);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Modules\Auth\Application\Actions\User;
 use App\Modules\Auth\Application\DTOs\User\UpdateUserData;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
+use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
@@ -14,7 +15,9 @@ use InvalidArgumentException;
 
 readonly class RegisterFreelanceUserUseCase
 {
-    public function __construct(private UserRepositoryInterface $userRepository) {}
+    public function __construct(private UserRepositoryInterface $userRepository,
+                                private readonly PasswordHasherInterface $passwordHasher
+    ) {}
 
     public function execute(int $freelanceId, UpdateUserData $dto): UserEntity
     {
@@ -25,7 +28,7 @@ readonly class RegisterFreelanceUserUseCase
 
         $user = new UserEntity(
             $email,
-            HashedPassword::fromPlainText($dto->password),
+            HashedPassword::fromPlainText($dto->password, $this->passwordHasher),
         );
 
         $user->setProfile(Freelance::class, $freelanceId);

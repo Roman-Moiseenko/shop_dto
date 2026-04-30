@@ -5,6 +5,7 @@ namespace App\Modules\Auth\Application\Actions\User;
 use App\Modules\Auth\Application\DTOs\User\UpdateUserData;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
+use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
@@ -15,6 +16,7 @@ class UpdateUserUseCase
 {
     public function __construct(
         private readonly UserRepositoryInterface $userRepository,
+        private readonly PasswordHasherInterface $passwordHasher
     ) {}
 
     public function execute(int $staffId, UpdateUserData $dto): UserEntity
@@ -32,7 +34,7 @@ class UpdateUserUseCase
             $user->email = $newEmail;
         }
         if ($dto->password !== null)
-            $user->updatePassword(HashedPassword::fromPlainText($dto->password));
+            $user->updatePassword(HashedPassword::fromPlainText($dto->password, $this->passwordHasher));
 
 
         if (!$user->hasRole(RoleName::CLIENT)) {

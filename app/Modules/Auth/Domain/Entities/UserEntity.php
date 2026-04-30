@@ -2,6 +2,7 @@
 
 namespace App\Modules\Auth\Domain\Entities;
 
+use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
@@ -100,9 +101,9 @@ class UserEntity
         $this->password = $newPassword;
     }
 
-    public function validatePassword(string $plain): bool
+    public function validatePassword(string $plain, PasswordHasherInterface $hasher): bool
     {
-        return $this->password->verify($plain);
+        return $this->password->verify($plain, $hasher);
     }
 
     public function hasRole(string $roleName): bool
