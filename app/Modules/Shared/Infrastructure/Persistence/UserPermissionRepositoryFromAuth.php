@@ -7,10 +7,10 @@ use App\Modules\Shared\Application\Interfaces\UserPermissionRepositoryInterface;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use Illuminate\Http\Request;
 
-class UserPermissionRepositoryFromAuth implements UserPermissionRepositoryInterface
+readonly class UserPermissionRepositoryFromAuth implements UserPermissionRepositoryInterface
 {
 
-    public function __construct(private readonly UserRepositoryInterface $userRepository)
+    public function __construct(private UserRepositoryInterface $userRepository)
     {
     }
 

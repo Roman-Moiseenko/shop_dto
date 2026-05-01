@@ -12,7 +12,7 @@ final class PersonalDataConsent
     public DateTimeImmutable $consentedAt {
         get => $this->consentedAtValue;
         set {
-            if (!is_null($value)) $this->consentedValue = $value;
+            if (!is_null($value)) $this->consentedAtValue = $value;
         }
     }
 

@@ -36,9 +36,6 @@ final class Address
         $this->region = $region ? trim($region) : null;
         $this->postalCode = $postalCode ? trim($postalCode) : null;
 
-        if (empty($this->country) || empty($this->city) || empty($this->street)) {
-            throw new InvalidArgumentException('Страна, город и улица обязательны');
-        }
     }
 
     public function getFullAddress(): string

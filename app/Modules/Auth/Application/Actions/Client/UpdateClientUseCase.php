@@ -19,8 +19,10 @@ class UpdateClientUseCase
 {
     public function __construct(
         private readonly ClientRepositoryInterface $clientRepository,
-        private readonly UserRepositoryInterface $userRepository,
-    ) {}
+        private readonly UserRepositoryInterface   $userRepository,
+    )
+    {
+    }
 
     /**
      * @throws \DateMalformedStringException
@@ -76,19 +78,18 @@ class UpdateClientUseCase
 
 
         // Адрес
-        if ($dto->country !== null || $dto->city !== null || $dto->street !== null) {
-            if ($dto->country && $dto->city && $dto->street) {
-                $client->address = new Address(
-                    $dto->country,
-                    $dto->city,
-                    $dto->street,
-                    $dto->region,
-                    $dto->postalCode
-                );
-            } else {
-                $client->address = null;
-            }
+        if ($dto->country !== null || $dto->city !== null || $dto->region !== null) {
+            $client->address = new Address(
+                $dto->country ?? '',
+                $dto->city ?? '',
+                $dto->street ?? '',
+                $dto->region ?? '',
+                $dto->postalCode ?? ''
+            );
+        } else {
+            $client->address = null;
         }
+
 
         return $this->clientRepository->save($client);
     }

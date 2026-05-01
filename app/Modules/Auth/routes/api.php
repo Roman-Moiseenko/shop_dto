@@ -38,8 +38,7 @@ Route::prefix('v1/auth')->group(function () {
         });
 
         // Клиент может управлять своим профилем
-        Route::post('/credentials', [ClientController::class, 'credentials']); //смена регистр.данных
-
+        Route::post('/client/credentials', [ClientController::class, 'credentials']); //смена регистр.данных
         Route::get('/client/profile', [ClientController::class, 'profile']);
         Route::put('/client/profile', [ClientController::class, 'updateProfile']);
     });

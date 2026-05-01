@@ -26,11 +26,11 @@ return new class extends Migration
             $table->string('street')->nullable();
             $table->string('postal_code', 20)->nullable();
             $table->timestamp('banned_at')->nullable();
-            $table->boolean('consented')->default(true);
-            $table->timestamp('consented_at')->useCurrent();
-            $table->string('policy_version');
+            $table->boolean('consented')->default(false);
+            $table->timestamp('consented_at')->nullable();
+            $table->string('policy_version')->nullable();
             $table->string('action_identifier')->nullable();
-            $table->boolean('consent_active')->default(true);
+            $table->boolean('consent_active')->default(false);
             $table->timestamps();
 
             $table->index('banned_at');

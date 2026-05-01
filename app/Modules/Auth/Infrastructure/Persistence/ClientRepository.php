@@ -139,7 +139,7 @@ class ClientRepository implements ClientRepositoryInterface
             $client->gender = new Gender($model->gender);
         }
 
-        if ($model->country && $model->city && $model->street) {
+        if ($model->country || $model->city || $model->region) {
             $client->address = new Address(
                 $model->country,
                 $model->city,

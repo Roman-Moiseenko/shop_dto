@@ -70,7 +70,6 @@ class ClientUserData extends Data
         $fullName = $clientEntity->fullName;
         $address = $clientEntity->address;
         $consent = $clientEntity->dataConsent;
-
         return new self(
             id: $clientEntity->id,
             lastName: $fullName->getLastName(),
@@ -87,11 +86,11 @@ class ClientUserData extends Data
             postalCode: $address?->postalCode,
             bannedAt: $clientEntity->bannedAt?->format('c'),
             isActive: $clientEntity->isActive,
-            consented: $consent->consented,
-            consentedAt: $consent->consentedAt->format('c'),
-            policyVersion: $consent->policyVersion,
-            actionIdentifier: $consent->actionIdentifier,
-            consentActive: $consent->active,
+            consented: $consent?->consented ?? false,
+            consentedAt: $consent?->consentedAt->format('c'),
+            policyVersion: $consent?->policyVersion ?? '',
+            actionIdentifier: $consent?->actionIdentifier ?? '',
+            consentActive: $consent?->active ?? false,
             user: $clientEntity->user ? UserData::fromEntity($clientEntity->user) : null,
         );
     }

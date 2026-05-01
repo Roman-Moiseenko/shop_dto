@@ -98,18 +98,20 @@ class ClientController extends Controller
     /**
      * Смена регистрационных данных клиентом
      */
-    public function credentials(int $id, Request $request): JsonResponse
+    public function credentials(Request $request): JsonResponse
     {
-        $client = $this->clientRepository->findById($id);
-        if (!$client)
-            return response()->json(['message' => 'Клиент не найден'], Response::HTTP_NOT_FOUND);
+        $user = $request->user();
+        // 1. Проверяем, что пользователь привязан к профилю клиента
+        if ($user->profileable_type !== Client::class) {
+            return response()->json(['message' => 'Доступ запрещён'], 403);
+        }
+
         try {
             $dto = ChangeUserCredentialsData::validateAndCreate($request->all());
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        $this->changeUserCredentialsUseCase->execute($client->user->id, $dto);
+        $this->changeUserCredentialsUseCase->execute($user->id, $dto);
         return response()->json(null, Response::HTTP_OK);
     }
 
@@ -130,13 +132,14 @@ class ClientController extends Controller
     /**
      * Регистрация клиента менеджером, если клиент уже был создан ранее
      */
-    public function register(string $password, int $id): JsonResponse
+    public function register(Request $request, int $id): JsonResponse
     {
         $client = $this->clientRepository->findById($id);
+        $password = $request->validate(['password' => 'required|string'])['password'];
         if (!$client) {
             return response()->json(['message' => 'Клиент не найден'], Response::HTTP_NOT_FOUND);
         }
-        $dto = new RegisterUserData($client->email->value, $password);
+        $dto = new RegisterUserData($client->email->value, (string)$password);
         $user = $this->registerUserClientUseCase->execute($id, $dto);
         $client->user = $user;
         return response()->json(ClientUserData::fromEntity($client), Response::HTTP_OK);
@@ -157,9 +160,9 @@ class ClientController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-        $this->updateClientUseCase->execute($id, $dto);
-
-        return response()->json(['message' => 'Клиент обновлён']);
+        $client = $this->updateClientUseCase->execute($id, $dto);
+        return response()->json(ClientUserData::fromEntity($client), Response::HTTP_OK);
+        //return response()->json(['message' => 'Клиент обновлён']);
     }
 
     public function destroy(int $id): JsonResponse
@@ -183,6 +186,7 @@ class ClientController extends Controller
         /** @var User $user */
         $user = $request->user();
 
+        \Log::warning($user->id);
         if (!$user->hasRole('client')) {
             return response()->json(['message' => 'Доступ запрещён'], Response::HTTP_FORBIDDEN);
         }
