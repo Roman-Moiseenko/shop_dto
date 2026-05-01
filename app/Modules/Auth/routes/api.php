@@ -1,7 +1,6 @@
 <?php
 use App\Modules\Auth\Presentation\Http\Controllers\Api\ClientController;
 use App\Modules\Auth\Presentation\Http\Controllers\Api\FreelanceController;
-use App\Modules\Auth\Presentation\Http\Controllers\Api\RoleController;
 use App\Modules\Auth\Presentation\Http\Controllers\Api\StaffController;
 use Illuminate\Support\Facades\Route;
 use App\Modules\Auth\Presentation\Http\Controllers\Api\AuthController;

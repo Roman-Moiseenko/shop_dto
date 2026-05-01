@@ -33,7 +33,6 @@ class ClientController extends Controller
         private readonly CreateClientUseCase       $createClientUseCase,
         private readonly CreateClientWithConsentUseCase  $createClientWithConsentUseCase,
         private readonly RegisterUserClientUseCase  $registerUserClientUseCase,
-        private readonly UserRepositoryInterface   $userRepository,
         private readonly ChangeUserCredentialsUseCase  $changeUserCredentialsUseCase,
         private readonly ConfirmEmailUseCase  $confirmEmailUseCase,
         private readonly UpdateClientUseCase $updateClientUseCase,
