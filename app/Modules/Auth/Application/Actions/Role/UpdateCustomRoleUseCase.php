@@ -3,16 +3,17 @@
 namespace App\Modules\Auth\Application\Actions\Role;
 
 use App\Modules\Auth\Application\DTOs\Role\RoleCreateData;
+use App\Modules\Auth\Application\DTOs\Role\RoleUpdateData;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
 use InvalidArgumentException;
 use Spatie\Permission\Models\Role;
-class UpdateCustomRoleUseCase
+readonly class UpdateCustomRoleUseCase
 {
     public function __construct(
-        private readonly RoleRepositoryInterface $roleRepository
+        private RoleRepositoryInterface $roleRepository
     ) {}
 
-    public function execute(int $roleId, RoleCreateData $dto): Role
+    public function execute(int $roleId, RoleUpdateData $dto): Role
     {
         $role = $this->roleRepository->findById($roleId);
 

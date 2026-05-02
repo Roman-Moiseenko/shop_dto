@@ -9,6 +9,7 @@ use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\StaffRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
+use App\Modules\Auth\Domain\Services\PermissionProviderInterface;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
 use App\Modules\Auth\Infrastructure\Persistence\ClientRepository;
 use App\Modules\Auth\Infrastructure\Persistence\FreelanceRepository;
@@ -16,6 +17,7 @@ use App\Modules\Auth\Infrastructure\Persistence\RoleRepository;
 use App\Modules\Auth\Infrastructure\Persistence\StaffRepository;
 use App\Modules\Auth\Infrastructure\Persistence\UserRepository;
 use App\Modules\Auth\Infrastructure\Services\LaravelPasswordHasher;
+use App\Modules\Auth\Infrastructure\Services\PermissionProvider;
 use App\Modules\Auth\Presentation\Console\Commands\AdminCreateCommand;
 use App\Modules\Auth\Presentation\Console\Commands\CreateClientCommand;
 use App\Modules\Auth\Presentation\Console\Commands\RoleAssignCommand;
@@ -124,6 +126,10 @@ class AuthServiceProvider extends ServiceProvider
         $this->app->bind(
             RoleRepositoryInterface::class,
             RoleRepository::class
+        );
+        $this->app->bind(
+            PermissionProviderInterface::class,
+            PermissionProvider::class
         );
         $this->app->when(ChangeUserCredentialsUseCase::class)
             ->needs('$frontendUrl')
