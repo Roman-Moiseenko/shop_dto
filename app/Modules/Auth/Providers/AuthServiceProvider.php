@@ -140,11 +140,9 @@ class AuthServiceProvider extends ServiceProvider
     protected function registerCommands(): void
     {
         $this->commands([
-            RoleFillStartCommand::class,
             RoleAssignCommand::class,
             RoleCreateCommand::class,
             AdminCreateCommand::class,
-            CreateClientCommand::class
         ]);
     }
 

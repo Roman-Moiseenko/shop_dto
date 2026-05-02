@@ -20,7 +20,8 @@ class AdminCreateCommand extends Command
 
     public function __construct(
         private readonly RegisterAdminUseCase $registerAdmin
-    ) {
+    )
+    {
         parent::__construct();
     }
 
@@ -28,7 +29,7 @@ class AdminCreateCommand extends Command
     {
         $name = $this->argument('name');
         $password = $this->argument('password');
-        $email = $name.'@shop.api';
+        $email = $name . '@shop.api';
         try {
             $dto = new AdminData(
                 name: $name,
@@ -46,7 +47,6 @@ class AdminCreateCommand extends Command
                         $user->id,
                         (string)$user->email,
                         $user->getPasswordHash(),
-                        //$user->getProfileableType() ? $user->getProfileableType() . ':' . $user->getProfileableId() : '—',
                     ]
                 ]
             );
@@ -62,27 +62,5 @@ class AdminCreateCommand extends Command
             $this->error('❌ Непредвиденная ошибка: ' . $e->getMessage());
             return self::FAILURE;
         }
-
-
-
-
-        if (User::where('email', $email)->first()) {
-            $this->error('Пользователь с таким логином уже существует ');
-
-            return false;
-        }
-
-        $password = $this->ask('Введите пароль');
-
-        /** @var User $user */
-        $user = User::register($email, $password, $name);
-        $user->ulid = Str::ulid()->toBase32();
-        $user->save();
-        $user->assignRole($role);
-
-        $staff = Staff::register($user->id);
-        $this->info('Пользователь '.$name.' создан ID='.$staff->id);
-
-        return true;
     }
 }

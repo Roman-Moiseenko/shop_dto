@@ -3,6 +3,7 @@
 namespace App\Modules\Auth\Infrastructure\Models;
 
 use Carbon\Carbon;
+use DateTime;
 use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -18,8 +19,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $profileable_type
  * @property int $profileable_id
  * @property string $remember_token
- * @property ?DateTimeImmutable $email_verified_at
- * @property ?DateTimeImmutable $banned_at
+ * @property ?DateTime $email_verified_at
+ * @property ?DateTime $banned_at
  */
 class User extends Authenticatable
 {

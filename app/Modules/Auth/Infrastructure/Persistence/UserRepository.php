@@ -79,6 +79,7 @@ class UserRepository implements UserRepositoryInterface
             $user->setBannedAt(DateTimeImmutable::createFromMutable($model->banned_at));
         }
         $user->roles = $model->getRoleNames()->toArray();
+        $user->permissions = $model->getPermissionNames()->toArray();
 
         return $user;
     }

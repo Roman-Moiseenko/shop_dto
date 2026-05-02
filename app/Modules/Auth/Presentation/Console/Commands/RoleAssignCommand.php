@@ -3,7 +3,9 @@
 namespace App\Modules\Auth\Presentation\Console\Commands;
 
 use Illuminate\Console\Command;
+use JetBrains\PhpStorm\Deprecated;
 
+#[Deprecated]
 class RoleAssignCommand extends Command
 {
     protected $signature = 'role:assign {name} {role}';

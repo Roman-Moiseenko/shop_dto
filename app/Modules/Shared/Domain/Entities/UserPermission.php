@@ -7,12 +7,14 @@ namespace App\Modules\Shared\Domain\Entities;
  */
 class UserPermission
 {
-    private $userId;
-    private array $roles;
+    private int $userId {
+        get => $this->userId;
+    }
+    private array $roles {
+        get => $this->roles;
+    }
     private array $permissions {
-        get {
-            return $this->permissions;
-        }
+        get => $this->permissions;
     }
 
     public function __construct(int $userId, array $roles, array $permissions)
@@ -20,15 +22,6 @@ class UserPermission
         $this->userId = $userId;
         $this->roles = $roles;
         $this->permissions = $permissions;
-    }
-
-    public function getUserId(): int
-    {
-        return $this->userId;
-    }
-    public function getRoles(): array
-    {
-        return $this->roles;
     }
 
     public function hasRole(string $role): bool
