@@ -7,6 +7,7 @@ use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
 use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
+use App\Modules\Auth\Domain\ValueObjects\RoleName;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Infrastructure\Models\Freelance;
 use Illuminate\Support\Facades\Hash;
@@ -69,7 +70,7 @@ class RegisterFreelanceUserUseCaseTest extends TestCase
         $this->assertEquals(30, $result->id);
         $this->assertEquals('freelancer@example.com', $result->email->value);
         $this->assertSame('hashed_password123', $result->getPasswordHash());
-        $this->assertEquals(['editor', 'moderator'], $result->roles);
+        $this->assertEquals(['editor', 'moderator', RoleName::STAFF], $result->roles);
         $this->assertEquals(Freelance::class, $result->profileableType);
         $this->assertEquals($freelanceId, $result->profileableId);
     }

@@ -20,9 +20,9 @@ class AuthRoleSeeder extends Seeder
         $this->addRole(RoleName::STAFF);
 
         //Системные роли и доступы текущего модуля
-        $this->addRole('employee');
-        $this->addRole('buyer');
-        $this->addRole('user');
+        $this->addRole('employee', 'Персонал');
+        $this->addRole('buyer','Покупатель');
+        $this->addRole('user', 'Пользователь системы');
 
         $employee = [
             'auth.employee.create',
@@ -56,11 +56,14 @@ class AuthRoleSeeder extends Seeder
         Role::findByName('employee', 'api')?->givePermissionTo($employee);
         Role::findByName('buyer', 'api')?->givePermissionTo($buyer);
         Role::findByName('user', 'api')?->givePermissionTo($user);
+
+        Role::findByName(RoleName::ADMIN, 'api')?->givePermissionTo(Permission::all());
     }
 
-    private function addRole(string $role): void
+    private function addRole(string $role, string $description = ''): void
     {
-        if (is_null(Role::findByParam(['name' => $role, 'guard_name' => 'api']))) Role::create(['name' => $role, 'guard_name' => 'api']);
+        if (is_null(Role::findByParam(['name' => $role, 'guard_name' => 'api'])))
+            Role::create(['name' => $role, 'guard_name' => 'api', 'description' => $description]);
     }
 
     public function createPermission(array $items): void

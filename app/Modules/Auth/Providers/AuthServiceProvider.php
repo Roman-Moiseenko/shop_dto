@@ -9,8 +9,10 @@ use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\StaffRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
+use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
 use App\Modules\Auth\Infrastructure\Persistence\ClientRepository;
 use App\Modules\Auth\Infrastructure\Persistence\FreelanceRepository;
+use App\Modules\Auth\Infrastructure\Persistence\RoleRepository;
 use App\Modules\Auth\Infrastructure\Persistence\StaffRepository;
 use App\Modules\Auth\Infrastructure\Persistence\UserRepository;
 use App\Modules\Auth\Infrastructure\Services\LaravelPasswordHasher;
@@ -118,6 +120,10 @@ class AuthServiceProvider extends ServiceProvider
         $this->app->bind(
             PasswordHasherInterface::class,
             LaravelPasswordHasher::class
+        );
+        $this->app->bind(
+            RoleRepositoryInterface::class,
+            RoleRepository::class
         );
         $this->app->when(ChangeUserCredentialsUseCase::class)
             ->needs('$frontendUrl')

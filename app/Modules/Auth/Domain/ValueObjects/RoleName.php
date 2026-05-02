@@ -7,6 +7,11 @@ final class RoleName
     public const string ADMIN = 'admin'; //Профиль с полным доступом
     public const string CLIENT = 'client'; //Клиент
     public const string STAFF = 'staff'; //Сотрудник
+    const array BASE = [
+        self::ADMIN,
+        self::CLIENT,
+        self::STAFF,
+    ];
 
     private string $value;
 

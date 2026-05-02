@@ -3,6 +3,8 @@
 namespace App\Modules\Shared\Providers;
 
 use App\Modules\Shared\Application\Interfaces\UserPermissionRepositoryInterface;
+use App\Modules\Shared\Domain\Services\LaravelTransactionManager;
+use App\Modules\Shared\Domain\Services\TransactionManagerInterface;
 use App\Modules\Shared\Infrastructure\Persistence\UserPermissionRepositoryFromAuth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
@@ -88,6 +90,10 @@ class SharedServiceProvider extends ServiceProvider
         $this->app->bind(
             UserPermissionRepositoryInterface::class,
             UserPermissionRepositoryFromAuth::class
+        );
+        $this->app->bind(
+            TransactionManagerInterface::class,
+            LaravelTransactionManager::class
         );
     }
 

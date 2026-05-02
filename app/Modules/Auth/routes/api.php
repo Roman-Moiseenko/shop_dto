@@ -1,6 +1,7 @@
 <?php
 use App\Modules\Auth\Presentation\Http\Controllers\Api\ClientController;
 use App\Modules\Auth\Presentation\Http\Controllers\Api\FreelanceController;
+use App\Modules\Auth\Presentation\Http\Controllers\Api\RoleController;
 use App\Modules\Auth\Presentation\Http\Controllers\Api\StaffController;
 use Illuminate\Support\Facades\Route;
 use App\Modules\Auth\Presentation\Http\Controllers\Api\AuthController;
@@ -44,6 +45,8 @@ Route::prefix('v1/auth')->group(function () {
             Route::post('/freelance/{id}/user', [FreelanceController::class, 'user']);
 
             //Управление ролями
+            Route::apiResource('roles', RoleController::class)->except(['create', 'edit']);
+            Route::get('permissions/grouped', [RoleController::class, 'permissions']);
         });
 
 

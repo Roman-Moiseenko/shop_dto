@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('roles', function (Blueprint $table) {
             $table->boolean('is_system')->after('name')->default(true);
+            $table->string('description')->nullable()->after('is_system');
         });
     }
 
@@ -23,6 +24,7 @@ return new class extends Migration
     {
         Schema::table('roles', function (Blueprint $table) {
             $table->dropColumn('is_system');
+            $table->dropColumn('description');
         });
     }
 };
