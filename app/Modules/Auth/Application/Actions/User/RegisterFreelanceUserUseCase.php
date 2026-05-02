@@ -36,6 +36,8 @@ readonly class RegisterFreelanceUserUseCase
         if (empty($dto->roleNames)) throw new InvalidArgumentException('Роли пользователя не определены');
         if (in_array(RoleName::CLIENT, $dto->roleNames))
             throw new InvalidArgumentException('Нельзя назначить роль client');
+        //Если нет Роли Сотрудника, то добавляем ее
+        if (!in_array(RoleName::STAFF, $dto->roleNames)) $dto->roleNames[] = RoleName::STAFF;
         $user->roles = $dto->roleNames;
 
         return $this->userRepository->save($user);

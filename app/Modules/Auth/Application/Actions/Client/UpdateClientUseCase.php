@@ -60,7 +60,8 @@ class UpdateClientUseCase
                     throw new ClientAlreadyExistsException('Email уже используется другим клиентом');
                 }
                 // Проверяем, что такой email не занят в User (чтобы избежать путаницы)
-                if ($this->userRepository->emailExists($email)) {
+                $excludeUserId = $client->user?->id;
+                if ($this->userRepository->emailExists($email, $excludeUserId)) {
                     throw new ClientAlreadyExistsException('Email уже используется пользователем системы');
                 }
             }
@@ -70,7 +71,6 @@ class UpdateClientUseCase
         // Дата рождения
         if ($dto->birthDate !== null)
             $client->birthDate = $dto->birthDate ? new DateTimeImmutable($dto->birthDate) : null;
-
 
         // Пол
         if ($dto->gender !== null)

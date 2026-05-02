@@ -185,13 +185,13 @@ class ClientController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        \Log::warning($user->id);
+
         if (!$user->hasRole('client')) {
             return response()->json(['message' => 'Доступ запрещён'], Response::HTTP_FORBIDDEN);
         }
 
         $client = $this->clientRepository->findByUserId($user->id);
-
+        \Log::warning(json_encode($client));
         if (!$client) {
             return response()->json(['message' => 'Профиль клиента не найден'], Response::HTTP_NOT_FOUND);
         }
@@ -222,9 +222,9 @@ class ClientController extends Controller
         }
 
             // 3. Вызываем тот же Use Case, но с ID, полученным из аутентификации
-        $this->updateClientUseCase->execute($clientId, $dto);
+        $client = $this->updateClientUseCase->execute($clientId, $dto);
 
-        return response()->json(['message' => 'Профиль успешно обновлён']);
+        return response()->json(ClientUserData::fromEntity($client), Response::HTTP_CREATED);
     }
 
 }

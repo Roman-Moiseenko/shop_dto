@@ -107,7 +107,7 @@ class StaffController extends Controller
         } else {
             $userOut = $this->updateUserUseCase->execute($id, $dto);
         }
-        return response()->json(UserData::from($userOut), Response::HTTP_OK);
+        return response()->json(UserData::fromEntity($userOut), Response::HTTP_OK);
     }
 
 }

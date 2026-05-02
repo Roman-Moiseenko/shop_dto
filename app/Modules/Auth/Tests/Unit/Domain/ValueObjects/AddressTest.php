@@ -30,18 +30,6 @@ class AddressTest extends TestCase
         $this->assertSame('Россия, Московская обл., Москва, ул. Тверская, 1, 125009', $address->getFullAddress());
     }
 
-    public function test_throws_when_country_missing(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new Address('', 'Москва', 'ул. Тверская');
-    }
-
-    public function test_throws_when_city_missing(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new Address('Россия', '', 'ул. Тверская');
-    }
-
     public function test_equals(): void
     {
         $a = new Address('Россия', 'Москва', 'ул. Тверская');

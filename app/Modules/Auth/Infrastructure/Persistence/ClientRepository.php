@@ -4,6 +4,8 @@ namespace App\Modules\Auth\Infrastructure\Persistence;
 
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\ClientEntity;
+use App\Modules\Auth\Domain\Entities\UserEntity;
+use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Domain\ValueObjects\PersonalDataConsent;
 use App\Modules\Auth\Infrastructure\Models\Client;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
@@ -16,6 +18,8 @@ use DateTimeImmutable;
 
 class ClientRepository implements ClientRepositoryInterface
 {
+    use HydratesUserEntity;
+
     public function save(ClientEntity $client): ClientEntity
     {
         $model = $client->id
@@ -112,6 +116,9 @@ class ClientRepository implements ClientRepositoryInterface
         return $model ? $model->delete() : false;
     }
 
+    /**
+     * @throws \DateMalformedStringException
+     */
     private function hydrate(Client $model): ClientEntity
     {
         $fullName = new FullName(
@@ -167,6 +174,8 @@ class ClientRepository implements ClientRepositoryInterface
         } else {
             $client->dataConsent = null;
         }
+
+        $client->user = $this->hydrateUser($model->user);
 
         return $client;
     }

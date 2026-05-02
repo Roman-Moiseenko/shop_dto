@@ -21,6 +21,8 @@ class UserData extends Data
         public string $email,
         #[Required, ArrayType]
         public array $roleNames,
+        #[Required, BooleanType]
+        public bool $isVerified,
     )
     {
     }
@@ -31,7 +33,8 @@ class UserData extends Data
             !$entity->isBanned,
             $entity->id,
             $entity->email,
-            $entity->roles
+            $entity->roles,
+            $entity->isEmailVerified(),
         );
     }
 

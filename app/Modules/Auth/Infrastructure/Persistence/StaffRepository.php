@@ -15,6 +15,8 @@ use DateTimeImmutable;
 
 class StaffRepository implements StaffRepositoryInterface
 {
+    use HydratesUserEntity;
+
     public function save(StaffEntity $staff): StaffEntity
     {
         $model = $staff->id ? Staff::find($staff->id) : new Staff();
@@ -63,6 +65,9 @@ class StaffRepository implements StaffRepositoryInterface
         return $model->delete();
     }
 
+    /**
+     * @throws \DateMalformedStringException
+     */
     private function hydrate(Staff $model): StaffEntity
     {
 
@@ -90,14 +95,8 @@ class StaffRepository implements StaffRepositoryInterface
         if ($model->max_chat_id) $staff->maxChatId = $model->max_chat_id;
         if ($model->notes) $staff->notes = $model->notes;
 
-        if ($model->user) {
-            $staff->user = new UserEntity(
-                new Email($model->user->email),
-                HashedPassword::fromHash($model->user->password),
-            );
-            $staff->user->id = $model->user->id;
-            $staff->user->roles = $model->user->getRoleNames()->toArray();
-        }
+        $staff->user = $this->hydrateUser($model->user);
+
         return $staff;
     }
 }

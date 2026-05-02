@@ -8,20 +8,20 @@ use Spatie\Permission\Models\Role;
 
 class RoleFillStartCommand extends Command
 {
-    protected $signature = 'role:fill';
-    protected $description = 'Создание основных ролей и доступов';
+    protected $signature = 'role:auth';
+    protected $description = 'Создание основных ролей и доступов для Auth';
 
     public function handle(): bool
     {
+        //Базовые роли
         $this->addRole('admin');
-        $this->addRole('reader');
         $this->addRole('client');
-        $this->addRole('catalog');
-        $this->addRole('order');
-        $this->addRole('manager');
+        $this->addRole('staff');
+
+        //Доступы по модулю
 
         //Раздел каталог
-        $catalogItems = ['create catalog', 'edit catalog', 'view catalog', 'delete catalog', 'published catalog'];
+        $catalogItems = ['create catalog', 'edit catalog', 'view catalog', 'delete catalog', 'force catalog', 'published catalog'];
         //Раздел продажи
         $orderItems = ['create order', 'edit order', 'view order', 'delete order'];
         //Раздел Настройки
@@ -32,6 +32,8 @@ class RoleFillStartCommand extends Command
         $feedItems = ['create feed', 'edit feed', 'view feed', 'delete feed'];
         //Раздел Аналитика
         $analyticItems = ['create analytic', 'edit analytic', 'view analytic', 'delete analytic'];
+
+
 
         $this->createPermission($catalogItems);
 

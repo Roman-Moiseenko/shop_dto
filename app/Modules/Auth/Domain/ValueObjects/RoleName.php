@@ -4,8 +4,9 @@ namespace App\Modules\Auth\Domain\ValueObjects;
 use InvalidArgumentException;
 final class RoleName
 {
-    public const string ADMIN = 'admin';
-    public const string CLIENT = 'client';
+    public const string ADMIN = 'admin'; //Профиль с полным доступом
+    public const string CLIENT = 'client'; //Клиент
+    public const string STAFF = 'staff'; //Сотрудник
 
     private string $value;
 
@@ -21,6 +22,7 @@ final class RoleName
     public function equals(self $other): bool { return $this->value === $other->value; }
     public function isAdmin(): bool { return $this->value === self::ADMIN; }
     public function isClient(): bool { return $this->value === self::CLIENT; }
+    public function isStaff(): bool{ return $this->value === self::STAFF; }
 
     //Фабрика
     public static function fromNames(array $names): array

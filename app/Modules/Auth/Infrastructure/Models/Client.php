@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
+ * @property int $id
  * @property string $last_name
  * @property string $first_name
  * @property string $middle_name
@@ -25,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property string $policy_version
  * @property string $action_identifier
  * @property bool $consent_active
+ * @property User $user
  */
 class Client extends Model
 {

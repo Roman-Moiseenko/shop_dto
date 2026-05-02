@@ -15,6 +15,7 @@ use DateTimeImmutable;
 
 class FreelanceRepository implements FreelanceRepositoryInterface
 {
+    use HydratesUserEntity;
     public function save(FreelanceEntity $freelance): FreelanceEntity
     {
         $model = $freelance->id ? Freelance::find($freelance->id) : new Freelance();
@@ -60,6 +61,9 @@ class FreelanceRepository implements FreelanceRepositoryInterface
         return $model->delete();
     }
 
+    /**
+     * @throws \DateMalformedStringException
+     */
     private function hydrate(Freelance $model): FreelanceEntity
     {
 
@@ -84,14 +88,9 @@ class FreelanceRepository implements FreelanceRepositoryInterface
         if ($model->max_chat_id) $freelance->maxChatId = $model->max_chat_id;
         if ($model->notes) $freelance->notes = $model->notes;
 
-        if ($model->user) {
-            $freelance->user = new UserEntity(
-                new Email($model->user->email),
-                HashedPassword::fromHash($model->user->password),
-            );
-            $freelance->user->id = $model->user->id;
-            $freelance->user->roles = $model->user->getRoleNames()->toArray();
-        }
+        $freelance->user = $this->hydrateUser($model->user);
+
+
         return $freelance;
     }
 }
