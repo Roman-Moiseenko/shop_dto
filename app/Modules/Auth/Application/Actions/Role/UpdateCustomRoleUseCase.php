@@ -35,8 +35,7 @@ readonly class UpdateCustomRoleUseCase
         if (!empty($dto->permissions)) {
             $updatedRole->syncPermissions($dto->permissions);
         } else {
-            // Если разрешения не переданы, можно сбросить все (опционально)
-            // $updatedRole->syncPermissions([]);
+            $updatedRole->syncPermissions([]);
         }
 
         return $updatedRole;

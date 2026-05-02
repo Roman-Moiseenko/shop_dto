@@ -19,12 +19,7 @@ use App\Modules\Auth\Infrastructure\Persistence\UserRepository;
 use App\Modules\Auth\Infrastructure\Services\LaravelPasswordHasher;
 use App\Modules\Auth\Infrastructure\Services\PermissionProvider;
 use App\Modules\Auth\Presentation\Console\Commands\AdminCreateCommand;
-use App\Modules\Auth\Presentation\Console\Commands\CreateClientCommand;
-use App\Modules\Auth\Presentation\Console\Commands\RoleAssignCommand;
-use App\Modules\Auth\Presentation\Console\Commands\RoleCreateCommand;
-use App\Modules\Auth\Presentation\Console\Commands\RoleFillStartCommand;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use RecursiveDirectoryIterator;
@@ -152,8 +147,6 @@ class AuthServiceProvider extends ServiceProvider
     protected function registerCommands(): void
     {
         $this->commands([
-            RoleAssignCommand::class,
-            RoleCreateCommand::class,
             AdminCreateCommand::class,
         ]);
     }

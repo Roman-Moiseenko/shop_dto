@@ -2,7 +2,7 @@
 
 namespace App\Modules\Auth\Tests\Unit\Application\Actions\Role;
 use App\Modules\Auth\Application\Actions\Role\UpdateCustomRoleUseCase;
-use App\Modules\Auth\Application\DTOs\Role\RoleCreateData;
+use App\Modules\Auth\Application\DTOs\Role\RoleUpdateData;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Role;
@@ -31,7 +31,7 @@ class UpdateCustomRoleUseCaseTest extends TestCase
     public function it_updates_custom_role_with_permissions(): void
     {
         $roleId = 1;
-        $dto = new RoleCreateData(
+        $dto = new RoleUpdateData(
             name: 'Updated Role',
             permissions: ['view-orders', 'edit-orders'],
             description: 'Updated description'
@@ -72,7 +72,7 @@ class UpdateCustomRoleUseCaseTest extends TestCase
     public function it_throws_exception_when_updating_system_role(): void
     {
         $roleId = 2;
-        $dto = new RoleCreateData(name: 'Admin', permissions: [], description: '');
+        $dto = new RoleUpdateData(name: 'Admin', permissions: [], description: '');
 
         $existingRole = Mockery::mock(Role::class);
         $existingRole->shouldReceive('getAttribute')
@@ -96,7 +96,7 @@ class UpdateCustomRoleUseCaseTest extends TestCase
     public function it_throws_exception_if_role_not_found(): void
     {
         $roleId = 999;
-        $dto = new RoleCreateData(name: 'Nonexistent', permissions: [], description: '');
+        $dto = new RoleUpdateData(name: 'Nonexistent', permissions: [], description: '');
 
         $this->repo->shouldReceive('findById')
             ->once()

@@ -16,9 +16,9 @@ class RoleUpdateData extends Data
     public function __construct(
         #[Required, StringType, Max(255), Unique('roles', 'name', ignore: new RouteParameterReference('role'))]
         public readonly string $name,
-        #[Nullable, StringType, Max(255)]
-        public readonly ?string $description = null,
         #[Required, ArrayType]
         public readonly array $permissions,
+        #[Nullable, StringType, Max(255)]
+        public readonly ?string $description = null,
     ) {}
 }
