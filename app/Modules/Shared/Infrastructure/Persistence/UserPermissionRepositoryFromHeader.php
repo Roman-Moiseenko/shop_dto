@@ -11,7 +11,8 @@ class UserPermissionRepositoryFromHeader implements UserPermissionRepositoryInte
     public function getUserPermission(Request $request): UserPermission
     {
         //Получаем из заголовков
-        $userId = (int)$request->header('X-User-Id');
+        $userId = (int)$request->header('X-User-Id') ?? null; //протестить null
+
         $userRoles = explode(',', $request->header('X-User-Roles', ''));
         $userPermissions = explode(',', $request->header('X-User-Permissions', ''));
         return new UserPermission($userId, $userRoles, $userPermissions);

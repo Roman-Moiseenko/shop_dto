@@ -17,6 +17,7 @@ readonly class UserPermissionRepositoryFromAuth implements UserPermissionReposit
     public function getUserPermission(Request $request): UserPermission
     {
         $user = $this->userRepository->findById($request->user()->id);
+        if (!$user) { return new UserPermission(null, [], []); }
         return new UserPermission($user->id, $user->roles, $user->permissions);
     }
 }

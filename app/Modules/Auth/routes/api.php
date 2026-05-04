@@ -6,6 +6,7 @@ use App\Modules\Auth\Presentation\Http\Controllers\Api\StaffController;
 use Illuminate\Support\Facades\Route;
 use App\Modules\Auth\Presentation\Http\Controllers\Api\AuthController;
 
+//middleware(['load.permissions'])->
 Route::prefix('v1/auth')->group(function () {
     //Без доступа
     //Аутентификация
@@ -48,8 +49,6 @@ Route::prefix('v1/auth')->group(function () {
             Route::apiResource('roles', RoleController::class)->except(['create', 'edit']);
             Route::get('permissions/grouped', [RoleController::class, 'permissions']);
         });
-
-
     });
 
 

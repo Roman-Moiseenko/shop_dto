@@ -8,10 +8,10 @@ use App\Modules\Auth\Domain\Entities\StaffEntity;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 
 
-class CreateStaffUseCase
+readonly class CreateStaffUseCase
 {
     public function __construct(
-        private readonly StaffRepositoryInterface $staffRepository
+        private StaffRepositoryInterface $staffRepository
     )
     {
     }

@@ -16,6 +16,7 @@ use App\Modules\Auth\Application\DTOs\User\UserData;
 use App\Modules\Auth\Application\Interfaces\StaffRepositoryInterface;
 use App\Modules\Auth\Infrastructure\Models\Staff;
 use App\Modules\Auth\Presentation\Http\Resources\StaffResource;
+use App\Modules\Shared\Domain\Entities\UserPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -34,8 +35,9 @@ class StaffController extends Controller
     {
     }
 
-    public function index(): JsonResponse
+    public function index(UserPermission $userPermission): JsonResponse
     {
+        \Log::warning($userPermission->getId());
         // Простейшая реализация через модель (можно через репозиторий)
         $staff = Staff::with('user')->paginate();
         return StaffResource::collection($staff)->response();
