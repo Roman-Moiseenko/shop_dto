@@ -9,6 +9,8 @@ use App\Modules\Auth\Domain\Entities\StaffEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
+use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use Mockery;
@@ -18,7 +20,17 @@ class UpdateStaffUseCaseTest extends TestCase
 {
     private StaffRepositoryInterface $staffRepo;
     private UpdateStaffUseCase $useCase;
-
+    private function mockUserPermission(bool $canEdit, bool $canCreate = true): UserPermission
+    {
+        $permission = Mockery::mock(UserPermission::class);
+        $permission->shouldReceive('can')
+            ->andReturnUsing(fn($permission) => match ($permission) {
+                'auth.employee.edit' => $canEdit,
+                'auth.employee.create' => $canCreate,
+                default => false,
+            });
+        return $permission;
+    }
     protected function setUp(): void
     {
         $this->staffRepo = Mockery::mock(StaffRepositoryInterface::class);
@@ -77,8 +89,8 @@ class UpdateStaffUseCaseTest extends TestCase
             notes: 'Новые заметки',
             terminated: false,
         );
-
-        $result = $this->useCase->execute(1, $dto);
+        $permission = $this->mockUserPermission(canEdit: true);
+        $result = $this->useCase->execute(1, $dto, $permission);
 
         $this->assertSame('Петров Пётр Петрович', (string) $result->fullName);
         $this->assertSame('Новая должность', $result->position);
@@ -92,6 +104,25 @@ class UpdateStaffUseCaseTest extends TestCase
         $this->assertSame('new_max', $result->maxChatId);
         $this->assertSame('Новые заметки', $result->notes);
         $this->assertFalse(!$result->isActive);
+    }
+
+    public function test_throws_access_denied_when_missing_permission(): void
+    {
+        $existing = $this->createExistingStaff();
+        $this->staffRepo->shouldReceive('findById')->with(1)->andReturn($existing);
+        $this->staffRepo->shouldNotReceive('save');
+
+        // Запрещаем edit
+        $permission = $this->mockUserPermission(canEdit: false);
+
+        $dto = new StaffUpdateData(
+            lastName: 'Иванов',
+            firstName: 'Иван',
+            position: 'Без прав',
+        );
+
+        $this->expectException(AccessDeniedException::class);
+        $this->useCase->execute(1, $dto, $permission);
     }
 
     /**
@@ -111,7 +142,8 @@ class UpdateStaffUseCaseTest extends TestCase
             middleName: 'Иванович',
         );
 
-        $result = $this->useCase->execute(1, $dto);
+        $permission = $this->mockUserPermission(canEdit: true);
+        $result = $this->useCase->execute(1, $dto, $permission);
 
         $this->assertNull($result->department);
         $this->assertNull($result->workPhone);
@@ -140,7 +172,8 @@ class UpdateStaffUseCaseTest extends TestCase
             terminated: true,
         );
 
-        $result = $this->useCase->execute(1, $dto);
+        $permission = $this->mockUserPermission(canEdit: true);
+        $result = $this->useCase->execute(1, $dto, $permission);
         $this->assertTrue(!$result->isActive);
         $this->assertInstanceOf(DateTimeImmutable::class, $result->terminationDate);
 
@@ -155,7 +188,7 @@ class UpdateStaffUseCaseTest extends TestCase
         $this->staffRepo->shouldReceive('findById')->with(1)->andReturn($result);
         $this->staffRepo->shouldReceive('save')->once()->andReturn($result);
 
-        $result2 = $this->useCase->execute(1, $dto2);
+        $result2 = $this->useCase->execute(1, $dto2, $permission);
         $this->assertFalse(!$result2->isActive);
         $this->assertNull($result2->terminationDate);
     }
@@ -176,6 +209,7 @@ class UpdateStaffUseCaseTest extends TestCase
             middleName: null,
         );
 
-        $this->useCase->execute(999, $dto);
+        $permission = $this->mockUserPermission(canEdit: true);
+        $this->useCase->execute(999, $dto, $permission);
     }
 }

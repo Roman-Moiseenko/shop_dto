@@ -16,6 +16,7 @@ use App\Modules\Auth\Application\DTOs\User\UserData;
 use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;
 use App\Modules\Auth\Infrastructure\Models\Freelance;
 use App\Modules\Auth\Presentation\Http\Resources\FreelanceResource;
+use App\Modules\Shared\Domain\Entities\UserPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -34,14 +35,14 @@ class FreelanceController extends Controller
     {
     }
 
-    public function index(): JsonResponse
+    public function index(UserPermission $userPermission): JsonResponse
     {
         // Простейшая реализация через модель (можно через репозиторий)
         $freelance = Freelance::with('user')->paginate();
         return FreelanceResource::collection($freelance)->response();
     }
 
-    public function show(int $id): JsonResponse
+    public function show(int $id, UserPermission $userPermission): JsonResponse
     {
         $freelance = $this->freelanceRepository->findById($id);
         if (!$freelance) {
@@ -53,7 +54,7 @@ class FreelanceController extends Controller
     /**
      * @throws \Throwable
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request, UserPermission $userPermission): JsonResponse
     {
         try {
             $dto = FreelanceCreateData::validateAndCreate($request->all());
@@ -68,7 +69,7 @@ class FreelanceController extends Controller
     /**
      * @throws \DateMalformedStringException
      */
-    public function update(Request $request, int $id): JsonResponse
+    public function update(Request $request, int $id, UserPermission $userPermission): JsonResponse
     {
         try {
             $dto = FreelanceUpdateData::validateAndCreate($request->all());
@@ -80,7 +81,7 @@ class FreelanceController extends Controller
         return response()->json(FreelanceUserData::fromEntity($freelance));
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(int $id, UserPermission $userPermission): JsonResponse
     {
         $freelance = $this->freelanceRepository->findById($id);
         if (!$freelance) return response()->json(['message' => 'Сотрудник не найден'], Response::HTTP_NOT_FOUND);
@@ -93,7 +94,7 @@ class FreelanceController extends Controller
         return response()->json(null, Response::HTTP_OK);
     }
 
-    public function user(Request $request, int $id): JsonResponse
+    public function user(Request $request, int $id, UserPermission $userPermission): JsonResponse
     {
         $freelance = $this->freelanceRepository->findById($id);
         if (!$freelance) return response()->json(['message' => 'Сотрудник не найден'], Response::HTTP_NOT_FOUND);

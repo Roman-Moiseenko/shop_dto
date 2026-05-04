@@ -7,6 +7,8 @@ use App\Modules\Auth\Application\DTOs\Staff\StaffCreateData;
 use App\Modules\Auth\Application\Interfaces\StaffRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\StaffEntity;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
+use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -15,6 +17,18 @@ class CreateStaffUseCaseTest extends TestCase
 {
     private StaffRepositoryInterface $staffRepo;
     private CreateStaffUseCase $useCase;
+
+    private function mockUserPermission(bool $canEdit, bool $canCreate = true): UserPermission
+    {
+        $permission = Mockery::mock(UserPermission::class);
+        $permission->shouldReceive('can')
+            ->andReturnUsing(fn($permission) => match ($permission) {
+                'auth.employee.edit' => $canEdit,
+                'auth.employee.create' => $canCreate,
+                default => false,
+            });
+        return $permission;
+    }
 
     protected function setUp(): void
     {
@@ -29,6 +43,9 @@ class CreateStaffUseCaseTest extends TestCase
         parent::tearDown();
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function test_creates_staff_from_dto_and_saves(): void
     {
         $dto = new StaffCreateData(
@@ -45,8 +62,8 @@ class CreateStaffUseCaseTest extends TestCase
                 $staff->id = 42;
                 return $staff;
             });
-
-        $result = $this->useCase->execute($dto);
+        $permission = $this->mockUserPermission(canEdit: false, canCreate: true);
+        $result = $this->useCase->execute($dto, $permission);
 
         $this->assertInstanceOf(StaffEntity::class, $result);
         $this->assertEquals(42, $result->id);
@@ -55,7 +72,22 @@ class CreateStaffUseCaseTest extends TestCase
         $this->assertSame('Иванов Иван Иванович', (string) $fullName);
         $this->assertSame('Разработчик', $result->position);
     }
+    public function test_throws_access_denied_when_missing_permission(): void
+    {
+        $dto = new StaffCreateData(
+            lastName: 'Иванов',
+            firstName: 'Иван',
+            position: 'Разработчик',
+        );
 
+        // Мок UserPermission – запрещаем создание
+        $permission = $this->mockUserPermission(canEdit: false, canCreate: false);
+
+        $this->staffRepo->shouldNotReceive('save');
+
+        $this->expectException(AccessDeniedException::class);
+        $this->useCase->execute($dto, $permission);
+    }
     /**
      * @throws \Throwable
      */
@@ -75,8 +107,8 @@ class CreateStaffUseCaseTest extends TestCase
                 $staff->id = 1;
                 return $staff;
             });
-
-        $result = $this->useCase->execute($dto);
+        $permission = $this->mockUserPermission(canEdit: false, canCreate: true);
+        $result = $this->useCase->execute($dto, $permission);
 
         $this->assertSame('Петров Пётр', (string) $result->fullName);
         $this->assertNull($result->fullName->getMiddleName());
@@ -97,7 +129,7 @@ class CreateStaffUseCaseTest extends TestCase
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('DB error');
-
-        $this->useCase->execute($dto);
+        $permission = $this->mockUserPermission(canEdit: false, canCreate: true);
+        $this->useCase->execute($dto, $permission);
     }
 }

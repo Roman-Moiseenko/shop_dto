@@ -11,6 +11,7 @@ use App\Modules\Auth\Application\DTOs\Role\RoleUpdateData;
 use App\Modules\Auth\Domain\Services\PermissionProviderInterface;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
 use App\Modules\Auth\Presentation\Http\Resources\RoleResource;
+use App\Modules\Shared\Domain\Entities\UserPermission;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\JsonResponse;
@@ -27,7 +28,7 @@ class RoleController extends Controller
     ) {}
 
     // Список всех ролей (можно добавить фильтр по is_system через параметр запроса)
-    public function index(Request $request): JsonResponse
+    public function index(Request $request, UserPermission $userPermission): JsonResponse
     {
         $query = Role::with('permissions');
         if ($request->has('type')) {
@@ -37,13 +38,13 @@ class RoleController extends Controller
         return RoleResource::collection($query->get())->response();
     }
 
-    public function show(int $id): JsonResponse
+    public function show(int $id, UserPermission $userPermission): JsonResponse
     {
         $role = Role::with('permissions')->findOrFail($id);
         return new RoleResource($role)->response();
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(Request $request, UserPermission $userPermission): JsonResponse
     {
         \Log::warning(json_encode($request->all()));
         try {
@@ -55,7 +56,7 @@ class RoleController extends Controller
         return new RoleResource($role)->response()->setStatusCode(201);
     }
 
-    public function update(int $id, Request $request): JsonResponse
+    public function update(int $id, Request $request, UserPermission $userPermission): JsonResponse
     {
 
         try {
@@ -68,14 +69,14 @@ class RoleController extends Controller
         return new RoleResource($updatedRole)->response();
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(int $id, UserPermission $userPermission): JsonResponse
     {
         $this->deleteRole->execute($id);
         return response()->json(null, 204);
     }
 
     // Получение сгруппированных разрешений (по системным ролям)
-    public function permissions(): JsonResponse
+    public function permissions(UserPermission $userPermission): JsonResponse
     {
         return response()->json(
             $this->permissionProvider->groupedBySystemRoles()

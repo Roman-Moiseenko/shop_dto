@@ -4,16 +4,20 @@ namespace App\Modules\Auth\Application\Actions\Staff;
 
 use App\Modules\Auth\Application\Interfaces\StaffRepositoryInterface;
 use App\Modules\Auth\Infrastructure\Models\Staff;
+use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 
-class RemoveStaffUseCase
+readonly class RemoveStaffUseCase
 {
     public function __construct(
-        private readonly StaffRepositoryInterface $staffRepository
+        private StaffRepositoryInterface $staffRepository
     )
     {
     }
-    public function execute(int $id): bool
+    public function execute(int $id, UserPermission $permissions): bool
     {
+        if (!$permissions->can('auth.employee.delete')) throw new AccessDeniedException();
+
         //TODO Проверка, можем ли удалить
 
         return $this->staffRepository->delete($id);

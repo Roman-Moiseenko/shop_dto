@@ -20,6 +20,7 @@ use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Infrastructure\Models\Client;
 use App\Modules\Auth\Infrastructure\Models\User;
 use App\Modules\Auth\Presentation\Http\Resources\ClientResource;
+use App\Modules\Shared\Domain\Entities\UserPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -39,13 +40,13 @@ class ClientController extends Controller
         private readonly RemoveClientUseCase $removeClientUseCase,
     ) {}
 
-    public function index(): JsonResponse
+    public function index(UserPermission $userPermission): JsonResponse
     {
         $clients = Client::with('user')->paginate();
         return ClientResource::collection($clients)->response();
     }
 
-    public function show(int $id): JsonResponse
+    public function show(int $id, UserPermission $userPermission): JsonResponse
     {
         $client = $this->clientRepository->findById($id);
         if (!$client)
@@ -57,7 +58,7 @@ class ClientController extends Controller
     /**
      * Создание клиента менеджером
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request, UserPermission $userPermission): JsonResponse
     {
         try {
         $dto = ClientCreateData::validateAndCreate($request->all());
@@ -73,7 +74,7 @@ class ClientController extends Controller
      * Регистрация клиента самостоятельно
      * @throws \Throwable
      */
-    public function registration(Request $request): JsonResponse
+    public function registration(Request $request, UserPermission $userPermission): JsonResponse
     {
         try {
             $dtoClient = ClientCreateWithConsentData::validateAndCreate($request->all());
@@ -97,7 +98,7 @@ class ClientController extends Controller
     /**
      * Смена регистрационных данных клиентом
      */
-    public function credentials(Request $request): JsonResponse
+    public function credentials(Request $request, UserPermission $userPermission): JsonResponse
     {
         $user = $request->user();
         // 1. Проверяем, что пользователь привязан к профилю клиента
@@ -115,7 +116,7 @@ class ClientController extends Controller
     }
 
     /**
-     * Подтверждение почты
+     * Подтверждение почты. Доступ не проверяется
      */
     public function verifyEmail(Request $request): JsonResponse
     {
@@ -131,7 +132,7 @@ class ClientController extends Controller
     /**
      * Регистрация клиента менеджером, если клиент уже был создан ранее
      */
-    public function register(Request $request, int $id): JsonResponse
+    public function register(Request $request, int $id, UserPermission $userPermission): JsonResponse
     {
         $client = $this->clientRepository->findById($id);
         $password = $request->validate(['password' => 'required|string'])['password'];
@@ -148,7 +149,7 @@ class ClientController extends Controller
      * Изменение клиента менеджером
      * @throws \DateMalformedStringException
      */
-    public function update(Request $request, int $id): JsonResponse
+    public function update(Request $request, int $id, UserPermission $userPermission): JsonResponse
     {
         $client = $this->clientRepository->findById($id);
         if (!$client)
@@ -164,7 +165,7 @@ class ClientController extends Controller
         //return response()->json(['message' => 'Клиент обновлён']);
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(int $id, UserPermission $userPermission): JsonResponse
     {
         $client = $this->clientRepository->findById($id);
         if (!$client) return response()->json(['message' => 'Клиент не найден'], Response::HTTP_NOT_FOUND);
@@ -180,11 +181,10 @@ class ClientController extends Controller
     /**
      * Получить профиль текущего аутентифицированного клиента.
      */
-    public function profile(Request $request): JsonResponse
+    public function profile(Request $request, UserPermission $userPermission): JsonResponse
     {
         /** @var User $user */
         $user = $request->user();
-
 
         if (!$user->hasRole('client')) {
             return response()->json(['message' => 'Доступ запрещён'], Response::HTTP_FORBIDDEN);
@@ -203,7 +203,7 @@ class ClientController extends Controller
      * Обновить профиль текущего аутентифицированного клиента.
      * @throws \DateMalformedStringException
      */
-    public function updateProfile(Request $request): JsonResponse
+    public function updateProfile(Request $request, UserPermission $userPermission): JsonResponse
     {
         /** @var User $user */
         $user = $request->user();

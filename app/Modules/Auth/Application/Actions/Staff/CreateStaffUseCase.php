@@ -6,6 +6,8 @@ use App\Modules\Auth\Application\DTOs\Staff\StaffCreateData;
 use App\Modules\Auth\Application\Interfaces\StaffRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\StaffEntity;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
+use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 
 
 readonly class CreateStaffUseCase
@@ -19,8 +21,9 @@ readonly class CreateStaffUseCase
     /**
      * @throws \Throwable
      */
-    public function execute(StaffCreateData $dto): StaffEntity
+    public function execute(StaffCreateData $dto, UserPermission $permissions): StaffEntity
     {
+        if (!$permissions->can('auth.employee.create')) throw new AccessDeniedException('Access Denied');
 
         $fullName = new FullName(implode(' ', array_filter([
             $dto->lastName,

@@ -8,6 +8,8 @@ use App\Modules\Auth\Domain\Entities\StaffEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
+use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use DateTimeImmutable;
 use InvalidArgumentException;
 
@@ -20,8 +22,10 @@ readonly class UpdateStaffUseCase
     /**
      * @throws \DateMalformedStringException
      */
-    public function execute(int $staffId, StaffUpdateData $dto): StaffEntity
+    public function execute(int $staffId, StaffUpdateData $dto, UserPermission $permissions): StaffEntity
     {
+        if (!$permissions->can('auth.employee.edit')) throw new AccessDeniedException();
+
         $staff = $this->staffRepository->findById($staffId);
         if (!$staff) throw new InvalidArgumentException('Сотрудник не найден');
 
