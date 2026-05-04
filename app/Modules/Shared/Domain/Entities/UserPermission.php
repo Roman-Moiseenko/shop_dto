@@ -32,4 +32,12 @@ class UserPermission
     {
         return in_array($permission, $this->permissions);
     }
+
+    /**
+     * Синоним hasPermission
+     */
+    public function can(string $permission): bool
+    {
+        return $this->hasPermission($permission);
+    }
 }

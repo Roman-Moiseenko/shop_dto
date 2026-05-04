@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Modules\Auth\Application\Services\Utils;
 use App\Modules\Mailing\Infrastructure\Services\FakeMailService;
 use App\Modules\Shared\Application\Interfaces\Mail\MailServiceInterface;
+use App\Modules\Shared\Application\Interfaces\UserPermissionRepositoryInterface;
+use App\Modules\Shared\Infrastructure\Persistence\UserPermissionRepositoryFromAuth;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
@@ -28,6 +30,12 @@ class AppServiceProvider extends ServiceProvider
         if (app()->environment('local', 'testing')) {
             $this->app->bind(MailServiceInterface::class, FakeMailService::class);
         }
+
+        //Получение доступа для всех модулей
+        $this->app->bind(
+            UserPermissionRepositoryInterface::class,
+            UserPermissionRepositoryFromAuth::class
+        );
     }
 
     /**

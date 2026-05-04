@@ -23,6 +23,7 @@ class AuthRoleSeeder extends Seeder
         $this->addRole('employee', 'Персонал');
         $this->addRole('buyer','Покупатель');
         $this->addRole('user', 'Пользователь системы');
+        $this->addRole('settings', 'Настройки системы');
 
         $employee = [
             'auth.employee.create',
@@ -48,14 +49,24 @@ class AuthRoleSeeder extends Seeder
             'auth.user.force',
             'auth.user.blocked',
         ];
+        $settings = [
+            'auth.settings.create',
+            'auth.settings.view',
+            'auth.settings.edit',
+            'auth.settings.delete',
+        ];
+
 
         $this->createPermission($employee);
         $this->createPermission($buyer);
         $this->createPermission($user);
+        $this->createPermission($settings);
 
         Role::findByName('employee', 'api')?->givePermissionTo($employee);
         Role::findByName('buyer', 'api')?->givePermissionTo($buyer);
+        Role::findByName(RoleName::CLIENT, 'api')?->givePermissionTo($buyer); //Для
         Role::findByName('user', 'api')?->givePermissionTo($user);
+        Role::findByName('settings', 'api')?->givePermissionTo($settings);
 
         Role::findByName(RoleName::ADMIN, 'api')?->givePermissionTo(Permission::all());
     }

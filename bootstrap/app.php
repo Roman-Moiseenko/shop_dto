@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -21,5 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (AccessDeniedException $e, $request) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 403);
+        });
     })->create();

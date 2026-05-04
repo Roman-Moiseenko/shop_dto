@@ -191,7 +191,7 @@ class ClientController extends Controller
         }
 
         $client = $this->clientRepository->findByUserId($user->id);
-        \Log::warning(json_encode($client));
+
         if (!$client) {
             return response()->json(['message' => 'Профиль клиента не найден'], Response::HTTP_NOT_FOUND);
         }
