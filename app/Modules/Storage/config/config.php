@@ -46,5 +46,48 @@ return [
     |
     |
     */
-
+    //Нарезки, конфигурация
+    'thumbs' => [
+        // entity_type -> type -> список нарезок
+        //Модуль.Сущность
+        'catalog.product' => [
+            'image' => [
+                'card' => ['width' => 600, 'height' => 600],
+                'list' => ['width' => 150, 'height' => 150],
+                'thumb' => ['width' => 80, 'height' => 80],
+            ],
+            'gallery' => [
+                'thumb' => ['width' => 120, 'height' => 120],
+            ],
+        ],
+        'catalog_category' => [
+            'image' => [
+                'card' => ['width' => 600, 'height' => 600],
+                'list' => ['width' => 150, 'height' => 150],
+            ],
+            'icon' => [
+                'thumb' => ['width' => 80, 'height' => 80],
+            ],
+        ],
+        'auth.client' => [
+            'image' => [
+                'avatar' => ['width' => 120, 'height' => 120],
+            ],
+        ],
+        'auth.staff' => [
+            'image' => [
+                'avatar' => ['width' => 120, 'height' => 120],
+            ],
+        ],
+        'auth.freelance' => [
+            'image' => [
+                'avatar' => ['width' => 120, 'height' => 120],
+            ],
+        ],
+    ],
+    'local' => [
+        'disk' => env('STORAGE_DISK', 'public'),
+        'upload_path' => 'uploads',
+        'cache_path' => 'cache',
+    ],
 ];

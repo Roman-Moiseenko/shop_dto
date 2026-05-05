@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.4",
         "giggsey/libphonenumber-for-php": "^9.0",
+        "intervention/image": "^4.0",
         "kalnoy/nestedset": "^6.0",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
