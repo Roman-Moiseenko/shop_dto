@@ -9,15 +9,25 @@ use App\Modules\Auth\Domain\Entities\ClientEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 use App\Modules\Auth\Infrastructure\Exceptions\ClientAlreadyExistsException;
+use App\Modules\Auth\Tests\Trait\MockPermission;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 class UpdateClientUseCaseTest extends TestCase
 {
+    use MockPermission;
     private ClientRepositoryInterface $clientRepo;
     private UserRepositoryInterface $userRepo;
     private UpdateClientUseCase $useCase;
     private ClientEntity $client;
+    function getModuleName(): string
+    {
+        return  'auth';
+    }
 
+    function getEntityName(): string
+    {
+        return 'buyer';
+    }
     protected function setUp(): void
     {
         parent::setUp();
@@ -60,8 +70,8 @@ class UpdateClientUseCaseTest extends TestCase
             street: 'Тверская',
             postalCode: '125009'
         );
-
-        $updated = $this->useCase->execute(10, $dto);
+        $permission = $this->mockUserPermission(edit: true);
+        $updated = $this->useCase->execute(10, $dto, $permission);
 
         $this->assertEquals('Петров Пётр Петрович', (string)$updated->fullName);
         $this->assertEquals('petrov@example.com', (string)$updated->email);
@@ -75,7 +85,8 @@ class UpdateClientUseCaseTest extends TestCase
         $this->clientRepo->shouldReceive('findById')->with(10)->once()->andReturn($this->client);
         $this->clientRepo->shouldReceive('emailExists')->once()->andReturn(true);
         $this->expectException(ClientAlreadyExistsException::class);
-        $this->useCase->execute(10, new ClientUpdateData(lastName: 'Иванов', firstName: 'Иван', email: 'used@example.com'));
+        $permission = $this->mockUserPermission(edit: true);
+        $this->useCase->execute(10, new ClientUpdateData(lastName: 'Иванов', firstName: 'Иван', email: 'used@example.com'), $permission);
     }
 
     public function test_throws_if_phone_duplicate(): void
@@ -83,6 +94,7 @@ class UpdateClientUseCaseTest extends TestCase
         $this->clientRepo->shouldReceive('findById')->with(10)->once()->andReturn($this->client);
         $this->clientRepo->shouldReceive('phoneExists')->once()->andReturn(true);
         $this->expectException(ClientAlreadyExistsException::class);
-        $this->useCase->execute(10, new ClientUpdateData(lastName: 'Иванов', firstName: 'Иван', phone: '+79998887766'));
+        $permission = $this->mockUserPermission(edit: true);
+        $this->useCase->execute(10, new ClientUpdateData(lastName: 'Иванов', firstName: 'Иван', phone: '+79998887766'), $permission);
     }
 }

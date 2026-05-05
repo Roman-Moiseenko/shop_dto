@@ -17,16 +17,13 @@ use PHPUnit\Framework\TestCase;
 class CreateStaffUseCaseTest extends TestCase
 {
     use MockPermission;
-
     private StaffRepositoryInterface $staffRepo;
     private CreateStaffUseCase $useCase;
-
 
     function getModuleName(): string
     {
         return  'auth';
     }
-
     function getEntityName(): string
     {
         return 'employee';

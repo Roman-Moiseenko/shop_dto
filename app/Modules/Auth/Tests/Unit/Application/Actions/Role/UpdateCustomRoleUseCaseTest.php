@@ -4,6 +4,7 @@ namespace App\Modules\Auth\Tests\Unit\Application\Actions\Role;
 use App\Modules\Auth\Application\Actions\Role\UpdateCustomRoleUseCase;
 use App\Modules\Auth\Application\DTOs\Role\RoleUpdateData;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
+use App\Modules\Auth\Tests\Trait\MockPermission;
 use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Role;
 use PHPUnit\Framework\TestCase;
@@ -11,9 +12,17 @@ use Mockery;
 
 class UpdateCustomRoleUseCaseTest extends TestCase
 {
+    use MockPermission;
     private RoleRepositoryInterface $repo;
     private UpdateCustomRoleUseCase $useCase;
-
+    function getModuleName(): string
+    {
+        return  'auth';
+    }
+    function getEntityName(): string
+    {
+        return 'settings';
+    }
     protected function setUp(): void
     {
         parent::setUp();
@@ -63,8 +72,8 @@ class UpdateCustomRoleUseCaseTest extends TestCase
             ->once()
             ->with(['view-orders', 'edit-orders'])
             ->andReturnSelf();
-
-        $result = $this->useCase->execute($roleId, $dto);
+        $permission = $this->mockUserPermission(edit: true);
+        $result = $this->useCase->execute($roleId, $dto, $permission);
         $this->assertSame($updatedRoleMock, $result);
     }
 
@@ -88,8 +97,8 @@ class UpdateCustomRoleUseCaseTest extends TestCase
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Нельзя редактировать системную роль');
-
-        $this->useCase->execute($roleId, $dto);
+        $permission = $this->mockUserPermission(edit: true);
+        $this->useCase->execute($roleId, $dto, $permission);
     }
 
     #[Test]
@@ -107,7 +116,7 @@ class UpdateCustomRoleUseCaseTest extends TestCase
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Роль не найдена');
-
-        $this->useCase->execute($roleId, $dto);
+        $permission = $this->mockUserPermission(edit: true);
+        $this->useCase->execute($roleId, $dto, $permission);
     }
 }

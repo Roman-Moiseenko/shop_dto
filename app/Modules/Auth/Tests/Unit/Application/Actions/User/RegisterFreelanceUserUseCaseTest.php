@@ -10,6 +10,7 @@ use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Infrastructure\Models\Freelance;
+use App\Modules\Auth\Tests\Trait\MockPermission;
 use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 use Mockery;
@@ -18,10 +19,18 @@ use PHPUnit\Framework\TestCase;
 
 class RegisterFreelanceUserUseCaseTest extends TestCase
 {
+    use MockPermission;
     private UserRepositoryInterface $userRepo;
     private RegisterFreelanceUserUseCase $useCase;
     private PasswordHasherInterface $passwordHasher;
-
+    function getModuleName(): string
+    {
+        return  'auth';
+    }
+    function getEntityName(): string
+    {
+        return 'user';
+    }
     protected function setUp(): void
     {
         parent::setUp();
@@ -64,8 +73,8 @@ class RegisterFreelanceUserUseCaseTest extends TestCase
                 $user->id = 30;
                 return $user;
             });
-
-        $result = $this->useCase->execute($freelanceId, $dto);
+        $permission = $this->mockUserPermission(create: true);
+        $result = $this->useCase->execute($freelanceId, $dto, $permission);
 
         $this->assertEquals(30, $result->id);
         $this->assertEquals('freelancer@example.com', $result->email->value);
@@ -92,8 +101,8 @@ class RegisterFreelanceUserUseCaseTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Роли пользователя не определены');
-
-        $this->useCase->execute($freelanceId, $dto);
+        $permission = $this->mockUserPermission(create: true);
+        $this->useCase->execute($freelanceId, $dto, $permission);
     }
 
     #[Test]
@@ -112,8 +121,8 @@ class RegisterFreelanceUserUseCaseTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Нельзя назначить роль client');
-
-        $this->useCase->execute($freelanceId, $dto);
+        $permission = $this->mockUserPermission(create: true);
+        $this->useCase->execute($freelanceId, $dto, $permission);
     }
 
     #[Test]
@@ -134,7 +143,7 @@ class RegisterFreelanceUserUseCaseTest extends TestCase
 
         $this->expectException(UserAlreadyExistsException::class);
         $this->expectExceptionMessage('Пользователь с email existing@example.com уже существует');
-
-        $this->useCase->execute(1, $dto);
+        $permission = $this->mockUserPermission(create: true);
+        $this->useCase->execute(1, $dto, $permission);
     }
 }

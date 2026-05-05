@@ -12,6 +12,7 @@ use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Infrastructure\Exceptions\ClientNotFoundException;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Infrastructure\Models\Client;
+use App\Modules\Auth\Tests\Trait\MockPermission;
 use App\Modules\Shared\Application\Interfaces\Mail\MailServiceInterface;
 use App\Modules\Shared\Domain\Entities\Mail\Recipient;
 use PHPUnit\Framework\TestCase;
@@ -20,12 +21,21 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 class RegisterUserClientUseCaseTest extends TestCase
 {
+    use MockPermission;
     private UserRepositoryInterface $userRepo;
     private ClientRepositoryInterface $clientRepo;
     private MailServiceInterface $mailService;
     private RegisterUserClientUseCase $useCase;
     private string $frontendUrl = 'https://example.com';
     private PasswordHasherInterface $passwordHasher;
+    function getModuleName(): string
+    {
+        return  'auth';
+    }
+    function getEntityName(): string
+    {
+        return 'user';
+    }
     protected function setUp(): void
     {
         parent::setUp();
@@ -84,8 +94,8 @@ class RegisterUserClientUseCaseTest extends TestCase
             }),
             Mockery::on(fn(Recipient $r) => $r->email === 'test@example.com')
         );
-
-        $user = $this->useCase->execute($clientId, $dto);
+        $permission = $this->mockUserPermission(create: true);
+        $user = $this->useCase->execute($clientId, $dto, $permission);
 
         $this->assertEquals(10, $user->id);
         $this->assertEquals('test@example.com', (string)$user->email);
@@ -97,7 +107,8 @@ class RegisterUserClientUseCaseTest extends TestCase
     {
         $this->clientRepo->shouldReceive('findById')->with(99)->once()->andReturn(null);
         $this->expectException(ClientNotFoundException::class);
-        $this->useCase->execute(99, new RegisterUserData(email: 'x@x.com', password: '12345678'));
+        $permission = $this->mockUserPermission(create: true);
+        $this->useCase->execute(99, new RegisterUserData(email: 'x@x.com', password: '12345678'), $permission);
     }
 
     public function test_throws_exception_if_email_exists(): void
@@ -105,6 +116,7 @@ class RegisterUserClientUseCaseTest extends TestCase
         $this->clientRepo->shouldReceive('findById')->with(1)->once()->andReturn($this->createMock(ClientEntity::class));
         $this->userRepo->shouldReceive('emailExists')->once()->andReturn(true);
         $this->expectException(UserAlreadyExistsException::class);
-        $this->useCase->execute(1, new RegisterUserData(email: 'x@x.com', password: '12345678'));
+        $permission = $this->mockUserPermission(create: true);
+        $this->useCase->execute(1, new RegisterUserData(email: 'x@x.com', password: '12345678'), $permission);
     }
 }

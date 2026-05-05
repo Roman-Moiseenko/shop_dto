@@ -4,6 +4,7 @@ namespace App\Modules\Auth\Tests\Unit\Application\Actions\Role;
 use App\Modules\Auth\Application\Actions\Role\CreateCustomRoleUseCase;
 use App\Modules\Auth\Application\DTOs\Role\RoleCreateData;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
+use App\Modules\Auth\Tests\Trait\MockPermission;
 use App\Modules\Shared\Domain\Services\TransactionManagerInterface;
 use Spatie\Permission\Models\Role;
 use PHPUnit\Framework\TestCase;
@@ -11,10 +12,18 @@ use Mockery;
 use Illuminate\Support\Facades\DB;
 class CreateCustomRoleUseCaseTest extends TestCase
 {
+    use MockPermission;
     private RoleRepositoryInterface $repo;
     private TransactionManagerInterface $transaction;
     private CreateCustomRoleUseCase $useCase;
-
+    function getModuleName(): string
+    {
+        return  'auth';
+    }
+    function getEntityName(): string
+    {
+        return 'settings';
+    }
     protected function setUp(): void
     {
         parent::setUp();
@@ -49,8 +58,8 @@ class CreateCustomRoleUseCaseTest extends TestCase
                 'description' => 'desc',
             ])
             ->andReturn($mockRole);
-
-        $result = $this->useCase->execute($dto);
+        $permission = $this->mockUserPermission(create: true);
+        $result = $this->useCase->execute($dto, $permission);
         $this->assertSame($mockRole, $result);
     }
 
@@ -72,8 +81,8 @@ class CreateCustomRoleUseCaseTest extends TestCase
                 'description' => '',
             ])
             ->andReturn($mockRole);
-
-        $result = $this->useCase->execute($dto);
+        $permission = $this->mockUserPermission(create: true);
+        $result = $this->useCase->execute($dto, $permission);
         $this->assertSame($mockRole, $result);
     }
 }

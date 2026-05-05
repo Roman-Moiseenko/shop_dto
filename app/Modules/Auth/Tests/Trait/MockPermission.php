@@ -20,7 +20,7 @@ trait MockPermission
         bool $delete = false,
         bool $force = false,
         bool $blocked = false,
-
+        ?int $id = null,
     ): UserPermission
     {
         $prefix = $this->getModuleName() . '.' . $this->getEntityName() . '.';
@@ -35,6 +35,7 @@ trait MockPermission
                 $prefix . 'blocked' => $blocked,
                 default => false,
             });
+        $permission->shouldReceive('getId')->andReturn($id);
         return $permission;
     }
 }

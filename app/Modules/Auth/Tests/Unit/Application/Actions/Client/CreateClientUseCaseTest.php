@@ -6,13 +6,23 @@ use App\Modules\Auth\Application\DTOs\Client\ClientCreateData;
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\ClientEntity;
 use App\Modules\Auth\Infrastructure\Exceptions\ClientAlreadyExistsException;
+use App\Modules\Auth\Tests\Trait\MockPermission;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 class CreateClientUseCaseTest extends TestCase
 {
+    use MockPermission;
     private ClientRepositoryInterface $clientRepo;
     private CreateClientUseCase $useCase;
+    function getModuleName(): string
+    {
+        return  'auth';
+    }
 
+    function getEntityName(): string
+    {
+        return 'buyer';
+    }
     protected function setUp(): void
     {
         parent::setUp();
@@ -40,7 +50,8 @@ class CreateClientUseCaseTest extends TestCase
             return $c;
         });
 
-        $client = $this->useCase->execute($dto);
+        $permission = $this->mockUserPermission(create: true);
+        $client = $this->useCase->execute($dto, $permission);
 
         $this->assertEquals(5, $client->id);
         $this->assertNull($client->dataConsent);
@@ -51,6 +62,7 @@ class CreateClientUseCaseTest extends TestCase
     {
         $this->clientRepo->shouldReceive('emailExists')->once()->andReturn(true);
         $this->expectException(ClientAlreadyExistsException::class);
-        $this->useCase->execute(new ClientCreateData(lastName: 'Иван', firstName: 'Иван', email: 'used@example.com'));
+        $permission = $this->mockUserPermission(create: true);
+        $this->useCase->execute(new ClientCreateData(lastName: 'Иван', firstName: 'Иван', email: 'used@example.com'), $permission);
     }
 }

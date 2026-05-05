@@ -3,6 +3,8 @@
 namespace App\Modules\Auth\Tests\Unit\Application\Actions\Role;
 use App\Modules\Auth\Application\Actions\Role\DeleteCustomRoleUseCase;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
+use App\Modules\Auth\Tests\Trait\MockPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Role;
 use PHPUnit\Framework\TestCase;
@@ -10,9 +12,17 @@ use Mockery;
 
 class DeleteCustomRoleUseCaseTest extends TestCase
 {
+    use MockPermission;
     private RoleRepositoryInterface $repo;
     private DeleteCustomRoleUseCase $useCase;
-
+    function getModuleName(): string
+    {
+        return  'auth';
+    }
+    function getEntityName(): string
+    {
+        return 'settings';
+    }
     protected function setUp(): void
     {
         parent::setUp();
@@ -44,10 +54,23 @@ class DeleteCustomRoleUseCaseTest extends TestCase
             ->once()
             ->with($roleId)
             ->andReturn(true);
-
-        $this->useCase->execute($roleId);
+        $permission = $this->mockUserPermission(delete: true);
+        $this->useCase->execute($roleId, $permission);
         // Если исключения нет – тест пройден
         $this->assertTrue(true);
+    }
+    #[Test]
+    public function it_throws_access_denied_when_missing_permission(): void
+    {
+        $roleId = 2;
+        $permission = $this->mockUserPermission(delete: false); // или просто mockUserPermission() без аргументов, если по умолчанию false
+
+        // Репозиторий не должен вызывать ни findById, ни delete
+        $this->repo->shouldNotReceive('findById');
+        $this->repo->shouldNotReceive('delete');
+
+        $this->expectException(AccessDeniedException::class);
+        $this->useCase->execute($roleId, $permission);
     }
 
     #[Test]
@@ -68,8 +91,8 @@ class DeleteCustomRoleUseCaseTest extends TestCase
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Нельзя удалить системную роль');
-
-        $this->useCase->execute($roleId);
+        $permission = $this->mockUserPermission(delete: true);
+        $this->useCase->execute($roleId, $permission);
     }
 
     #[Test]
@@ -85,7 +108,7 @@ class DeleteCustomRoleUseCaseTest extends TestCase
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Роль не найдена');
-
-        $this->useCase->execute($roleId);
+        $permission = $this->mockUserPermission(delete: true);
+        $this->useCase->execute($roleId, $permission);
     }
 }

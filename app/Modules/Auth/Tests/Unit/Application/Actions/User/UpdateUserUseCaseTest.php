@@ -10,6 +10,7 @@ use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
+use App\Modules\Auth\Tests\Trait\MockPermission;
 use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 use Mockery;
@@ -17,9 +18,18 @@ use PHPUnit\Framework\TestCase;
 
 class UpdateUserUseCaseTest extends TestCase
 {
+    use MockPermission;
     private UserRepositoryInterface $userRepo;
     private UpdateUserUseCase $useCase;
     private PasswordHasherInterface $passwordHasher;
+    function getModuleName(): string
+    {
+        return  'auth';
+    }
+    function getEntityName(): string
+    {
+        return 'user';
+    }
     protected function setUp(): void
     {
         parent::setUp();
@@ -84,8 +94,8 @@ class UpdateUserUseCaseTest extends TestCase
             password: 'newpassword',
             roleNames: ['admin']   // попытка сменить роль игнорируется
         );
-
-        $result = $this->useCase->execute($staffId, $dto);
+        $permission = $this->mockUserPermission(edit: true);
+        $result = $this->useCase->execute($staffId, $dto, $permission);
 
         $this->assertEquals('new@example.com', $result->email->value);
         $this->assertSame('hashed_newpassword', $result->getPasswordHash());
@@ -108,8 +118,8 @@ class UpdateUserUseCaseTest extends TestCase
             password: 'clientpass',
             roleNames: ['staff', 'editor']
         );
-
-        $result = $this->useCase->execute($staffId, $dto);
+        $permission = $this->mockUserPermission(edit: true);
+        $result = $this->useCase->execute($staffId, $dto, $permission);
         $this->assertEquals([RoleName::CLIENT], $result->roles);
     }
 
@@ -135,8 +145,8 @@ class UpdateUserUseCaseTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Роли пользователя не определены');
-
-        $this->useCase->execute($staffId, $dto);
+        $permission = $this->mockUserPermission(edit: true);
+        $this->useCase->execute($staffId, $dto, $permission);
     }
 
     public function test_throws_exception_when_assigning_client_role_to_non_client(): void
@@ -161,7 +171,8 @@ class UpdateUserUseCaseTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Нельзя назначить роль client');
 
-        $this->useCase->execute($staffId, $dto);
+        $permission = $this->mockUserPermission(edit: true);
+        $this->useCase->execute($staffId, $dto, $permission);
     }
 
     public function test_updates_roles_for_non_client(): void
@@ -179,8 +190,8 @@ class UpdateUserUseCaseTest extends TestCase
             password: 'staffpass',
             roleNames: ['editor', 'moderator']
         );
-
-        $result = $this->useCase->execute($staffId, $dto);
+        $permission = $this->mockUserPermission(edit: true);
+        $result = $this->useCase->execute($staffId, $dto, $permission);
         $this->assertEquals(['editor', 'moderator'], $result->roles);
     }
 
@@ -200,7 +211,8 @@ class UpdateUserUseCaseTest extends TestCase
             password: 'clientpass',
             roleNames: []   // для client роли не трогаем
         );
-        $result = $this->useCase->execute($staffId, $dto);
+        $permission = $this->mockUserPermission(edit: true);
+        $result = $this->useCase->execute($staffId, $dto, $permission);
         $this->assertTrue($result->isBanned);
 
         // Разблокировка
@@ -214,7 +226,7 @@ class UpdateUserUseCaseTest extends TestCase
             password: 'clientpass',
             roleNames: []
         );
-        $result2 = $this->useCase->execute($staffId, $dto2);
+        $result2 = $this->useCase->execute($staffId, $dto2, $permission);
         $this->assertFalse($result2->isBanned);
     }
 
@@ -226,12 +238,13 @@ class UpdateUserUseCaseTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Пользователь не найден');
 
+        $permission = $this->mockUserPermission(edit: true);
         $this->useCase->execute(999, new UpdateUserData(
             active: true,
             email: 'any@example.com',
             password: 'pass123456',
             roleNames: []
-        ));
+        ), $permission);
     }
 
     public function test_throws_exception_if_email_exists_for_another_user(): void
@@ -255,6 +268,7 @@ class UpdateUserUseCaseTest extends TestCase
         $this->expectException(UserAlreadyExistsException::class);
         $this->expectExceptionMessage('Email exists@example.com уже занят');
 
-        $this->useCase->execute($staffId, $dto);
+        $permission = $this->mockUserPermission(edit: true);
+        $this->useCase->execute($staffId, $dto, $permission);
     }
 }
