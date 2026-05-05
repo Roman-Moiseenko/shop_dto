@@ -7,6 +7,7 @@ use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\ClientEntity;
 use App\Modules\Auth\Infrastructure\Exceptions\ClientAlreadyExistsException;
 use App\Modules\Auth\Tests\Trait\MockPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 class CreateClientUseCaseTest extends TestCase
@@ -64,5 +65,15 @@ class CreateClientUseCaseTest extends TestCase
         $this->expectException(ClientAlreadyExistsException::class);
         $permission = $this->mockUserPermission(create: true);
         $this->useCase->execute(new ClientCreateData(lastName: 'Иван', firstName: 'Иван', email: 'used@example.com'), $permission);
+    }
+    public function test_throws_access_denied_when_missing_permission(): void
+    {
+        $permission = $this->mockUserPermission();
+        $dto = new ClientCreateData(lastName: 'Иванов', firstName: 'Иван', email: 'client@test.ru');
+
+        $this->clientRepo->shouldNotReceive('save');
+
+        $this->expectException(AccessDeniedException::class);
+        $this->useCase->execute($dto, $permission);
     }
 }

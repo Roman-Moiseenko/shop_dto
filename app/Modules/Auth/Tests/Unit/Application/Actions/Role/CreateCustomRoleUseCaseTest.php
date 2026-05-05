@@ -6,6 +6,7 @@ use App\Modules\Auth\Application\DTOs\Role\RoleCreateData;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
 use App\Modules\Auth\Tests\Trait\MockPermission;
 use App\Modules\Shared\Domain\Services\TransactionManagerInterface;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use Spatie\Permission\Models\Role;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -84,5 +85,15 @@ class CreateCustomRoleUseCaseTest extends TestCase
         $permission = $this->mockUserPermission(create: true);
         $result = $this->useCase->execute($dto, $permission);
         $this->assertSame($mockRole, $result);
+    }
+    public function test_throws_access_denied_when_missing_permission(): void
+    {
+        $permission = $this->mockUserPermission(create: false);
+        $dto = new RoleCreateData(name: 'Test', permissions: [], description: '');
+
+        $this->repo->shouldNotReceive('create');
+
+        $this->expectException(AccessDeniedException::class);
+        $this->useCase->execute($dto, $permission);
     }
 }

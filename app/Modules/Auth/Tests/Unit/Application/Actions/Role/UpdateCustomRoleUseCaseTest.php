@@ -2,9 +2,11 @@
 
 namespace App\Modules\Auth\Tests\Unit\Application\Actions\Role;
 use App\Modules\Auth\Application\Actions\Role\UpdateCustomRoleUseCase;
+use App\Modules\Auth\Application\DTOs\Role\RoleCreateData;
 use App\Modules\Auth\Application\DTOs\Role\RoleUpdateData;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
 use App\Modules\Auth\Tests\Trait\MockPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Role;
 use PHPUnit\Framework\TestCase;
@@ -117,6 +119,17 @@ class UpdateCustomRoleUseCaseTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Роль не найдена');
         $permission = $this->mockUserPermission(edit: true);
+        $this->useCase->execute($roleId, $dto, $permission);
+    }
+    public function test_throws_access_denied_when_missing_permission(): void
+    {
+        $roleId = 1;
+        $permission = $this->mockUserPermission(edit: false);
+        $dto = new RoleUpdateData(name: 'Role', permissions: [], description: '');
+
+        $this->repo->shouldNotReceive('findById');
+
+        $this->expectException(AccessDeniedException::class);
         $this->useCase->execute($roleId, $dto, $permission);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Modules\Auth\Tests\Unit\Application\Actions\User;
 use App\Modules\Auth\Application\Actions\User\RegisterFreelanceUserUseCase;
+use App\Modules\Auth\Application\DTOs\User\RegisterUserData;
 use App\Modules\Auth\Application\DTOs\User\UpdateUserData;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
@@ -11,6 +12,7 @@ use App\Modules\Auth\Domain\ValueObjects\RoleName;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Infrastructure\Models\Freelance;
 use App\Modules\Auth\Tests\Trait\MockPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 use Mockery;
@@ -145,5 +147,17 @@ class RegisterFreelanceUserUseCaseTest extends TestCase
         $this->expectExceptionMessage('Пользователь с email existing@example.com уже существует');
         $permission = $this->mockUserPermission(create: true);
         $this->useCase->execute(1, $dto, $permission);
+    }
+    #[Test]
+    public function test_throws_access_denied_when_missing_permission(): void
+    {
+        $freelanceId = 5;
+        $permission = $this->mockUserPermission(id: 100); // id не null
+        $dto = new UpdateUserData(true, 'free@test.com',  'password123', [RoleName::STAFF]);
+
+        $this->userRepo->shouldNotReceive('save');
+
+        $this->expectException(AccessDeniedException::class);
+        $this->useCase->execute($freelanceId, $dto, $permission);
     }
 }

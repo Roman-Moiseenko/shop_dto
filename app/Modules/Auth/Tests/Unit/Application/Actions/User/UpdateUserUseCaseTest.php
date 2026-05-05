@@ -11,6 +11,7 @@ use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Tests\Trait\MockPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 use Mockery;
@@ -270,5 +271,28 @@ class UpdateUserUseCaseTest extends TestCase
 
         $permission = $this->mockUserPermission(edit: true);
         $this->useCase->execute($staffId, $dto, $permission);
+    }
+
+    public function test_throws_access_denied_when_missing_permission(): void
+    {
+        $userId = 42;
+        $user = $this->createExistingUser();
+        $this->userRepo->shouldReceive('findById')->with($userId)->andReturn($user);
+        $this->userRepo->shouldNotReceive('save');
+
+        $permission = $this->mockUserPermission(edit: false);
+        $dto = new UpdateUserData(active: true, email: 'new@test.com', password: 'newpassword', roleNames: []);
+
+        $this->expectException(AccessDeniedException::class);
+        $this->useCase->execute($userId, $dto, $permission);
+    }
+    private function createExistingUser(): UserEntity
+    {
+        $user = new UserEntity(
+            new Email('test@example.com'),
+            HashedPassword::fromHash('$2y$10$dummyhash')
+        );
+        $user->id = 42;
+        return $user;
     }
 }

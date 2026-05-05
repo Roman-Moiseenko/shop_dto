@@ -9,12 +9,15 @@ use App\Modules\Auth\Domain\Entities\ClientEntity;
 use App\Modules\Auth\Domain\Entities\UserEntity;
 use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
+use App\Modules\Auth\Domain\ValueObjects\FullName;
+use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Infrastructure\Exceptions\ClientNotFoundException;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Infrastructure\Models\Client;
 use App\Modules\Auth\Tests\Trait\MockPermission;
 use App\Modules\Shared\Application\Interfaces\Mail\MailServiceInterface;
 use App\Modules\Shared\Domain\Entities\Mail\Recipient;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 use Illuminate\Support\Facades\Hash;
@@ -119,4 +122,51 @@ class RegisterUserClientUseCaseTest extends TestCase
         $permission = $this->mockUserPermission(create: true);
         $this->useCase->execute(1, new RegisterUserData(email: 'x@x.com', password: '12345678'), $permission);
     }
+
+    public function test_throws_access_denied_when_authenticated_and_missing_permission(): void
+    {
+        $clientId = 10;
+        // Аутентифицированный пользователь с id=300, но без права auth.user.create
+        $permission = $this->mockUserPermission(create: false, id: 300);
+        $dto = new RegisterUserData(email: 'client@test.com', password: 'password123');
+
+        $this->clientRepo->shouldNotReceive('save');
+        $this->userRepo->shouldNotReceive('save');
+
+        $this->expectException(AccessDeniedException::class);
+        $this->useCase->execute($clientId, $dto, $permission);
+    }
+
+    public function test_allows_registration_when_not_authenticated(): void
+    {
+        $clientId = 10;
+        $permission = $this->mockUserPermission(id: null);
+        $dto = new RegisterUserData(email: 'guest@test.com', password: 'password123');
+
+        // Мок клиента (можно использовать createMockClient, который вернёт сущность)
+        $clientStub = new ClientEntity(
+            new FullName('Иванов Иван Иванович'),
+            new Email('client@example.com')
+        );
+        $clientStub->id = 10;
+
+        $this->clientRepo->shouldReceive('findById')->with($clientId)->andReturn($clientStub);
+        $this->userRepo->shouldReceive('emailExists')->once()->andReturn(false);
+
+        // Создаём реального UserEntity с ID
+        $user = new UserEntity(
+            new Email('guest@test.com'),
+            HashedPassword::fromPlainText('password123', $this->passwordHasher)
+        );
+        $user->id = 30;
+
+        $this->userRepo->shouldReceive('save')->once()->andReturn($user);
+        $this->userRepo->shouldReceive('saveEmailVerification')->once()->with(30, Mockery::any(), Mockery::any());
+        $this->mailService->shouldReceive('send')->once()->andReturnNull();
+
+        $this->useCase->execute($clientId, $dto, $permission);
+        // Успешно выполнено, исключений нет
+        $this->assertTrue(true);
+    }
+
 }

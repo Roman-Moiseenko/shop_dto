@@ -111,4 +111,15 @@ class DeleteCustomRoleUseCaseTest extends TestCase
         $permission = $this->mockUserPermission(delete: true);
         $this->useCase->execute($roleId, $permission);
     }
+    public function test_throws_access_denied_when_missing_permission(): void
+    {
+        $roleId = 2;
+        $permission = $this->mockUserPermission();
+
+        $this->repo->shouldNotReceive('findById');
+        $this->repo->shouldNotReceive('delete');
+
+        $this->expectException(AccessDeniedException::class);
+        $this->useCase->execute($roleId, $permission);
+    }
 }
