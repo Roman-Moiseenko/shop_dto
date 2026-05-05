@@ -5,7 +5,9 @@ namespace App\Modules\Auth\Presentation\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Modules\Auth\Application\Actions\Role\CreateCustomRoleUseCase;
 use App\Modules\Auth\Application\Actions\Role\DeleteCustomRoleUseCase;
+use App\Modules\Auth\Application\Actions\Role\IndexCustomRoleUseCase;
 use App\Modules\Auth\Application\Actions\Role\UpdateCustomRoleUseCase;
+use App\Modules\Auth\Application\Actions\Role\ViewCustomRoleUseCase;
 use App\Modules\Auth\Application\DTOs\Role\RoleCreateData;
 use App\Modules\Auth\Application\DTOs\Role\RoleUpdateData;
 use App\Modules\Auth\Domain\Services\PermissionProviderInterface;
@@ -24,23 +26,23 @@ class RoleController extends Controller
         private readonly CreateCustomRoleUseCase $createRole,
         private readonly UpdateCustomRoleUseCase $updateRole,
         private readonly DeleteCustomRoleUseCase $deleteRole,
-        private readonly PermissionProviderInterface $permissionProvider
+        private readonly PermissionProviderInterface $permissionProvider,
+        private readonly ViewCustomRoleUseCase  $viewCustomRoleUseCase,
+        private readonly IndexCustomRoleUseCase $indexCustomRoleUseCase
     ) {}
 
     // Список всех ролей (можно добавить фильтр по is_system через параметр запроса)
     public function index(Request $request, UserPermission $userPermission): JsonResponse
     {
-        $query = Role::with('permissions');
-        if ($request->has('type')) {
-            $query->where('is_system', $request->type === 'system')
-                ->whereNotIn('name', RoleName::BASE);
-        }
-        return RoleResource::collection($query->get())->response();
+
+        $is_system = $request->has('type') && $request->type == 'system';
+        $roles = $this->indexCustomRoleUseCase->execute($is_system, $userPermission);
+        return RoleResource::collection($roles)->response();
     }
 
     public function show(int $id, UserPermission $userPermission): JsonResponse
     {
-        $role = Role::with('permissions')->findOrFail($id);
+        $role = $this->viewCustomRoleUseCase->execute($id, $userPermission);
         return new RoleResource($role)->response();
     }
 
@@ -52,7 +54,7 @@ class RoleController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-        $role = $this->createRole->execute($dto);
+        $role = $this->createRole->execute($dto, $userPermission);
         return new RoleResource($role)->response()->setStatusCode(201);
     }
 
@@ -65,13 +67,13 @@ class RoleController extends Controller
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $updatedRole = $this->updateRole->execute($id, $dto);
+        $updatedRole = $this->updateRole->execute($id, $dto, $userPermission);
         return new RoleResource($updatedRole)->response();
     }
 
     public function destroy(int $id, UserPermission $userPermission): JsonResponse
     {
-        $this->deleteRole->execute($id);
+        $this->deleteRole->execute($id, $userPermission);
         return response()->json(null, 204);
     }
 

@@ -1,27 +1,26 @@
 <?php
 
 namespace App\Modules\Auth\Presentation\Http\Resources;
+use App\Modules\Auth\Domain\Entities\ClientEntity;
 use App\Modules\Auth\Infrastructure\Models\Staff;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Modules\Auth\Domain\Entities\StaffEntity;
 class StaffResource extends JsonResource
 {
-    /** @var Staff */
+    /** @var StaffEntity */
     public $resource;
     public function toArray($request): array
     {
         return [
             'id' => $this->resource->id,
-            'full_name' => (string) $this->resource->full_name,
+            'full_name' => $this->resource->fullName->getValue(),
             'position' => $this->resource->position,
             'department' => $this->resource->department,
-            'work_phone' => (string) $this->resource->work_phone,
-            'work_email' => (string) $this->resource->work_email,
-            'is_active' => is_null($this->resource->termination_date),
+            'work_phone' => $this->resource->workPhone?->getValue(),
+            'work_email' => $this->resource->workEmail?->value,
+            'is_active' => $this->resource->isActive,
             // Можно включить связанного пользователя
-            'is_user' => $this->whenLoaded('user', function () {
-                !is_null($this->resource->user);
-            }),
+            'is_user' => $this->resource->user != null,
         ];
     }
 }

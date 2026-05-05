@@ -23,7 +23,7 @@ readonly class CreateStaffUseCase
      */
     public function execute(StaffCreateData $dto, UserPermission $permissions): StaffEntity
     {
-        if (!$permissions->can('auth.employee.create')) throw new AccessDeniedException('Access Denied');
+        if (!$permissions->can('auth.employee.create')) throw new AccessDeniedException();
 
         $fullName = new FullName(implode(' ', array_filter([
             $dto->lastName,

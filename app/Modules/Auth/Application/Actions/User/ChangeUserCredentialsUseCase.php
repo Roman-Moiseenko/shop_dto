@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 
 /**
  * Меняем регистрационные данные клиента - email и пароль
+ * Доступ не проверяется
  */
 readonly class ChangeUserCredentialsUseCase
 {

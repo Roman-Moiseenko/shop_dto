@@ -4,8 +4,10 @@ namespace App\Modules\Auth\Presentation\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Modules\Auth\Application\Actions\Client\CreateClientUseCase;
 use App\Modules\Auth\Application\Actions\Client\CreateClientWithConsentUseCase;
+use App\Modules\Auth\Application\Actions\Client\IndexClientUseCase;
 use App\Modules\Auth\Application\Actions\Client\RemoveClientUseCase;
 use App\Modules\Auth\Application\Actions\Client\UpdateClientUseCase;
+use App\Modules\Auth\Application\Actions\Client\ViewClientUseCase;
 use App\Modules\Auth\Application\Actions\User\ChangeUserCredentialsUseCase;
 use App\Modules\Auth\Application\Actions\User\ConfirmEmailUseCase;
 use App\Modules\Auth\Application\Actions\User\RegisterUserClientUseCase;
@@ -38,20 +40,20 @@ class ClientController extends Controller
         private readonly ConfirmEmailUseCase  $confirmEmailUseCase,
         private readonly UpdateClientUseCase $updateClientUseCase,
         private readonly RemoveClientUseCase $removeClientUseCase,
+        private readonly ViewClientUseCase  $viewClientUseCase,
+        private readonly IndexClientUseCase $indexClientUseCase,
+
     ) {}
 
     public function index(UserPermission $userPermission): JsonResponse
     {
-        $clients = Client::with('user')->paginate();
+        $clients = $this->indexClientUseCase->execute($userPermission);
         return ClientResource::collection($clients)->response();
     }
 
     public function show(int $id, UserPermission $userPermission): JsonResponse
     {
-        $client = $this->clientRepository->findById($id);
-        if (!$client)
-            return response()->json(['message' => 'Клиент не найден'], Response::HTTP_NOT_FOUND);
-
+        $client = $this->viewClientUseCase->execute($id, $userPermission);
         return response()->json(ClientUserData::fromEntity($client), Response::HTTP_OK);
     }
 
@@ -66,7 +68,7 @@ class ClientController extends Controller
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $client = $this->createClientUseCase->execute($dto);
+        $client = $this->createClientUseCase->execute($dto, $userPermission);
         return response()->json(ClientUserData::fromEntity($client), Response::HTTP_CREATED);
     }
 
@@ -82,13 +84,14 @@ class ClientController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-        return DB::transaction(function () use ($dtoClient, $dtoUser) {
+        return DB::transaction(function () use ($userPermission, $dtoClient, $dtoUser) {
             $client = $this->createClientWithConsentUseCase->execute(
                 $dtoClient
             );
             $user = $this->registerUserClientUseCase->execute(
                 $client->id,
-                $dtoUser
+                $dtoUser,
+                $userPermission
             );
             $client->user = $user;
             return response()->json(ClientUserData::fromEntity($client), Response::HTTP_OK);
@@ -98,7 +101,7 @@ class ClientController extends Controller
     /**
      * Смена регистрационных данных клиентом
      */
-    public function credentials(Request $request, UserPermission $userPermission): JsonResponse
+    public function credentials(Request $request): JsonResponse
     {
         $user = $request->user();
         // 1. Проверяем, что пользователь привязан к профилю клиента
@@ -140,7 +143,7 @@ class ClientController extends Controller
             return response()->json(['message' => 'Клиент не найден'], Response::HTTP_NOT_FOUND);
         }
         $dto = new RegisterUserData($client->email->value, (string)$password);
-        $user = $this->registerUserClientUseCase->execute($id, $dto);
+        $user = $this->registerUserClientUseCase->execute($id, $dto, $userPermission);
         $client->user = $user;
         return response()->json(ClientUserData::fromEntity($client), Response::HTTP_OK);
     }
@@ -160,9 +163,8 @@ class ClientController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-        $client = $this->updateClientUseCase->execute($id, $dto);
+        $client = $this->updateClientUseCase->execute($id, $dto, $userPermission);
         return response()->json(ClientUserData::fromEntity($client), Response::HTTP_OK);
-        //return response()->json(['message' => 'Клиент обновлён']);
     }
 
     public function destroy(int $id, UserPermission $userPermission): JsonResponse
@@ -170,7 +172,7 @@ class ClientController extends Controller
         $client = $this->clientRepository->findById($id);
         if (!$client) return response()->json(['message' => 'Клиент не найден'], Response::HTTP_NOT_FOUND);
 
-        $deleted = $this->removeClientUseCase->execute($id);
+        $deleted = $this->removeClientUseCase->execute($id, $userPermission);
 
         if (!$deleted)
             return response()->json(['message' => 'Ошибка удаления клиента'], Response::HTTP_NOT_MODIFIED);
@@ -222,7 +224,7 @@ class ClientController extends Controller
         }
 
             // 3. Вызываем тот же Use Case, но с ID, полученным из аутентификации
-        $client = $this->updateClientUseCase->execute($clientId, $dto);
+        $client = $this->updateClientUseCase->execute($clientId, $dto, $userPermission);
 
         return response()->json(ClientUserData::fromEntity($client), Response::HTTP_CREATED);
     }

@@ -9,6 +9,8 @@ use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
 use App\Modules\Auth\Infrastructure\Exceptions\ClientAlreadyExistsException;
+use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 
 /**
  * Создание клиента менеджером
@@ -19,8 +21,9 @@ readonly class CreateClientUseCase
         private ClientRepositoryInterface $clientRepository
     ) {}
 
-    public function execute(ClientCreateData $dto): ClientEntity
+    public function execute(ClientCreateData $dto, UserPermission $permissions): ClientEntity
     {
+        if (!$permissions->can('auth.buyer.create')) throw new AccessDeniedException();
         $email = new Email($dto->email);
         if ($this->clientRepository->emailExists($email)) {
             throw new ClientAlreadyExistsException("Клиент с email {$dto->email} уже существует");

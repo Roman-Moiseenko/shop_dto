@@ -9,7 +9,7 @@ final class Gender
 
     private const array ALLOWED = [self::MALE, self::FEMALE];
 
-    private string $value;
+    private ?string $value;
 
     public function __construct(string $value)
     {
@@ -20,7 +20,7 @@ final class Gender
         $this->value = $normalized;
     }
 
-    public function getValue(): string { return $this->value; }
-    public function __toString(): string { return $this->value; }
+    public function getValue(): ?string { return $this->value; }
+    public function __toString(): string { return $this->value ?? ''; }
     public function equals(self $other): bool { return $this->value === $other->value; }
 }

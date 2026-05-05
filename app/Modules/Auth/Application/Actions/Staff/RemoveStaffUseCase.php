@@ -18,7 +18,7 @@ readonly class RemoveStaffUseCase
     {
         if (!$permissions->can('auth.employee.delete')) throw new AccessDeniedException();
 
-        //TODO Проверка, можем ли удалить
+        //Проверка, можем ли удалить
 
         return $this->staffRepository->delete($id);
     }

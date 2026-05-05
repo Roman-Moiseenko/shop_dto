@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property string $middle_name
  * @property string $position
  * @property string $department
- * @property string $full_name
+ * @property string $fullName
  * @property string $notes
  * @property string $telegram_chat_id
  * @property string $max_chat_id

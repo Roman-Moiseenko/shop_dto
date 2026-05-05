@@ -12,6 +12,7 @@ use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Infrastructure\Models\User;
 use DateTimeImmutable;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class FreelanceRepository implements FreelanceRepositoryInterface
 {
@@ -60,7 +61,12 @@ class FreelanceRepository implements FreelanceRepositoryInterface
         }
         return $model->delete();
     }
-
+    public function paginate(int $perPage = 15): LengthAwarePaginator
+    {
+        return Freelance::with('user')
+            ->paginate($perPage)
+            ->through(fn ($model) => $this->hydrate($model));
+    }
     /**
      * @throws \DateMalformedStringException
      */

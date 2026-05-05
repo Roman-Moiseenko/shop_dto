@@ -18,7 +18,6 @@ readonly class IndexStaffUseCase
         if (!$permissions->can('auth.employee.view')) throw new AccessDeniedException();
 
         //Добавить Фильтры и использовать $staffRepository
-        return Staff::with('user')->paginate();
-
+        return $this->staffRepository->paginate($perPage);
     }
 }

@@ -12,6 +12,7 @@ use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Infrastructure\Models\User;
 use DateTimeImmutable;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class StaffRepository implements StaffRepositoryInterface
 {
@@ -64,7 +65,12 @@ class StaffRepository implements StaffRepositoryInterface
         }
         return $model->delete();
     }
-
+    public function paginate(int $perPage = 15): LengthAwarePaginator
+    {
+        return Staff::with('user')
+            ->paginate($perPage)
+            ->through(fn ($model) => $this->hydrate($model));
+    }
     /**
      * @throws \DateMalformedStringException
      */

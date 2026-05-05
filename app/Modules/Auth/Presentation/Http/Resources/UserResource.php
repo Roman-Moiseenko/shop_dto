@@ -3,12 +3,12 @@
 namespace App\Modules\Auth\Presentation\Http\Resources;
 use App\Modules\Auth\Infrastructure\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Modules\Auth\Domain\Entities\UserEntity as DomainUser;
+use App\Modules\Auth\Domain\Entities\UserEntity;
 class UserResource extends JsonResource
 {
     public function toArray($request): array
     {
-        /** @var DomainUser $user */
+        /** @var UserEntity $user */
         $user = $this->resource;
 
         return [
@@ -18,7 +18,7 @@ class UserResource extends JsonResource
             'profileable_type' => $user->profileableType,
             'profileable_id' => $user->profileableId,
             'roles' => $user->roles,
-            'permissions' => $this->getPermissions($user),
+            'permissions' => $user->permissions, // $this->getPermissions($user),
             'is_admin' => $user->isAdmin(),
         ];
     }

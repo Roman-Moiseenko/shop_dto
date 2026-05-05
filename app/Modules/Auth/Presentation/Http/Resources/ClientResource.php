@@ -10,13 +10,14 @@ class ClientResource extends JsonResource
 
     public function toArray($request): array
     {
+        \Log::warning(json_encode($this->resource));
         return [
             'id' => $this->resource->id,
             'full_name' => (string)$this->resource->fullName,
             'phone' => (string)$this->resource->phone,
             'email' => (string)$this->resource->email,
 
-            'gender' => $this->resource?->gender->getValue(),
+            'gender' => $this->resource->gender?->getValue(),
             'address' => $this->resource->address ? [
                 'country' => $this->resource->address->country,
                 'region' => $this->resource->address->region,
@@ -24,7 +25,7 @@ class ClientResource extends JsonResource
                 'street' => $this->resource->address->street,
             ] : null,
             'is_active' => $this->resource->isActive,
-            'is_consent' => $this->resource->dataConsent->active,
+            'is_consent' => $this->resource->dataConsent?->active ?? false,
         ];
     }
 }

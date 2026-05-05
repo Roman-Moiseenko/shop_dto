@@ -9,6 +9,7 @@ use App\Modules\Auth\Domain\Entities\StaffEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
+use App\Modules\Auth\Tests\Trait\MockPermission;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use DateTimeImmutable;
@@ -18,19 +19,20 @@ use PHPUnit\Framework\TestCase;
 
 class UpdateStaffUseCaseTest extends TestCase
 {
+    use MockPermission;
     private StaffRepositoryInterface $staffRepo;
     private UpdateStaffUseCase $useCase;
-    private function mockUserPermission(bool $canEdit, bool $canCreate = true): UserPermission
+
+    function getModuleName(): string
     {
-        $permission = Mockery::mock(UserPermission::class);
-        $permission->shouldReceive('can')
-            ->andReturnUsing(fn($permission) => match ($permission) {
-                'auth.employee.edit' => $canEdit,
-                'auth.employee.create' => $canCreate,
-                default => false,
-            });
-        return $permission;
+        return  'auth';
     }
+
+    function getEntityName(): string
+    {
+        return 'employee';
+    }
+
     protected function setUp(): void
     {
         $this->staffRepo = Mockery::mock(StaffRepositoryInterface::class);
@@ -89,7 +91,7 @@ class UpdateStaffUseCaseTest extends TestCase
             notes: 'Новые заметки',
             terminated: false,
         );
-        $permission = $this->mockUserPermission(canEdit: true);
+        $permission = $this->mockUserPermission(edit: true);
         $result = $this->useCase->execute(1, $dto, $permission);
 
         $this->assertSame('Петров Пётр Петрович', (string) $result->fullName);
@@ -113,7 +115,7 @@ class UpdateStaffUseCaseTest extends TestCase
         $this->staffRepo->shouldNotReceive('save');
 
         // Запрещаем edit
-        $permission = $this->mockUserPermission(canEdit: false);
+        $permission = $this->mockUserPermission();
 
         $dto = new StaffUpdateData(
             lastName: 'Иванов',
@@ -142,7 +144,7 @@ class UpdateStaffUseCaseTest extends TestCase
             middleName: 'Иванович',
         );
 
-        $permission = $this->mockUserPermission(canEdit: true);
+        $permission = $this->mockUserPermission(edit: true);
         $result = $this->useCase->execute(1, $dto, $permission);
 
         $this->assertNull($result->department);
@@ -172,7 +174,7 @@ class UpdateStaffUseCaseTest extends TestCase
             terminated: true,
         );
 
-        $permission = $this->mockUserPermission(canEdit: true);
+        $permission = $this->mockUserPermission(edit: true);
         $result = $this->useCase->execute(1, $dto, $permission);
         $this->assertTrue(!$result->isActive);
         $this->assertInstanceOf(DateTimeImmutable::class, $result->terminationDate);
@@ -209,7 +211,7 @@ class UpdateStaffUseCaseTest extends TestCase
             middleName: null,
         );
 
-        $permission = $this->mockUserPermission(canEdit: true);
+        $permission = $this->mockUserPermission(edit: true);
         $this->useCase->execute(999, $dto, $permission);
     }
 }

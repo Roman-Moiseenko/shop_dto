@@ -7,6 +7,7 @@ use App\Modules\Auth\Application\DTOs\Staff\StaffCreateData;
 use App\Modules\Auth\Application\Interfaces\StaffRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\StaffEntity;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
+use App\Modules\Auth\Tests\Trait\MockPermission;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use Mockery;
@@ -15,19 +16,20 @@ use PHPUnit\Framework\TestCase;
 
 class CreateStaffUseCaseTest extends TestCase
 {
+    use MockPermission;
+
     private StaffRepositoryInterface $staffRepo;
     private CreateStaffUseCase $useCase;
 
-    private function mockUserPermission(bool $canEdit, bool $canCreate = true): UserPermission
+
+    function getModuleName(): string
     {
-        $permission = Mockery::mock(UserPermission::class);
-        $permission->shouldReceive('can')
-            ->andReturnUsing(fn($permission) => match ($permission) {
-                'auth.employee.edit' => $canEdit,
-                'auth.employee.create' => $canCreate,
-                default => false,
-            });
-        return $permission;
+        return  'auth';
+    }
+
+    function getEntityName(): string
+    {
+        return 'employee';
     }
 
     protected function setUp(): void
@@ -62,7 +64,7 @@ class CreateStaffUseCaseTest extends TestCase
                 $staff->id = 42;
                 return $staff;
             });
-        $permission = $this->mockUserPermission(canEdit: false, canCreate: true);
+        $permission = $this->mockUserPermission(create: true);
         $result = $this->useCase->execute($dto, $permission);
 
         $this->assertInstanceOf(StaffEntity::class, $result);
@@ -81,7 +83,7 @@ class CreateStaffUseCaseTest extends TestCase
         );
 
         // Мок UserPermission – запрещаем создание
-        $permission = $this->mockUserPermission(canEdit: false, canCreate: false);
+        $permission = $this->mockUserPermission();
 
         $this->staffRepo->shouldNotReceive('save');
 
@@ -107,7 +109,7 @@ class CreateStaffUseCaseTest extends TestCase
                 $staff->id = 1;
                 return $staff;
             });
-        $permission = $this->mockUserPermission(canEdit: false, canCreate: true);
+        $permission = $this->mockUserPermission(create: true);
         $result = $this->useCase->execute($dto, $permission);
 
         $this->assertSame('Петров Пётр', (string) $result->fullName);
@@ -129,7 +131,8 @@ class CreateStaffUseCaseTest extends TestCase
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('DB error');
-        $permission = $this->mockUserPermission(canEdit: false, canCreate: true);
+        $permission = $this->mockUserPermission(create: true);
         $this->useCase->execute($dto, $permission);
     }
+
 }

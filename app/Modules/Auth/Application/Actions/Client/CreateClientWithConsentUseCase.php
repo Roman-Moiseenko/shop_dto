@@ -13,11 +13,12 @@ use App\Modules\Auth\Infrastructure\Exceptions\ClientAlreadyExistsException;
 
 /**
  * Создание клиента из сайта клиентом
+ * Проверка доступа не нужна
  */
-class CreateClientWithConsentUseCase
+readonly class CreateClientWithConsentUseCase
 {
     public function __construct(
-        private readonly ClientRepositoryInterface $clientRepository
+        private ClientRepositoryInterface $clientRepository
     ) {}
 
     public function execute(ClientCreateWithConsentData $dto): ClientEntity

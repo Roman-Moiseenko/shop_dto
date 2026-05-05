@@ -6,6 +6,7 @@ namespace App\Modules\Auth\Application\Interfaces;
 use App\Modules\Auth\Domain\Entities\ClientEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface ClientRepositoryInterface
 {
@@ -16,4 +17,5 @@ interface ClientRepositoryInterface
     public function emailExists(Email $email, ?int $excludeId = null): bool;
     public function phoneExists(PhoneNumber $phone, ?int $excludeId = null): bool;
     public function delete(int $id): bool;
+    public function paginate(int $perPage = 15): LengthAwarePaginator;
 }

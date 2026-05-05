@@ -34,7 +34,7 @@ class StaffController extends Controller
         private readonly RegisterStaffUserUseCase $registerStaffUserUseCase,
         private readonly UpdateUserUseCase        $updateUserUseCase,
         private readonly RemoveStaffUseCase       $removeStaffUseCase,
-        private readonly IndexStaffUseCase $indexStaffUseCase,
+        private readonly IndexStaffUseCase        $indexStaffUseCase,
         private readonly ViewStaffUseCase         $viewStaffUseCase,
     )
     {
@@ -89,7 +89,6 @@ class StaffController extends Controller
         if (!$staff) return response()->json(['message' => 'Сотрудник не найден'], Response::HTTP_NOT_FOUND);
 
         $deleted = $this->removeStaffUseCase->execute($id, $userPermission);
-        //$deleted = $this->staffRepository->delete($id);
         if (!$deleted)
             return response()->json(['message' => 'Ошибка удаления сотрудника'], Response::HTTP_NOT_MODIFIED);
 

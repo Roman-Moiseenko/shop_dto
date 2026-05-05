@@ -8,6 +8,8 @@ use App\Modules\Auth\Domain\Entities\FreelanceEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
+use App\Modules\Auth\Tests\Trait\MockPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use Mockery;
@@ -15,9 +17,18 @@ use PHPUnit\Framework\TestCase;
 
 class UpdateFreelanceUseCaseTest extends TestCase
 {
+    use MockPermission;
     private FreelanceRepositoryInterface $freelanceRepo;
     private UpdateFreelanceUseCase $useCase;
+    function getModuleName(): string
+    {
+        return  'auth';
+    }
 
+    function getEntityName(): string
+    {
+        return 'employee';
+    }
     protected function setUp(): void
     {
         parent::setUp();
@@ -72,8 +83,8 @@ class UpdateFreelanceUseCaseTest extends TestCase
             notes: 'Новые заметки',
             terminated: false,
         );
-
-        $result = $this->useCase->execute(1, $dto);
+        $permission = $this->mockUserPermission(edit: true);
+        $result = $this->useCase->execute(1, $dto, $permission);
 
         $this->assertSame('Петров Пётр Петрович', (string) $result->fullName);
         $this->assertSame('Новая должность', $result->position);
@@ -85,6 +96,25 @@ class UpdateFreelanceUseCaseTest extends TestCase
         $this->assertSame('Новые заметки', $result->notes);
         $this->assertTrue($result->isActive);
         $this->assertNull($result->terminationDate);
+    }
+
+    public function test_throws_access_denied_when_missing_permission(): void
+    {
+        $existing = $this->createExistingFreelance();
+        $this->freelanceRepo->shouldReceive('findById')->with(1)->andReturn($existing);
+        $this->freelanceRepo->shouldNotReceive('save');
+
+        // Запрещаем edit
+        $permission = $this->mockUserPermission();
+
+        $dto = new FreelanceUpdateData(
+            lastName: 'Иванов',
+            firstName: 'Иван',
+            position: 'Без прав',
+        );
+
+        $this->expectException(AccessDeniedException::class);
+        $this->useCase->execute(1, $dto, $permission);
     }
 
     public function test_clearing_optional_fields(): void
@@ -101,8 +131,8 @@ class UpdateFreelanceUseCaseTest extends TestCase
             middleName: null,
         // все остальные поля по умолчанию null
         );
-
-        $result = $this->useCase->execute(1, $dto);
+        $permission = $this->mockUserPermission(edit: true);
+        $result = $this->useCase->execute(1, $dto, $permission);
 
         $this->assertNull($result->personalPhone);
         $this->assertNull($result->personalEmail);
@@ -126,8 +156,8 @@ class UpdateFreelanceUseCaseTest extends TestCase
             position: 'Должность',
             terminated: true,
         );
-
-        $result = $this->useCase->execute(1, $dto);
+        $permission = $this->mockUserPermission(edit: true);
+        $result = $this->useCase->execute(1, $dto, $permission);
         $this->assertFalse($result->isActive);
         $this->assertInstanceOf(DateTimeImmutable::class, $result->terminationDate);
 
@@ -143,7 +173,7 @@ class UpdateFreelanceUseCaseTest extends TestCase
             terminated: false,
         );
 
-        $result2 = $this->useCase->execute(1, $dto2);
+        $result2 = $this->useCase->execute(1, $dto2, $permission);
         $this->assertTrue($result2->isActive);
         $this->assertNull($result2->terminationDate);
     }
@@ -162,8 +192,8 @@ class UpdateFreelanceUseCaseTest extends TestCase
             firstName: 'Иван',
             position: 'Должность',
         );
-
-        $this->useCase->execute(999, $dto);
+        $permission = $this->mockUserPermission(edit: true);
+        $this->useCase->execute(999, $dto, $permission);
     }
 
 }

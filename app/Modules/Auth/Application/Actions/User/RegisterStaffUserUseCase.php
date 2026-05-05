@@ -11,6 +11,8 @@ use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Infrastructure\Models\Staff;
+use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use InvalidArgumentException;
 
 readonly class RegisterStaffUserUseCase
@@ -19,8 +21,10 @@ readonly class RegisterStaffUserUseCase
                                 private readonly PasswordHasherInterface $passwordHasher
     ) {}
 
-    public function execute(int $staffId, UpdateUserData $dto): UserEntity
+    public function execute(int $staffId, UpdateUserData $dto, UserPermission $permissions): UserEntity
     {
+        if (!$permissions->can('auth.user.create')) throw new AccessDeniedException();
+
         $email = new Email($dto->email);
 
         if ($this->userRepository->emailExists($email)) {

@@ -7,7 +7,8 @@ use InvalidArgumentException;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 
 /**
- * Потверждение смены почты
+ * Подтверждение смены почты
+ * Доступ не проверяется
  */
 readonly class ConfirmEmailUseCase
 {

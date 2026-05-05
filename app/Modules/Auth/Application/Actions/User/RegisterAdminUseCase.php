@@ -11,10 +11,13 @@ use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 
-class RegisterAdminUseCase
+/**
+ * Для консольной команды
+ */
+readonly class RegisterAdminUseCase
 {
-    public function __construct(private readonly UserRepositoryInterface $userRepository,
-                                private readonly PasswordHasherInterface $passwordHasher
+    public function __construct(private UserRepositoryInterface $userRepository,
+                                private PasswordHasherInterface $passwordHasher
     ) {}
 
     public function execute(AdminData $dto): UserEntity

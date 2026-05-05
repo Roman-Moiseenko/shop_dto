@@ -14,6 +14,8 @@ use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Infrastructure\Models\Client;
 use App\Modules\Shared\Application\Interfaces\Mail\MailServiceInterface;
 use App\Modules\Shared\Domain\Entities\Mail\Recipient;
+use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use Illuminate\Support\Str;
 
 /**
@@ -29,8 +31,11 @@ readonly class RegisterUserClientUseCase
         private readonly PasswordHasherInterface $passwordHasher
     ) {}
 
-    public function execute(int $clientId, RegisterUserData $dto): UserEntity
+    public function execute(int $clientId, RegisterUserData $dto, UserPermission $permissions): UserEntity
     {
+        //Исключаем для самостоятельной регистрации Id = null
+        if ($permissions->getId() != null && !$permissions->can('auth.user.create'))
+            throw new AccessDeniedException();
         // Проверяем, что клиент существует
         $client = $this->clientRepository->findById($clientId);
         if (!$client) {

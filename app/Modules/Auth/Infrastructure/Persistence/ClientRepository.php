@@ -15,6 +15,7 @@ use App\Modules\Auth\Domain\ValueObjects\Gender;
 use App\Modules\Auth\Domain\ValueObjects\Address;
 use App\Modules\Auth\Infrastructure\Models\User;
 use DateTimeImmutable;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ClientRepository implements ClientRepositoryInterface
 {
@@ -115,7 +116,12 @@ class ClientRepository implements ClientRepositoryInterface
         $model = Client::find($id);
         return $model ? $model->delete() : false;
     }
-
+    public function paginate(int $perPage = 15): LengthAwarePaginator
+    {
+        return Client::with('user')
+            ->paginate($perPage)
+            ->through(fn ($model) => $this->hydrate($model)); // ← применяем hydrate к каждому элементу
+    }
     /**
      * @throws \DateMalformedStringException
      */

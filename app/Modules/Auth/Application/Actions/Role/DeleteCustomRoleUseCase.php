@@ -2,15 +2,18 @@
 
 namespace App\Modules\Auth\Application\Actions\Role;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
+use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use InvalidArgumentException;
-class DeleteCustomRoleUseCase
+readonly class DeleteCustomRoleUseCase
 {
     public function __construct(
-        private readonly RoleRepositoryInterface $roleRepository
+        private RoleRepositoryInterface $roleRepository
     ) {}
 
-    public function execute(int $roleId): void
+    public function execute(int $roleId, UserPermission $permissions): void
     {
+        if (!$permissions->can('auth.settings.delete')) throw new AccessDeniedException();
         $role = $this->roleRepository->findById($roleId);
 
         if (!$role) {

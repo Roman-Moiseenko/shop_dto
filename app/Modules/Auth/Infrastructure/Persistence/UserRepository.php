@@ -12,6 +12,7 @@ use App\Modules\Auth\Infrastructure\Models\User;
 
 use DateTimeImmutable;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -61,7 +62,11 @@ class UserRepository implements UserRepositoryInterface
         }
         return $query->exists();
     }
-
+    public function paginate(int $perPage = 15): LengthAwarePaginator
+    {
+        return User::paginate($perPage)
+            ->through(fn ($model) => $this->hydrate($model)); // ← применяем hydrate к каждому элементу
+    }
     private function hydrate(User $model): UserEntity
     {
         $user = new UserEntity(

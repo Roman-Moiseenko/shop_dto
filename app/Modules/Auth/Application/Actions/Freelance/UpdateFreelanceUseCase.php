@@ -8,6 +8,8 @@ use App\Modules\Auth\Domain\Entities\FreelanceEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
+use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use DateTimeImmutable;
 use InvalidArgumentException;
 
@@ -20,8 +22,9 @@ readonly class UpdateFreelanceUseCase
     /**
      * @throws \DateMalformedStringException
      */
-    public function execute(int $freelanceId, FreelanceUpdateData $dto): FreelanceEntity
+    public function execute(int $freelanceId, FreelanceUpdateData $dto, UserPermission $permissions): FreelanceEntity
     {
+        if (!$permissions->can('auth.employee.edit')) throw new AccessDeniedException();
         $freelance = $this->freelanceRepository->findById($freelanceId);
         if (!$freelance) throw new InvalidArgumentException('Сотрудник не найден');
 

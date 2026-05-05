@@ -3,16 +3,28 @@
 namespace App\Modules\Auth\Tests\Unit\Application\Actions\Freelance;
 use App\Modules\Auth\Application\Actions\Freelance\CreateFreelanceUseCase;
 use App\Modules\Auth\Application\DTOs\Freelance\FreelanceCreateData;
+use App\Modules\Auth\Application\DTOs\Staff\StaffCreateData;
 use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\FreelanceEntity;
+use App\Modules\Auth\Tests\Trait\MockPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
 class CreateFreelanceUseCaseTest extends TestCase
 {
+    use MockPermission;
     private FreelanceRepositoryInterface $freelanceRepo;
     private CreateFreelanceUseCase $useCase;
+    function getModuleName(): string
+    {
+        return  'auth';
+    }
 
+    function getEntityName(): string
+    {
+        return 'employee';
+    }
     protected function setUp(): void
     {
         parent::setUp();
@@ -42,7 +54,8 @@ class CreateFreelanceUseCaseTest extends TestCase
                 return $freelance;
             });
 
-        $result = $this->useCase->execute($dto);
+        $permission = $this->mockUserPermission(create: true);
+        $result = $this->useCase->execute($dto, $permission);
 
         $this->assertInstanceOf(FreelanceEntity::class, $result);
         $this->assertEquals(42, $result->id);
@@ -72,7 +85,8 @@ class CreateFreelanceUseCaseTest extends TestCase
                 return $freelance;
             });
 
-        $result = $this->useCase->execute($dto);
+        $permission = $this->mockUserPermission(create: true);
+        $result = $this->useCase->execute($dto,$permission);
 
         $this->assertSame('Петров Пётр Петрович', (string) $result->fullName);
         $this->assertSame('Петров', $result->fullName->getLastName());
@@ -80,7 +94,23 @@ class CreateFreelanceUseCaseTest extends TestCase
         $this->assertSame('Петрович', $result->fullName->getMiddleName());
         $this->assertSame('Дизайнер', $result->position);
     }
+    public function test_throws_access_denied_when_missing_permission(): void
+    {
+        $dto = new FreelanceCreateData(
+            lastName: 'Петров',
+            firstName: 'Пётр',
+            position: 'Дизайнер',
+            middleName: 'Петрович',
+        );
 
+        // Мок UserPermission – запрещаем создание
+        $permission = $this->mockUserPermission();
+
+        $this->freelanceRepo->shouldNotReceive('save');
+
+        $this->expectException(AccessDeniedException::class);
+        $this->useCase->execute($dto, $permission);
+    }
     public function test_propagates_repository_exception(): void
     {
         $dto = new FreelanceCreateData(
@@ -95,7 +125,7 @@ class CreateFreelanceUseCaseTest extends TestCase
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('DB error');
-
-        $this->useCase->execute($dto);
+        $permission = $this->mockUserPermission(create: true);
+        $this->useCase->execute($dto, $permission);
     }
 }

@@ -4,8 +4,10 @@ namespace App\Modules\Auth\Presentation\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Auth\Application\Actions\Freelance\CreateFreelanceUseCase;
+use App\Modules\Auth\Application\Actions\Freelance\IndexFreelanceUseCase;
 use App\Modules\Auth\Application\Actions\Freelance\RemoveFreelanceUseCase;
 use App\Modules\Auth\Application\Actions\Freelance\UpdateFreelanceUseCase;
+use App\Modules\Auth\Application\Actions\Freelance\ViewFreelanceUseCase;
 use App\Modules\Auth\Application\Actions\User\RegisterFreelanceUserUseCase;
 use App\Modules\Auth\Application\Actions\User\UpdateUserUseCase;
 use App\Modules\Auth\Application\DTOs\Freelance\FreelanceCreateData;
@@ -31,23 +33,22 @@ class FreelanceController extends Controller
         private readonly RegisterFreelanceUserUseCase $registerFreelanceUserUseCase,
         private readonly UpdateUserUseCase            $updateUserUseCase,
         private readonly RemoveFreelanceUseCase       $removeFreelanceUseCase,
+        private readonly ViewFreelanceUseCase         $viewFreelanceUseCase,
+        private readonly IndexFreelanceUseCase        $indexFreelanceUseCase,
     )
     {
     }
 
     public function index(UserPermission $userPermission): JsonResponse
     {
-        // Простейшая реализация через модель (можно через репозиторий)
-        $freelance = Freelance::with('user')->paginate();
-        return FreelanceResource::collection($freelance)->response();
+        $freelances = $this->indexFreelanceUseCase->execute($userPermission);
+
+        return FreelanceResource::collection($freelances)->response();
     }
 
     public function show(int $id, UserPermission $userPermission): JsonResponse
     {
-        $freelance = $this->freelanceRepository->findById($id);
-        if (!$freelance) {
-            return response()->json(['message' => 'Сотрудник не найден'], Response::HTTP_NOT_FOUND);
-        }
+        $freelance = $this->viewFreelanceUseCase->execute($id, $userPermission);
         return response()->json(FreelanceUserData::fromEntity($freelance), Response::HTTP_OK);
     }
 
@@ -62,7 +63,7 @@ class FreelanceController extends Controller
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $freelanceDTO = $this->createFreelanceUseCase->execute($dto);
+        $freelanceDTO = $this->createFreelanceUseCase->execute($dto, $userPermission);
         return response()->json(FreelanceUserData::fromEntity($freelanceDTO), Response::HTTP_CREATED);
     }
 
@@ -77,7 +78,7 @@ class FreelanceController extends Controller
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $freelance = $this->updateFreelanceUseCase->execute($id, $dto);
+        $freelance = $this->updateFreelanceUseCase->execute($id, $dto, $userPermission);
         return response()->json(FreelanceUserData::fromEntity($freelance));
     }
 
@@ -86,7 +87,7 @@ class FreelanceController extends Controller
         $freelance = $this->freelanceRepository->findById($id);
         if (!$freelance) return response()->json(['message' => 'Сотрудник не найден'], Response::HTTP_NOT_FOUND);
 
-        $deleted = $this->removeFreelanceUseCase->execute($id);
+        $deleted = $this->removeFreelanceUseCase->execute($id, $userPermission);
 
         if (!$deleted)
             return response()->json(['message' => 'Ошибка удаления сотрудника'], Response::HTTP_NOT_MODIFIED);
@@ -104,9 +105,9 @@ class FreelanceController extends Controller
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         if (is_null($freelance->user)) {
-            $userOut = $this->registerFreelanceUserUseCase->execute($id, $dto);
+            $userOut = $this->registerFreelanceUserUseCase->execute($id, $dto, $userPermission);
         } else {
-            $userOut = $this->updateUserUseCase->execute($id, $dto);
+            $userOut = $this->updateUserUseCase->execute($id, $dto, $userPermission);
         }
         return response()->json(UserData::fromEntity($userOut), Response::HTTP_OK);
     }

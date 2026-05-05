@@ -12,6 +12,8 @@ use App\Modules\Auth\Domain\ValueObjects\FullName;
 use App\Modules\Auth\Domain\ValueObjects\Gender;
 use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
 use App\Modules\Auth\Infrastructure\Exceptions\ClientAlreadyExistsException;
+use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use DateTimeImmutable;
 use InvalidArgumentException;
 
@@ -27,8 +29,10 @@ class UpdateClientUseCase
     /**
      * @throws \DateMalformedStringException
      */
-    public function execute(int $clientId, ClientUpdateData $dto): ClientEntity
+    public function execute(int $clientId, ClientUpdateData $dto, UserPermission $permissions): ClientEntity
     {
+        if (!$permissions->can('auth.buyer.edit')) throw new AccessDeniedException();
+
         $client = $this->clientRepository->findById($clientId);
         if (!$client) {
             throw new InvalidArgumentException('Клиент не найден');
@@ -75,7 +79,6 @@ class UpdateClientUseCase
         // Пол
         if ($dto->gender !== null)
             $client->gender = $dto->gender ? new Gender($dto->gender) : null;
-
 
         // Адрес
         if ($dto->country !== null || $dto->city !== null || $dto->region !== null) {

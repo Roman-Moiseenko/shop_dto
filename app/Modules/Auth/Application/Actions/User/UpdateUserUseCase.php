@@ -10,6 +10,8 @@ use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
+use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use InvalidArgumentException;
 
 class UpdateUserUseCase
@@ -19,8 +21,9 @@ class UpdateUserUseCase
         private readonly PasswordHasherInterface $passwordHasher
     ) {}
 
-    public function execute(int $staffId, UpdateUserData $dto): UserEntity
+    public function execute(int $staffId, UpdateUserData $dto, UserPermission $permissions): UserEntity
     {
+        if (!$permissions->can('auth.user.edit')) throw new AccessDeniedException();
         $user = $this->userRepository->findByStaffId($staffId);
         if (!$user) {
             throw new InvalidArgumentException('Пользователь не найден');
