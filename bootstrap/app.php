@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Auth\Infrastructure\Exceptions\StaffNotFoundException;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use App\Modules\Shared\Presentation\Http\Middlewares\LoadUserPermission;
 use Illuminate\Foundation\Application;

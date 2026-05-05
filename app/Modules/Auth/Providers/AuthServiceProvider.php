@@ -11,6 +11,8 @@ use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\Services\PermissionProviderInterface;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
+use App\Modules\Auth\Infrastructure\Exceptions\ClientNotFoundException;
+use App\Modules\Auth\Infrastructure\Exceptions\StaffNotFoundException;
 use App\Modules\Auth\Infrastructure\Persistence\ClientRepository;
 use App\Modules\Auth\Infrastructure\Persistence\FreelanceRepository;
 use App\Modules\Auth\Infrastructure\Persistence\RoleRepository;
@@ -19,12 +21,14 @@ use App\Modules\Auth\Infrastructure\Persistence\UserRepository;
 use App\Modules\Auth\Infrastructure\Services\LaravelPasswordHasher;
 use App\Modules\Auth\Infrastructure\Services\PermissionProvider;
 use App\Modules\Auth\Presentation\Console\Commands\AdminCreateCommand;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 /**
  * Service Provider for Auth module
  *
@@ -77,8 +81,9 @@ class AuthServiceProvider extends ServiceProvider
      * Boot the service provider - Register all module components
      *
      * CORRECTION: Signature sans type de retour (classe parente n'en a pas)
+     * @throws BindingResolutionException
      */
-    public function boot()
+    public function boot(): void
     {
         $this->registerCommands();
         $this->registerTranslations();
@@ -89,6 +94,19 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerMigrations();
         $this->registerFactories();
         $this->registerSeeders();
+
+        // Регистрируем обработчик исключения только для этого модуля
+        $this->app->booted(function () {
+            $handler = $this->app->make(ExceptionHandler::class);
+            $handler->renderable(function (StaffNotFoundException $e) {
+                return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+            });
+            $handler->renderable(function (ClientNotFoundException $e) {
+                return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+            });
+
+        });
+
     }
 
     /**
@@ -280,7 +298,7 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * Register all module routes (web, api, console)
      */
-    public function registerRoutes()
+    public function registerRoutes(): void
     {
         $this->registerWebRoutes();
         $this->registerApiRoutes();
