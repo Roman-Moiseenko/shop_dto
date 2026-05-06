@@ -7,6 +7,7 @@ use App\Modules\Storage\Application\Actions\ClientDeleteMediaUseCase;
 use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
+use App\Modules\Storage\Domain\ValueObjects\MediaType;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -42,7 +43,7 @@ class ClientDeleteMediaUseCaseTest extends TestCase
             uuid: $uuid,
             modelType: 'auth.client',
             modelId: 42,
-            type: 'image',
+            type: new MediaType('image'),
             fileName: 'avatar.jpg',
             disk: 'test-disk',
             size: 100,
@@ -78,7 +79,7 @@ class ClientDeleteMediaUseCaseTest extends TestCase
             uuid: $uuid,
             modelType: 'catalog.product', // не разрешённый тип
             modelId: 1,
-            type: 'image',
+            type: new MediaType('image'),
             fileName: 'product.jpg',
             disk: 'test-disk',
             size: 200,

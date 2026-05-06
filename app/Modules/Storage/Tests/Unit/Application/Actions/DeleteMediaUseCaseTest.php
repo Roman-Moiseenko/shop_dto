@@ -6,6 +6,7 @@ use App\Modules\Storage\Application\Actions\DeleteMediaUseCase;
 use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
+use App\Modules\Storage\Domain\ValueObjects\MediaType;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -41,7 +42,7 @@ class DeleteMediaUseCaseTest extends TestCase
             uuid: 'test-uuid',
             modelType: 'catalog_product',
             modelId: 1,
-            type: 'image',
+            type: new MediaType('image'),
             fileName: 'photo.jpg',
             disk: 'test-disk',
             size: 100,

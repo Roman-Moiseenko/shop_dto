@@ -9,6 +9,7 @@ use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Application\Services\ImageProcessor;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
+use App\Modules\Storage\Domain\ValueObjects\MediaType;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 
@@ -39,7 +40,7 @@ readonly class UploadMediaUseCase
             uuid: $uuid,
             modelType: $dto->model_type,
             modelId: $dto->model_id,
-            type: $dto->type,
+            type: new MediaType($dto->type),
             fileName: $filename,
             disk: $this->disk,
             size: $file->getSize(),

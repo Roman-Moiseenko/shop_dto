@@ -2,6 +2,7 @@
 
 namespace App\Modules\Storage\Tests\Unit\Domain\Entities;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
+use App\Modules\Storage\Domain\ValueObjects\MediaType;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 use Illuminate\Support\Str;
@@ -30,7 +31,7 @@ class MediaEntityTest extends TestCase
             uuid: $this->uuid,
             modelType: 'catalog_product',
             modelId: 42,
-            type: 'image',
+            type: new MediaType('image'),
             fileName: 'photo.jpg',
             disk: 'public',
             size: 1024,
@@ -43,7 +44,7 @@ class MediaEntityTest extends TestCase
         $this->assertSame(36, strlen($media->uuid));
         $this->assertSame('catalog_product', $media->modelType);
         $this->assertSame(42, $media->modelId);
-        $this->assertSame('image', $media->type);
+        $this->assertSame('image', $media->type->getValue());
         $this->assertNull($media->title);
         $this->assertNull($media->description);
         $this->assertSame(0, $media->sort);
@@ -59,7 +60,7 @@ class MediaEntityTest extends TestCase
             uuid: $this->uuid,
             modelType: 'catalog_category',
             modelId: 10,
-            type: 'icon',
+            type: new MediaType('icon'),
             fileName: 'icon.svg',
             disk: 's3',
             size: 512,
@@ -80,7 +81,7 @@ class MediaEntityTest extends TestCase
             uuid: $this->uuid,
             modelType: 'catalog_product',
             modelId: 1,
-            type: 'image',
+            type: new MediaType('image'),
             fileName: 'test.png',
             disk: 'public',
             size: 100,
@@ -98,7 +99,7 @@ class MediaEntityTest extends TestCase
             uuid: $this->uuid,
             modelType: 'catalog_product',
             modelId: 1,
-            type: 'image',
+            type: new MediaType('image'),
             fileName: 'test.png',
             disk: 'public',
             size: 100,
@@ -120,7 +121,7 @@ class MediaEntityTest extends TestCase
             uuid: $this->uuid,
             modelType: 'catalog_product',
             modelId: 42,
-            type: 'image',
+            type: new MediaType('image'),
             fileName: 'photo.jpg',
             disk: 'public',
             size: 1024,
@@ -138,7 +139,7 @@ class MediaEntityTest extends TestCase
             uuid: $this->uuid,
             modelType: 'catalog_product',
             modelId: 42,
-            type: 'image',
+            type: new MediaType('image'),
             fileName: 'photo.jpg',
             disk: 'public',
             size: 1024,

@@ -2,6 +2,7 @@
 
 namespace App\Modules\Storage\Domain\Entities;
 
+use App\Modules\Storage\Domain\ValueObjects\MediaType;
 use DateTimeImmutable;
 
 class MediaEntity
@@ -23,7 +24,7 @@ class MediaEntity
         get => $this->modelId;
         set => $this->modelId = $value;
     }
-    public string $type {
+    public MediaType $type {
         get => $this->type;
         set => $this->type = $value;
     }
@@ -72,7 +73,7 @@ class MediaEntity
         string $uuid,
         string $modelType,
         int $modelId,
-        string $type,
+        MediaType $type,
         string $fileName,
         string $disk,
         int $size,

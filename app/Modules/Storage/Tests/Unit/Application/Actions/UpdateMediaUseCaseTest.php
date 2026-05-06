@@ -7,6 +7,7 @@ use App\Modules\Storage\Application\Actions\UpdateMediaUseCase;
 use App\Modules\Storage\Application\DTOs\UpdateMediaData;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
+use App\Modules\Storage\Domain\ValueObjects\MediaType;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 use Tests\Trait\MockPermission;
@@ -38,7 +39,7 @@ class UpdateMediaUseCaseTest extends TestCase
             uuid: 'test-uuid',
             modelType: 'catalog_product',
             modelId: 1,
-            type: 'image',
+            type: new MediaType('image'),
             fileName: 'test.jpg',
             disk: 'public',
             size: 100,

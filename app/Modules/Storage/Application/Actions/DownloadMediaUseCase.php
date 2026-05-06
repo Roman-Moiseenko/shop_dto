@@ -10,6 +10,7 @@ use App\Modules\Storage\Application\Interfaces\HttpClientInterface;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Application\Services\ImageProcessor;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
+use App\Modules\Storage\Domain\ValueObjects\MediaType;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -49,7 +50,7 @@ readonly class DownloadMediaUseCase
             uuid: Uuid::uuid4()->toString(),
             modelType: $dto->model_type,
             modelId: $dto->model_id,
-            type: $dto->type,
+            type: new MediaType($dto->type),
             fileName: $filename,
             disk: $this->disk,
             size: strlen($content),

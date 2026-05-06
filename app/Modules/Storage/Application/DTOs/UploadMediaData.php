@@ -21,7 +21,7 @@ class UploadMediaData extends Data
         #[Nullable, StringType]
         public readonly ?string $description = null,
         #[Nullable, IntegerType]
-        public readonly ?int $sort = 0,
+        public readonly ?int $sort = null,
         #[Required] // будет заменено на UploadedFile вручную
         public mixed $file = null,
     ) {}

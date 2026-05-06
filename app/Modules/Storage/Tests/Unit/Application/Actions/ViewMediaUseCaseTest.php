@@ -4,6 +4,7 @@ namespace App\Modules\Storage\Tests\Unit\Application\Actions;
 use App\Modules\Storage\Application\Actions\ViewMediaUseCase;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
+use App\Modules\Storage\Domain\ValueObjects\MediaType;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -33,7 +34,7 @@ class ViewMediaUseCaseTest extends TestCase
             uuid: $uuid,
             modelType: 'catalog_product',
             modelId: 1,
-            type: 'image',
+            type: new MediaType('image'),
             fileName: 'test.jpg',
             disk: 'public',
             size: 500,

@@ -6,6 +6,7 @@ use App\Modules\Storage\Application\Actions\IndexMediaUseCase;
 use App\Modules\Storage\Application\DTOs\IndexMediaData;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
+use App\Modules\Storage\Domain\ValueObjects\MediaType;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -85,7 +86,7 @@ class IndexMediaUseCaseTest extends TestCase
             uuid: 'uuid-' . $id,
             modelType: 'catalog_product',
             modelId: 7,
-            type: 'image',
+            type: new MediaType('image'),
             fileName: "photo{$id}.jpg",
             disk: 'public',
             size: 100 * $id,
