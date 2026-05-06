@@ -2,14 +2,15 @@
 
 namespace App\Modules\Storage\Application\Services;
 
-use App\Modules\Storage\Infrastructure\Models\Media;
+
+use App\Modules\Storage\Domain\Entities\MediaEntity;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 class ImageProcessor
 {
-    public function process(Media $media): void
+    public function process(MediaEntity $media): void
     {
-        $config = config("storage.thumbs.{$media->model_type}.{$media->type}", []);
+        $config = config("storage.thumbs.{$media->modelType}.{$media->type}", []);
         if (empty($config)) return;
 
         $image = ImageManager::imagick()->read($media->getPath());

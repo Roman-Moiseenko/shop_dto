@@ -2,6 +2,7 @@
 
 namespace App\Modules\Storage\Providers;
 
+use App\Modules\Storage\Application\Actions\UploadMediaUseCase;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
@@ -82,7 +83,13 @@ class StorageServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // Register module-specific services
+        $this->app->when(UploadMediaUseCase::class)
+            ->needs('$disk')
+            ->give(config('storage.local.disk', 'public'));
+
+        $this->app->when(UploadMediaUseCase::class)
+            ->needs('$uploadBasePath')
+            ->give(config('storage.local.upload_path', 'uploads'));
     }
 
     // =====================================================================

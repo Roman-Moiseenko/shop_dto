@@ -3,13 +3,12 @@
 namespace App\Modules\Auth\Tests\Unit\Application\Actions\Freelance;
 use App\Modules\Auth\Application\Actions\Freelance\CreateFreelanceUseCase;
 use App\Modules\Auth\Application\DTOs\Freelance\FreelanceCreateData;
-use App\Modules\Auth\Application\DTOs\Staff\StaffCreateData;
 use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\FreelanceEntity;
-use App\Modules\Auth\Tests\Trait\MockPermission;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Tests\Trait\MockPermission;
 
 class CreateFreelanceUseCaseTest extends TestCase
 {

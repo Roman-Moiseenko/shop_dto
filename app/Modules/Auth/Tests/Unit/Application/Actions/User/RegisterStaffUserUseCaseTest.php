@@ -10,13 +10,12 @@ use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Infrastructure\Models\Staff;
-use App\Modules\Auth\Tests\Trait\MockPermission;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
-use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Tests\Trait\MockPermission;
 
 class RegisterStaffUserUseCaseTest extends TestCase
 {

@@ -3,12 +3,12 @@
 namespace App\Modules\Auth\Database\Seeders;
 
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
+use App\Modules\Shared\Infrastructure\Persistence\RoleSeeder;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class AuthRoleSeeder extends Seeder
 {
+    use RoleSeeder;
     /**
      * Run the database seeds.
      */
@@ -62,24 +62,13 @@ class AuthRoleSeeder extends Seeder
         $this->createPermission($user);
         $this->createPermission($settings);
 
-        Role::findByName('employee', 'api')?->givePermissionTo($employee);
-        Role::findByName('buyer', 'api')?->givePermissionTo($buyer);
-        Role::findByName(RoleName::CLIENT, 'api')?->givePermissionTo($buyer); //Для
-        Role::findByName('user', 'api')?->givePermissionTo($user);
-        Role::findByName('settings', 'api')?->givePermissionTo($settings);
+        $this->setPermissions('employee', $employee);
+        $this->setPermissions('buyer', $buyer);
+        $this->setPermissions('client', $buyer);
+        $this->setPermissions('user', $user);
+        $this->setPermissions('settings', $settings);
 
-        Role::findByName(RoleName::ADMIN, 'api')?->givePermissionTo(Permission::all());
+        $this->adminSet();
     }
 
-    private function addRole(string $role, string $description = ''): void
-    {
-        if (is_null(Role::findByParam(['name' => $role, 'guard_name' => 'api'])))
-            Role::create(['name' => $role, 'guard_name' => 'api', 'description' => $description]);
-    }
-
-    public function createPermission(array $items): void
-    {
-        foreach ($items as $item)
-            if (is_null(Permission::getPermission(['name' => $item, 'guard_name' => 'api']))) Permission::create(['name' => $item, 'guard_name' => 'api']);
-    }
 }

@@ -1,15 +1,12 @@
 <?php
 
-namespace App\Modules\Auth\Tests\Trait;
+namespace Tests\Trait;
 
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use Mockery;
 
 trait MockPermission
 {
-   // protected string $permission_module = '';
-  //  protected string $permission_entity = '';
-
     abstract function getModuleName(): string;
     abstract function getEntityName(): string;
 

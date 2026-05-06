@@ -14,14 +14,14 @@ use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Infrastructure\Exceptions\ClientNotFoundException;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Infrastructure\Models\Client;
-use App\Modules\Auth\Tests\Trait\MockPermission;
 use App\Modules\Shared\Application\Interfaces\Mail\MailServiceInterface;
 use App\Modules\Shared\Domain\Entities\Mail\Recipient;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
-use PHPUnit\Framework\TestCase;
-use Mockery;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Mockery;
+use PHPUnit\Framework\TestCase;
+use Tests\Trait\MockPermission;
+
 class RegisterUserClientUseCaseTest extends TestCase
 {
     use MockPermission;

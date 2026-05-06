@@ -2,7 +2,6 @@
 
 namespace App\Modules\Auth\Tests\Unit\Application\Actions\User;
 use App\Modules\Auth\Application\Actions\User\RegisterFreelanceUserUseCase;
-use App\Modules\Auth\Application\DTOs\User\RegisterUserData;
 use App\Modules\Auth\Application\DTOs\User\UpdateUserData;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
@@ -11,13 +10,12 @@ use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Infrastructure\Models\Freelance;
-use App\Modules\Auth\Tests\Trait\MockPermission;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
-use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Tests\Trait\MockPermission;
 
 class RegisterFreelanceUserUseCaseTest extends TestCase
 {

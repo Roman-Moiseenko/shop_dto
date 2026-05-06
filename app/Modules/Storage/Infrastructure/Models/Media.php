@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 /**
+ * @property int $id
  * @property string $uuid
  * @property string $model_type
  * @property int $model_id

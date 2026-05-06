@@ -10,10 +10,11 @@ use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
 use App\Modules\Auth\Infrastructure\Exceptions\ClientAlreadyExistsException;
-use App\Modules\Auth\Tests\Trait\MockPermission;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
-use PHPUnit\Framework\TestCase;
 use Mockery;
+use PHPUnit\Framework\TestCase;
+use Tests\Trait\MockPermission;
+
 class UpdateClientUseCaseTest extends TestCase
 {
     use MockPermission;

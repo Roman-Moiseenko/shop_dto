@@ -6,10 +6,11 @@ use App\Modules\Auth\Application\DTOs\Client\ClientCreateData;
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\ClientEntity;
 use App\Modules\Auth\Infrastructure\Exceptions\ClientAlreadyExistsException;
-use App\Modules\Auth\Tests\Trait\MockPermission;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
-use PHPUnit\Framework\TestCase;
 use Mockery;
+use PHPUnit\Framework\TestCase;
+use Tests\Trait\MockPermission;
+
 class CreateClientUseCaseTest extends TestCase
 {
     use MockPermission;

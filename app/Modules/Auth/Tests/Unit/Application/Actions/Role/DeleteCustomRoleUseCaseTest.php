@@ -3,12 +3,12 @@
 namespace App\Modules\Auth\Tests\Unit\Application\Actions\Role;
 use App\Modules\Auth\Application\Actions\Role\DeleteCustomRoleUseCase;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
-use App\Modules\Auth\Tests\Trait\MockPermission;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
-use PHPUnit\Framework\Attributes\Test;
-use Spatie\Permission\Models\Role;
-use PHPUnit\Framework\TestCase;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
+use Spatie\Permission\Models\Role;
+use Tests\Trait\MockPermission;
 
 class DeleteCustomRoleUseCaseTest extends TestCase
 {

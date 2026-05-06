@@ -4,13 +4,13 @@ namespace App\Modules\Auth\Tests\Unit\Application\Actions\Role;
 use App\Modules\Auth\Application\Actions\Role\CreateCustomRoleUseCase;
 use App\Modules\Auth\Application\DTOs\Role\RoleCreateData;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
-use App\Modules\Auth\Tests\Trait\MockPermission;
 use App\Modules\Shared\Domain\Services\TransactionManagerInterface;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
-use Spatie\Permission\Models\Role;
-use PHPUnit\Framework\TestCase;
 use Mockery;
-use Illuminate\Support\Facades\DB;
+use PHPUnit\Framework\TestCase;
+use Spatie\Permission\Models\Role;
+use Tests\Trait\MockPermission;
+
 class CreateCustomRoleUseCaseTest extends TestCase
 {
     use MockPermission;

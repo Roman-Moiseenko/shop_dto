@@ -8,12 +8,12 @@ use App\Modules\Auth\Domain\Entities\FreelanceEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
-use App\Modules\Auth\Tests\Trait\MockPermission;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Tests\Trait\MockPermission;
 
 class UpdateFreelanceUseCaseTest extends TestCase
 {
