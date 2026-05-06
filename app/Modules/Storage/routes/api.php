@@ -6,6 +6,7 @@ use App\Modules\Storage\Presentation\Http\Controllers\Api\MediaController;
 Route::prefix('v1/storage')->group(function () {
     //Для фронтенда сайта (без авторизации)
     Route::get('/media/{uuid}', [MediaController::class, 'show']);
+    Route::get('/media/{uuid}/file', [MediaController::class, 'file']);
 
     // Административные операции (только admin|staff)
     Route::middleware(['auth:sanctum', 'role:admin|staff']) ->group(function () {

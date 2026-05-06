@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use App\Modules\Storage\Application\Actions\DeleteMediaUseCase;
 use App\Modules\Storage\Application\Actions\DownloadMediaUseCase;
+use App\Modules\Storage\Application\Actions\FileMediaUseCase;
 use App\Modules\Storage\Application\Actions\IndexMediaUseCase;
 use App\Modules\Storage\Application\Actions\UpdateMediaUseCase;
 use App\Modules\Storage\Application\Actions\UploadMediaUseCase;
@@ -14,6 +15,7 @@ use App\Modules\Storage\Application\DTOs\DownloadMediaData;
 use App\Modules\Storage\Application\DTOs\IndexMediaData;
 use App\Modules\Storage\Application\DTOs\UpdateMediaData;
 use App\Modules\Storage\Application\DTOs\UploadMediaData;
+use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
 use App\Modules\Storage\Infrastructure\Models\Media;
 use Illuminate\Http\Request;
 
@@ -26,6 +28,7 @@ class MediaController extends Controller
         private readonly ViewMediaUseCase     $viewUseCase,
         private readonly UpdateMediaUseCase   $updateUseCase,
         private readonly DeleteMediaUseCase   $deleteUseCase,
+        private readonly FileMediaUseCase     $fileMediaUseCase,
     )
     {
     }
@@ -78,5 +81,11 @@ class MediaController extends Controller
     {
         $this->deleteUseCase->execute($id, $permissions);
         return response()->json(null, 204);
+    }
+
+    public function file(string $uuid, UserPermission $permissions)
+    {
+        $file = $this->fileMediaUseCase->execute($uuid, $permissions);
+        return response()->file($file);
     }
 }

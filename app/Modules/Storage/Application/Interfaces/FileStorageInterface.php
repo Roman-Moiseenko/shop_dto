@@ -16,4 +16,6 @@ interface FileStorageInterface
      */
     public function deleteDirectory(string $path, string $disk): void;
     public function put(string $path, string $content, ?string $disk = null): void;
+    public function exists(string $path, string $disk): bool;
+    public function fullPath(string $path, string $disk): string;
 }

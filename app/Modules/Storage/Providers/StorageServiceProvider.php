@@ -2,19 +2,26 @@
 
 namespace App\Modules\Storage\Providers;
 
+use App\Modules\Auth\Infrastructure\Exceptions\ClientNotFoundException;
+use App\Modules\Auth\Infrastructure\Exceptions\StaffNotFoundException;
 use App\Modules\Storage\Application\Actions\ClientUploadMediaUseCase;
 use App\Modules\Storage\Application\Actions\DownloadMediaUseCase;
 use App\Modules\Storage\Application\Actions\UploadMediaUseCase;
 use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
 use App\Modules\Storage\Application\Interfaces\HttpClientInterface;
+use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
+use App\Modules\Storage\Infrastructure\Exceptions\MediaFileNotFoundException;
+use App\Modules\Storage\Infrastructure\Persistence\MediaRepository;
 use App\Modules\Storage\Infrastructure\Services\LaravelFileStorage;
 use App\Modules\Storage\Infrastructure\Services\LaravelHttpClient;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Service Provider for Storage module
@@ -80,6 +87,16 @@ class StorageServiceProvider extends ServiceProvider
         $this->registerMigrations();
         $this->registerFactories();
         $this->registerSeeders();
+
+        // Регистрируем обработчик исключения только для этого модуля
+        $this->app->booted(function () {
+            $handler = $this->app->make(ExceptionHandler::class);
+            $handler->renderable(function (MediaFileNotFoundException  $e) {
+                return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+            });
+
+
+        });
     }
 
     /**
@@ -97,6 +114,11 @@ class StorageServiceProvider extends ServiceProvider
             HttpClientInterface::class,
             LaravelHttpClient::class
         );
+        $this->app->bind(
+            MediaRepositoryInterface::class,
+            MediaRepository::class
+        );
+
         $this->app->when(UploadMediaUseCase::class)
             ->needs('$disk')
             ->give(config('storage.local.disk', 'public'));

@@ -23,4 +23,14 @@ class LaravelFileStorage implements FileStorageInterface
     {
         Storage::disk($disk)->put($path, $content);
     }
+
+    public function exists(string $path, string $disk): bool
+    {
+        return Storage::disk($disk)->exists($path);
+    }
+
+    public function fullPath(string $path, string $disk): string
+    {
+        return Storage::disk($disk)->path($path);
+    }
 }

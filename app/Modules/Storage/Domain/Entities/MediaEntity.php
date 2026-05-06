@@ -60,11 +60,11 @@ class MediaEntity
         get => $this->customProperties;
         set => $this->customProperties = $value;
     }
-    public ?DateTimeImmutable $createdAt {
+    public ?DateTimeImmutable $createdAt = null {
         get => $this->createdAt;
         set => $this->createdAt = $value;
     }
-    public ?DateTimeImmutable $updatedAt {
+    public ?DateTimeImmutable $updatedAt = null {
         get => $this->updatedAt;
         set => $this->updatedAt = $value;
     }
