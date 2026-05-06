@@ -2,7 +2,13 @@
 
 namespace App\Modules\Storage\Providers;
 
+use App\Modules\Storage\Application\Actions\ClientUploadMediaUseCase;
+use App\Modules\Storage\Application\Actions\DownloadMediaUseCase;
 use App\Modules\Storage\Application\Actions\UploadMediaUseCase;
+use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
+use App\Modules\Storage\Application\Interfaces\HttpClientInterface;
+use App\Modules\Storage\Infrastructure\Services\LaravelFileStorage;
+use App\Modules\Storage\Infrastructure\Services\LaravelHttpClient;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
@@ -81,8 +87,16 @@ class StorageServiceProvider extends ServiceProvider
      *
      * CORRECTION: Signature sans type de retour (classe parente n'en a pas)
      */
-    public function register()
+    public function register(): void
     {
+        $this->app->bind(
+            FileStorageInterface::class,
+            LaravelFileStorage::class
+        );
+        $this->app->bind(
+            HttpClientInterface::class,
+            LaravelHttpClient::class
+        );
         $this->app->when(UploadMediaUseCase::class)
             ->needs('$disk')
             ->give(config('storage.local.disk', 'public'));
@@ -90,6 +104,24 @@ class StorageServiceProvider extends ServiceProvider
         $this->app->when(UploadMediaUseCase::class)
             ->needs('$uploadBasePath')
             ->give(config('storage.local.upload_path', 'uploads'));
+
+        $this->app->when(DownloadMediaUseCase::class)
+            ->needs('$disk')
+            ->give(config('storage.local.disk', 'public'));
+
+        $this->app->when(DownloadMediaUseCase::class)
+            ->needs('$uploadBasePath')
+            ->give(config('storage.local.upload_path', 'uploads'));
+
+        $this->app->when(ClientUploadMediaUseCase::class)
+            ->needs('$disk')
+            ->give(config('storage.local.disk', 'public'));
+
+        $this->app->when(ClientUploadMediaUseCase::class)
+            ->needs('$uploadBasePath')
+            ->give(config('storage.local.upload_path', 'uploads'));
+
+
     }
 
     // =====================================================================

@@ -35,8 +35,8 @@ Route::prefix('v1/auth')->group(function () {
             Route::post('/client/{id}/register', [ClientController::class, 'register']);
         });
 
-        // Админские маршруты для управления сотрудниками
-        Route::middleware(['role:admin'])->group(function () {
+        // маршруты для управления сотрудниками
+        Route::middleware(['role:admin|staff'])->group(function () {
             //Сотрудники Staff
             Route::apiResource('staff', StaffController::class);
             Route::post('/staff/{id}/user', [StaffController::class, 'user']);

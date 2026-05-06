@@ -9,10 +9,10 @@ use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Application\Services\ImageProcessor;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
 
-class UpdateMediaUseCase
+readonly class UpdateMediaUseCase
 {
     public function __construct(
-        private readonly MediaRepositoryInterface $mediaRepository,
+        private MediaRepositoryInterface $mediaRepository,
     ) {}
     public function execute(int $id, UpdateMediaData $dto, UserPermission $permissions): MediaEntity
     {

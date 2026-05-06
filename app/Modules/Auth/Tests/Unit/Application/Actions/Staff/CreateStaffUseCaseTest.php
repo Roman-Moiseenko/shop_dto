@@ -19,14 +19,8 @@ class CreateStaffUseCaseTest extends TestCase
     private StaffRepositoryInterface $staffRepo;
     private CreateStaffUseCase $useCase;
 
-    function getModuleName(): string
-    {
-        return  'auth';
-    }
-    function getEntityName(): string
-    {
-        return 'employee';
-    }
+    function getModuleName(): string { return  'auth'; }
+    function getEntityName(): string { return 'employee'; }
 
     protected function setUp(): void
     {
