@@ -11,8 +11,6 @@ use Spatie\LaravelData\Attributes\Validation\StringType;
 class AdminData extends Data
 {
     public function __construct(
-        #[Required, StringType, Max(255)]
-        public readonly string $name,
         #[Required, Email, Max(255)]
         public readonly string $email,
         #[StringType, Max(255)]

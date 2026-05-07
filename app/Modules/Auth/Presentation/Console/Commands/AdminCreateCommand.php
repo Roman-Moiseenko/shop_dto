@@ -32,7 +32,6 @@ class AdminCreateCommand extends Command
         $email = $name . '@shop.api';
         try {
             $dto = new AdminData(
-                name: $name,
                 email: $email,
                 password: $password,
             );
