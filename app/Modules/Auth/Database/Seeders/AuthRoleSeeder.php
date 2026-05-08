@@ -20,53 +20,28 @@ class AuthRoleSeeder extends Seeder
         $this->addRole(RoleName::STAFF);
 
         //Системные роли и доступы текущего модуля
+
         $this->addRole('employee', 'Персонал');
-        $this->addRole('buyer','Покупатель');
-        $this->addRole('user', 'Пользователь системы');
-        $this->addRole('settings', 'Настройки системы');
-
-        $employee = [
-            'auth.employee.create',
-            'auth.employee.edit',
-            'auth.employee.view',
-            'auth.employee.delete',
-            'auth.employee.force',
-            'auth.employee.blocked',
-        ];
-        $buyer = [
-            'auth.buyer.create',
-            'auth.buyer.edit',
-            'auth.buyer.view',
-            'auth.buyer.delete',
-            'auth.buyer.force',
-            'auth.buyer.blocked',
-        ];
-        $user = [
-            'auth.user.create',
-            'auth.user.view',
-            'auth.user.edit',
-            'auth.user.delete',
-            'auth.user.force',
-            'auth.user.blocked',
-        ];
-        $settings = [
-            'auth.settings.create',
-            'auth.settings.view',
-            'auth.settings.edit',
-            'auth.settings.delete',
-        ];
-
-
+        $employee = $this->fillArrayPermissions('auth', 'employee', $this->listPermissions(true, true));
         $this->createPermission($employee);
-        $this->createPermission($buyer);
-        $this->createPermission($user);
-        $this->createPermission($settings);
-
         $this->setPermissions('employee', $employee);
+
+        $this->addRole('buyer','Покупатель');
+        $buyer = $this->fillArrayPermissions('auth', 'buyer', $this->listPermissions(true, true));
+        $this->createPermission($buyer);
         $this->setPermissions('buyer', $buyer);
         $this->setPermissions('client', $buyer);
+
+        $this->addRole('user', 'Пользователь системы');
+        $user = $this->fillArrayPermissions('auth', 'user', $this->listPermissions(true, true));
+        $this->createPermission($user);
         $this->setPermissions('user', $user);
+
+        $this->addRole('settings', 'Настройки системы');
+        $settings = $this->fillArrayPermissions('auth', 'settings', $this->listPermissions());
+        $this->createPermission($settings);
         $this->setPermissions('settings', $settings);
+
 
         $this->adminSet();
     }
