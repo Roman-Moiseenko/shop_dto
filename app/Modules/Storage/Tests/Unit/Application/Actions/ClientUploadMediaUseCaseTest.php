@@ -7,7 +7,10 @@ use App\Modules\Storage\Application\DTOs\UploadMediaData;
 use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Application\Services\ImageProcessor;
+use App\Modules\Storage\Application\Services\MediaFileService;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
+use App\Modules\Storage\Domain\ValueObjects\MediaType;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 use Illuminate\Http\UploadedFile;
@@ -18,24 +21,16 @@ class ClientUploadMediaUseCaseTest extends TestCase
     use MockPermission;
     function getModuleName(): string { return  'storage'; }
     function getEntityName(): string { return 'media'; }
-    private MediaRepositoryInterface $repo;
-    private FileStorageInterface $fileStorage;
+    private MediaRepositoryInterface $mediaRepo;
+    private MediaFileService $mediaFileService;
     private ClientUploadMediaUseCase $useCase;
-    private ImageProcessor $imageProcessor;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repo = Mockery::mock(MediaRepositoryInterface::class);
-        $this->fileStorage = Mockery::mock(FileStorageInterface::class);
-        $this->imageProcessor = Mockery::mock(ImageProcessor::class);
-        $this->useCase = new ClientUploadMediaUseCase(
-            $this->repo,
-            $this->imageProcessor,
-            $this->fileStorage,
-            'test-disk',
-            'test-uploads'
-        );
+        $this->mediaRepo = Mockery::mock(MediaRepositoryInterface::class);
+        $this->mediaFileService = Mockery::mock(MediaFileService::class);
+        $this->useCase = new ClientUploadMediaUseCase($this->mediaRepo, $this->mediaFileService);
     }
 
     protected function tearDown(): void
@@ -44,33 +39,63 @@ class ClientUploadMediaUseCaseTest extends TestCase
         parent::tearDown();
     }
 
-    public function test_uploads_media_for_allowed_model_type(): void
+    private function createFile(): UploadedFile
     {
-        $file = UploadedFile::fake()->create('avatar.jpg', 100);
-        $this->imageProcessor->shouldReceive('process')
-            ->once()
-            ->with(Mockery::type(MediaEntity::class));
+        return UploadedFile::fake()->create('avatar.jpg', 100);
+    }
 
+    private function createMediaEntity(string $type, string $uuid, string $filename, string $modelType = 'auth.client', int $modelId = 42): MediaEntity
+    {
+        $media = new MediaEntity(
+            uuid: $uuid,
+            modelType: $modelType,
+            modelId: $modelId,
+            type: new MediaType($type),
+            fileName: $filename,
+            disk: 'local',
+            size: 100,
+            mimeType: 'image/jpeg',
+        );
+        $media->id = 5;
+        return $media;
+    }
+
+    #[Test]
+    public function uploads_single_image_for_allowed_model_type(): void
+    {
+        $file = $this->createFile();
         $dto = new UploadMediaData(
             model_type: 'auth.client',
             model_id: 42,
             type: 'image',
-            title: 'Avatar',
+            title: 'Аватар',
             file: $file
         );
 
-        $permission = $this->mockUserPermission(create: true);
-
-        $this->fileStorage->shouldReceive('storeUploadedFile')
+        // Старое изображение
+        $existingMedia = $this->createMediaEntity('image', 'old-uuid', 'old-file.jpg');
+        $this->mediaRepo->shouldReceive('findByEntityType')
+            ->with('auth.client', 42, 'image')
             ->once()
-            ->with(
-                Mockery::type(UploadedFile::class),
-                'test-uploads/auth.client/42/',
-                Mockery::type('string'),
-                'test-disk')
-            ->andReturn('stored_filename.jpg');
+            ->andReturn($existingMedia);
 
-        $this->repo->shouldReceive('save')
+        $this->mediaFileService->shouldReceive('deleteAllFiles')
+            ->with($existingMedia)
+            ->once();
+        $this->mediaRepo->shouldReceive('delete')
+            ->with($existingMedia->id)
+            ->once();
+
+        // Сохранение
+        $this->mediaFileService->shouldReceive('storeOriginal')
+            ->with($file, 'auth.client', 42, Mockery::type('string'))
+            ->once();
+
+        $this->mediaFileService->shouldReceive('getOriginalDisk')
+            ->once()
+            ->andReturn('local');
+
+        $this->mediaRepo->shouldReceive('save')
             ->once()
             ->with(Mockery::type(MediaEntity::class))
             ->andReturnUsing(function (MediaEntity $media) {
@@ -78,20 +103,27 @@ class ClientUploadMediaUseCaseTest extends TestCase
                 return $media;
             });
 
-        $media = $this->useCase->execute($dto, $permission);
+        $this->mediaFileService->shouldReceive('generateCache')
+            ->once()
+            ->with(Mockery::type(MediaEntity::class));
 
-        $this->assertEquals(10, $media->id);
-        $this->assertEquals('auth.client', $media->modelType);
-        $this->assertEquals('Avatar', $media->title);
+        $permission = $this->mockUserPermission(create: true);
+        $result = $this->useCase->execute($dto, $permission);
+
+        $this->assertEquals(10, $result->id);
+        $this->assertEquals('auth.client', $result->modelType);
+        $this->assertEquals('Аватар', $result->title);
+        $this->assertEquals('image', $result->type->getValue());
     }
 
-    public function test_throws_access_denied_for_not_allowed_model_type(): void
+    #[Test]
+    public function throws_access_denied_for_not_allowed_model_type(): void
     {
         $dto = new UploadMediaData(
-            model_type: 'catalog.product', // не разрешено для клиента
+            model_type: 'catalog.product', // не разрешено
             model_id: 1,
             type: 'image',
-            file: UploadedFile::fake()->create('test.jpg', 100)
+            file: $this->createFile(),
         );
 
         $permission = $this->mockUserPermission(create: true);
@@ -100,13 +132,14 @@ class ClientUploadMediaUseCaseTest extends TestCase
         $this->useCase->execute($dto, $permission);
     }
 
-    public function test_throws_exception_when_file_not_provided(): void
+    #[Test]
+    public function throws_exception_when_file_not_provided(): void
     {
         $dto = new UploadMediaData(
             model_type: 'auth.client',
             model_id: 1,
             type: 'image',
-            file: null // нет файла
+            file: null
         );
 
         $permission = $this->mockUserPermission(create: true);

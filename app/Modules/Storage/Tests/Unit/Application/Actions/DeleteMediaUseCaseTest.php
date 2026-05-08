@@ -5,6 +5,7 @@ use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use App\Modules\Storage\Application\Actions\DeleteMediaUseCase;
 use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
+use App\Modules\Storage\Application\Services\MediaFileService;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
 use App\Modules\Storage\Domain\ValueObjects\MediaType;
 use PHPUnit\Framework\Attributes\Test;
@@ -18,15 +19,15 @@ class DeleteMediaUseCaseTest extends TestCase
     function getModuleName(): string { return  'storage'; }
     function getEntityName(): string { return 'media'; }
     private MediaRepositoryInterface $mediaRepo;
-    private FileStorageInterface $fileStorage;
+    private MediaFileService $mediaFileService;
     private DeleteMediaUseCase $useCase;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->mediaRepo = Mockery::mock(MediaRepositoryInterface::class);
-        $this->fileStorage = Mockery::mock(FileStorageInterface::class);
-        $this->useCase = new DeleteMediaUseCase($this->mediaRepo, $this->fileStorage);
+        $this->mediaFileService = Mockery::mock(MediaFileService::class);
+        $this->useCase = new DeleteMediaUseCase($this->mediaRepo, $this->mediaFileService);
     }
 
     protected function tearDown(): void
@@ -35,35 +36,39 @@ class DeleteMediaUseCaseTest extends TestCase
         parent::tearDown();
     }
 
-    #[Test]
-    public function deletes_media_and_files_successfully(): void
+    private function createMediaEntity(string $type = 'image', string $uuid = 'test-uuid'): MediaEntity
     {
         $media = new MediaEntity(
-            uuid: 'test-uuid',
-            modelType: 'catalog_product',
+            uuid: $uuid,
+            modelType: 'catalog.product',
             modelId: 1,
-            type: new MediaType('image'),
+            type: new MediaType($type),
             fileName: 'photo.jpg',
-            disk: 'test-disk',
+            disk: 'local',
             size: 100,
             mimeType: 'image/jpeg'
         );
         $media->id = 42;
+        return $media;
+    }
+
+    #[Test]
+    public function deletes_media_and_files_successfully(): void
+    {
+        $media = $this->createMediaEntity();
 
         $this->mediaRepo->shouldReceive('findById')
             ->with(42)
             ->once()
             ->andReturn($media);
 
-        $expectedDirectory = dirname($media->getPath()); // вызываем getPath() для получения пути
-
-        $this->fileStorage->shouldReceive('deleteDirectory')
-            ->once()
-            ->with($expectedDirectory, 'test-disk');
+        $this->mediaFileService->shouldReceive('deleteAllFiles')
+            ->with($media)
+            ->once();
 
         $this->mediaRepo->shouldReceive('delete')
-            ->once()
-            ->with(42);
+            ->with(42)
+            ->once();
 
         $permission = $this->mockUserPermission(delete: true);
         $this->useCase->execute(42, $permission);
@@ -74,10 +79,10 @@ class DeleteMediaUseCaseTest extends TestCase
     #[Test]
     public function throws_access_denied_when_missing_permission(): void
     {
-        $permission = $this->mockUserPermission();
+        $permission = $this->mockUserPermission(delete: false);
 
         $this->mediaRepo->shouldNotReceive('findById');
-        $this->fileStorage->shouldNotReceive('deleteDirectory');
+        $this->mediaFileService->shouldNotReceive('deleteAllFiles');
         $this->mediaRepo->shouldNotReceive('delete');
 
         $this->expectException(AccessDeniedException::class);
@@ -94,7 +99,7 @@ class DeleteMediaUseCaseTest extends TestCase
 
         $permission = $this->mockUserPermission(delete: true);
 
-        $this->fileStorage->shouldNotReceive('deleteDirectory');
+        $this->mediaFileService->shouldNotReceive('deleteAllFiles');
         $this->mediaRepo->shouldNotReceive('delete');
 
         $this->expectException(\InvalidArgumentException::class);

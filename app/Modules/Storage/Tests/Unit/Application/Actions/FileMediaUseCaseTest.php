@@ -105,7 +105,7 @@ class FileMediaUseCaseTest extends TestCase
 
         $permission = $this->mockUserPermission(view: true);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(MediaFileNotFoundException::class);
         $this->expectExceptionMessage('Медиа не найдено');
         $this->useCase->execute($uuid, $permission);
     }

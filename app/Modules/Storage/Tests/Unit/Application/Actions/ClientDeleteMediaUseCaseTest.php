@@ -6,15 +6,17 @@ use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use App\Modules\Storage\Application\Actions\ClientDeleteMediaUseCase;
 use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
+use App\Modules\Storage\Application\Services\MediaFileService;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
 use App\Modules\Storage\Domain\ValueObjects\MediaType;
+use App\Modules\Storage\Infrastructure\Exceptions\MediaFileNotFoundException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 class ClientDeleteMediaUseCaseTest extends TestCase
 {
     private MediaRepositoryInterface $mediaRepo;
-    private FileStorageInterface $fileStorage;
+    private MediaFileService $mediaFileService;
     private ClientDeleteMediaUseCase $useCase;
     private UserPermission $permission;
 
@@ -22,8 +24,8 @@ class ClientDeleteMediaUseCaseTest extends TestCase
     {
         parent::setUp();
         $this->mediaRepo = Mockery::mock(MediaRepositoryInterface::class);
-        $this->fileStorage = Mockery::mock(FileStorageInterface::class);
-        $this->useCase = new ClientDeleteMediaUseCase($this->mediaRepo, $this->fileStorage);
+        $this->mediaFileService = Mockery::mock(MediaFileService::class);
+        $this->useCase = new ClientDeleteMediaUseCase($this->mediaRepo, $this->mediaFileService);
 
         // Мок UserPermission не используется внутри UseCase, но требуется по сигнатуре
         $this->permission = Mockery::mock(UserPermission::class);
@@ -35,36 +37,40 @@ class ClientDeleteMediaUseCaseTest extends TestCase
         parent::tearDown();
     }
 
+    private function createMediaEntity(string $modelType, string $uuid, string $type = 'image'): MediaEntity
+    {
+        $media = new MediaEntity(
+            uuid: $uuid,
+            modelType: $modelType,
+            modelId: 42,
+            type: new MediaType($type),
+            fileName: 'file.jpg',
+            disk: 'local',
+            size: 100,
+            mimeType: 'image/jpeg',
+        );
+        $media->id = 5;
+        return $media;
+    }
+
     #[Test]
     public function deletes_media_successfully_for_allowed_type(): void
     {
         $uuid = 'test-uuid-123';
-        $media = new MediaEntity(
-            uuid: $uuid,
-            modelType: 'auth.client',
-            modelId: 42,
-            type: new MediaType('image'),
-            fileName: 'avatar.jpg',
-            disk: 'test-disk',
-            size: 100,
-            mimeType: 'image/jpeg'
-        );
-        $media->id = 5;
+        $media = $this->createMediaEntity('auth.client', $uuid);
 
         $this->mediaRepo->shouldReceive('findByUuid')
             ->with($uuid)
             ->once()
             ->andReturn($media);
 
-        $expectedDirectory = dirname($media->getPath());
-
-        $this->fileStorage->shouldReceive('deleteDirectory')
+        $this->mediaFileService->shouldReceive('deleteAllFiles')
             ->once()
-            ->with($expectedDirectory, 'test-disk');
+            ->with($media);
 
         $this->mediaRepo->shouldReceive('delete')
             ->once()
-            ->with(5);
+            ->with($media->id);
 
         $this->useCase->execute($uuid, $this->permission);
         // Успех без исключений
@@ -75,23 +81,14 @@ class ClientDeleteMediaUseCaseTest extends TestCase
     public function throws_exception_for_not_allowed_model_type(): void
     {
         $uuid = 'test-uuid-456';
-        $media = new MediaEntity(
-            uuid: $uuid,
-            modelType: 'catalog.product', // не разрешённый тип
-            modelId: 1,
-            type: new MediaType('image'),
-            fileName: 'product.jpg',
-            disk: 'test-disk',
-            size: 200,
-            mimeType: 'image/jpeg'
-        );
+        $media = $this->createMediaEntity('catalog.product', $uuid);
 
         $this->mediaRepo->shouldReceive('findByUuid')
             ->with($uuid)
             ->once()
             ->andReturn($media);
 
-        $this->expectException(AccessDeniedException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Удаление этого типа медиафайлов недоступно клиенту');
 
         $this->useCase->execute($uuid, $this->permission);
@@ -106,7 +103,7 @@ class ClientDeleteMediaUseCaseTest extends TestCase
             ->once()
             ->andReturn(null);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(MediaFileNotFoundException::class);
         $this->expectExceptionMessage('Медиа не найдено');
 
         $this->useCase->execute($uuid, $this->permission);

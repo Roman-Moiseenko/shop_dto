@@ -9,7 +9,9 @@ use App\Modules\Storage\Application\Interfaces\HttpClientInterface;
 use App\Modules\Storage\Application\Interfaces\HttpResponseInterface;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Application\Services\ImageProcessor;
+use App\Modules\Storage\Application\Services\MediaFileService;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
+use App\Modules\Storage\Domain\ValueObjects\MediaType;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -21,26 +23,20 @@ class DownloadMediaUseCaseTest extends TestCase
     use MockPermission;
     function getModuleName(): string { return  'storage'; }
     function getEntityName(): string { return 'media'; }
-    private MediaRepositoryInterface $repo;
-    private ImageProcessor $imageProcessor;
-    private FileStorageInterface $fileStorage;
-    private DownloadMediaUseCase $useCase;
+    private MediaRepositoryInterface $mediaRepo;
+    private MediaFileService $mediaFileService;
     private HttpClientInterface $httpClient;
+    private DownloadMediaUseCase $useCase;
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repo = Mockery::mock(MediaRepositoryInterface::class);
-        $this->imageProcessor = Mockery::mock(ImageProcessor::class);
-        $this->fileStorage = Mockery::mock(FileStorageInterface::class);
+        $this->mediaRepo = Mockery::mock(MediaRepositoryInterface::class);
+        $this->mediaFileService = Mockery::mock(MediaFileService::class);
         $this->httpClient = Mockery::mock(HttpClientInterface::class);
-
         $this->useCase = new DownloadMediaUseCase(
-            $this->repo,
-            $this->imageProcessor,
-            $this->fileStorage,
-            $this->httpClient,
-            'test-disk',
-            'test-uploads'
+            $this->mediaRepo,
+            $this->mediaFileService,
+            $this->httpClient
         );
     }
 
@@ -49,20 +45,34 @@ class DownloadMediaUseCaseTest extends TestCase
         Mockery::close();
         parent::tearDown();
     }
+    private function createMediaEntity(string $type, string $uuid, string $filename): MediaEntity
+    {
+        $media = new MediaEntity(
+            uuid: $uuid,
+            modelType: 'catalog.product',
+            modelId: 1,
+            type: new MediaType($type),
+            fileName: $filename,
+            disk: 'local',
+            size: 100,
+            mimeType: 'image/jpeg',
+        );
+        $media->id = 5;
+        return $media;
+    }
 
     #[Test]
-    public function downloads_media_successfully(): void
+    public function downloads_single_image_replacing_existing(): void
     {
         $dto = new DownloadMediaData(
-            model_type: 'catalog_product',
+            model_type: 'catalog.product',
             model_id: 1,
             type: 'image',
             url: 'http://example.com/image.jpg',
             title: 'Downloaded Image'
         );
 
-        $permission = $this->mockUserPermission(create: true);
-
+        // HTTP-ответ
         $response = Mockery::mock(HttpResponseInterface::class);
         $response->shouldReceive('successful')->once()->andReturn(true);
         $response->shouldReceive('body')->once()->andReturn('binary-content');
@@ -73,68 +83,86 @@ class DownloadMediaUseCaseTest extends TestCase
             ->once()
             ->andReturn($response);
 
-        $this->fileStorage->shouldReceive('put')
+        // Старое изображение для одиночного типа
+        $existingMedia = $this->createMediaEntity('image', 'old-uuid', 'old-file.jpg');
+        $this->mediaRepo->shouldReceive('findByEntityType')
+            ->with('catalog.product', 1, 'image')
             ->once()
-            ->with(
-                Mockery::on(function ($arg) { return str_starts_with($arg, 'test-uploads/catalog_product/1/'); }),
-                'binary-content',
-                'test-disk'
-            )
-            ->andReturn();
+            ->andReturn($existingMedia);
 
-        $this->repo->shouldReceive('save')->once()->andReturnUsing(function (MediaEntity $media) {
-            $media->id = 5;
-            return $media;
-        });
+        $this->mediaFileService->shouldReceive('deleteAllFiles')
+            ->with($existingMedia)
+            ->once();
+        $this->mediaRepo->shouldReceive('delete')
+            ->with($existingMedia->id)
+            ->once();
 
-        $this->imageProcessor->shouldReceive('process')->once();
+        $this->mediaFileService->shouldReceive('storeOriginalFromContent')
+            ->with('binary-content', 'catalog.product', 1, Mockery::type('string'))
+            ->once();
 
-        $media = $this->useCase->execute($dto, $permission);
-        $this->assertEquals(5, $media->id);
-        $this->assertEquals('Downloaded Image', $media->title);
+        $this->mediaFileService->shouldReceive('getOriginalDisk')
+            ->once()
+            ->andReturn('local');
+
+        $this->mediaRepo->shouldReceive('save')
+            ->once()
+            ->with(Mockery::type(MediaEntity::class))
+            ->andReturnUsing(function (MediaEntity $media) {
+                $media->id = 88;
+                return $media;
+            });
+
+        $this->mediaFileService->shouldReceive('generateCache')
+            ->once()
+            ->with(Mockery::type(MediaEntity::class));
+
+        $permission = $this->mockUserPermission(create: true);
+        $result = $this->useCase->execute($dto, $permission);
+
+        $this->assertEquals(88, $result->id);
+        $this->assertEquals('Downloaded Image', $result->title);
     }
 
     #[Test]
     public function throws_exception_when_download_fails(): void
     {
         $dto = new DownloadMediaData(
-            model_type: 'catalog_product',
+            model_type: 'catalog.product',
             model_id: 1,
             type: 'image',
-            url: 'http://example.com/bad.jpg'
+            url: 'http://example.com/bad.jpg',
         );
-
-        $permission = $this->mockUserPermission(create: true);
 
         $response = Mockery::mock(HttpResponseInterface::class);
         $response->shouldReceive('successful')->once()->andReturn(false);
 
         $this->httpClient->shouldReceive('get')
+            ->with('http://example.com/bad.jpg')
             ->once()
             ->andReturn($response);
 
-        // Ожидаем, что fileStorage->put не вызовется, так как исключение будет раньше
-        $this->fileStorage->shouldNotReceive('put');
+        $permission = $this->mockUserPermission(create: true);
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Не удалось загрузить файл');
         $this->useCase->execute($dto, $permission);
     }
 
+    #[Test]
     public function throws_access_denied_when_missing_permission(): void
     {
         $dto = new DownloadMediaData(
-            model_type: 'catalog_product',
+            model_type: 'catalog.product',
             model_id: 1,
             type: 'image',
-            url: 'http://example.com/image.jpg'
+            url: 'http://example.com/image.jpg',
         );
 
-        $permission = $this->mockUserPermission();
+        $permission = $this->mockUserPermission(create: false);
 
         $this->expectException(AccessDeniedException::class);
         $this->useCase->execute($dto, $permission);
     }
-
 
 }

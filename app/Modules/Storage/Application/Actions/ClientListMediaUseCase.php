@@ -31,7 +31,8 @@ class ClientListMediaUseCase
         // то проверяем, что modelId действительно принадлежит текущему клиенту
 
             //TODO Клиент может смотреть только свои файлы ??
-            if (!$permissions->can('storage.media.view') && !$permissions->hasRole(RoleName::CLIENT)) {
+
+        if (!$permissions->can('storage.media.view') && !$permissions->hasRole(RoleName::CLIENT)) {
                 throw new AccessDeniedException('Доступ запрещён');
             }
 

@@ -5,6 +5,7 @@ use App\Modules\Storage\Application\Actions\ViewMediaUseCase;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
 use App\Modules\Storage\Domain\ValueObjects\MediaType;
+use App\Modules\Storage\Infrastructure\Exceptions\MediaFileNotFoundException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -59,7 +60,7 @@ class ViewMediaUseCaseTest extends TestCase
             ->once()
             ->andReturn(null);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(MediaFileNotFoundException::class);
         $this->expectExceptionMessage('Медиа не найдено');
 
         $this->useCase->execute($uuid);

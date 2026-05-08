@@ -8,12 +8,12 @@ use Illuminate\Http\UploadedFile;
 use Intervention\Image\Exceptions\AnalyzerException;
 use Intervention\Image\Exceptions\EncoderException;
 
-readonly class MediaFileService
+class MediaFileService
 {
     public function __construct(
-        private FileStorageInterface $fileStorage,
-        private readonly StorageConfig $config,
-        private readonly ImageProcessor $imageProcessor,
+        private readonly FileStorageInterface $fileStorage,
+        private readonly StorageConfig        $config,
+        private readonly ImageProcessor       $imageProcessor,
     ) {}
 
     /**
