@@ -1,14 +1,12 @@
 <?php
 
-// use Illuminate\Support\Facades\Route;
+Route::prefix('v1/content')->group(function () {
 
-// Route::middleware([])->prefix('content')->group(function () {
-
-//     Route::get('/api', function () {
-//         return 'content';
-//     });
-
-// });
+    //Без доступа для клиентской части
 
 
+    //С доступом для админки
+    Route::middleware('auth:sanctum')->group(function () {
 
+    });
+});

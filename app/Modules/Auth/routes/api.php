@@ -50,7 +50,4 @@ Route::prefix('v1/auth')->group(function () {
             Route::get('permissions/grouped', [RoleController::class, 'permissions']);
         });
     });
-
-
-    //Внештатные сотрудники Freelance
 });
