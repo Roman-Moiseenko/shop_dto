@@ -11,4 +11,6 @@ interface MediaRepositoryInterface
     public function findByUuid(string $uuid): ?MediaEntity;
     public function delete(int $id): void;
     public function listByEntity(string $modelType, int $modelId, ?string $type = null): array;
+    public function findByEntityType(string $modelType, int $modelId, string $type): ?MediaEntity;
+    public function listAll(?string $modelType = null, ?int $modelId = null): array;
 }

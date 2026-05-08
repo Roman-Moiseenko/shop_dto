@@ -2,21 +2,16 @@
 
 namespace App\Modules\Storage\Providers;
 
-use App\Modules\Auth\Infrastructure\Exceptions\ClientNotFoundException;
-use App\Modules\Auth\Infrastructure\Exceptions\StaffNotFoundException;
-use App\Modules\Storage\Application\Actions\ClientUploadMediaUseCase;
-use App\Modules\Storage\Application\Actions\DownloadMediaUseCase;
-use App\Modules\Storage\Application\Actions\UploadMediaUseCase;
 use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
 use App\Modules\Storage\Application\Interfaces\HttpClientInterface;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
+use App\Modules\Storage\Application\Services\StorageConfig;
 use App\Modules\Storage\Infrastructure\Exceptions\MediaFileNotFoundException;
 use App\Modules\Storage\Infrastructure\Persistence\MediaRepository;
 use App\Modules\Storage\Infrastructure\Services\LaravelFileStorage;
 use App\Modules\Storage\Infrastructure\Services\LaravelHttpClient;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use RecursiveDirectoryIterator;
@@ -106,6 +101,18 @@ class StorageServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(StorageConfig::class, function () {
+            return new StorageConfig(
+                originalDisk: config('storage.local.disk', 'local'),
+                cacheDisk: config('storage.cache.disk', 'public'),
+                uploadPath: config('storage.local.upload_path', 'uploads'),
+                cachePath: config('storage.local.cache_path', 'cache'),
+                thumbs: config('storage.thumbs', []),
+                cacheSettings: config('storage.cache', []),
+                watermarkSettings: config('storage.watermark', []),
+            );
+        });
+
         $this->app->bind(
             FileStorageInterface::class,
             LaravelFileStorage::class
@@ -119,6 +126,7 @@ class StorageServiceProvider extends ServiceProvider
             MediaRepository::class
         );
 
+        /*
         $this->app->when(UploadMediaUseCase::class)
             ->needs('$disk')
             ->give(config('storage.local.disk', 'public'));
@@ -142,7 +150,7 @@ class StorageServiceProvider extends ServiceProvider
         $this->app->when(ClientUploadMediaUseCase::class)
             ->needs('$uploadBasePath')
             ->give(config('storage.local.upload_path', 'uploads'));
-
+*/
 
     }
 

@@ -5,7 +5,9 @@ namespace App\Modules\Storage\Presentation\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use App\Modules\Storage\Application\Actions\ClientDeleteMediaUseCase;
+use App\Modules\Storage\Application\Actions\ClientListMediaUseCase;
 use App\Modules\Storage\Application\Actions\ClientUploadMediaUseCase;
+use App\Modules\Storage\Application\DTOs\IndexMediaData;
 use App\Modules\Storage\Application\DTOs\UploadMediaData;
 use Illuminate\Http\Request;
 
@@ -14,6 +16,7 @@ class ClientMediaController extends Controller
     public function __construct(
         private readonly ClientUploadMediaUseCase $clientUploadUseCase,
         private readonly ClientDeleteMediaUseCase $clientDeleteUseCase,
+        private readonly ClientListMediaUseCase  $clientListMediaUseCase,
     ) {}
 
     public function store(Request $request, UserPermission $permissions)
@@ -33,5 +36,12 @@ class ClientMediaController extends Controller
     {
         $this->clientDeleteUseCase->execute($uuid, $permissions);
         return response()->json(null, 204);
+    }
+
+    public function index(IndexMediaData $dto, UserPermission $permissions)
+    {
+        $mediaList = $this->clientListMediaUseCase->execute($dto->model_type, $dto->model_id, $permissions);
+
+        return response()->json($mediaList);
     }
 }

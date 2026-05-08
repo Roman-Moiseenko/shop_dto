@@ -8,51 +8,65 @@ use App\Modules\Storage\Application\DTOs\UploadMediaData;
 use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Application\Services\ImageProcessor;
+use App\Modules\Storage\Application\Services\MediaFileService;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
 use App\Modules\Storage\Domain\ValueObjects\MediaType;
 use Illuminate\Support\Str;
+use Intervention\Image\Exceptions\AnalyzerException;
+use Intervention\Image\Exceptions\EncoderException;
+use Intervention\Image\Exceptions\InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 
 readonly class UploadMediaUseCase
 {
     public function __construct(
         private MediaRepositoryInterface $mediaRepository,
-        private ImageProcessor           $imageProcessor,
-        private readonly FileStorageInterface $fileStorage,
-        private string                   $disk = 'public',           // <-- можно задать в сервис-провайдере
-        private string                   $uploadBasePath = 'uploads', // <-- аналогично
-
+        private MediaFileService         $mediaFileService,
     ) {}
 
+    /**
+     * @throws InvalidArgumentException|AnalyzerException
+     * @throws EncoderException
+     */
     public function execute(UploadMediaData $dto, UserPermission $permissions): MediaEntity
     {
-        if (!$permissions->can('storage.media.create')) {
-            throw new AccessDeniedException();
+        if (!$permissions->can('storage.media.create')) throw new AccessDeniedException();
+        $type = new MediaType($dto->type);
+        // 1. Для одиночного типа — удаляем предыдущий файл и запись
+        if ($type->isSingle()) {
+            $existing = $this->mediaRepository->findByEntityType($dto->model_type, $dto->model_id, $dto->type);
+            if ($existing) {
+                $this->mediaFileService->deleteAllFiles($existing);
+                $this->mediaRepository->delete($existing->id);
+            }
         }
-
-        $file = $dto->file;
-        $filename = Uuid::uuid4()->toString() . '.' . $file->getClientOriginalExtension();
-        $basePath = $this->uploadBasePath . '/' . $dto->model_type . '/' . $dto->model_id . '/';
-        $this->fileStorage->storeUploadedFile($file, $basePath, $filename, $this->disk);
         $uuid = Uuid::uuid4()->toString();
+        $filename = $uuid . '.' . $dto->file->getClientOriginalExtension();
+        // 2. Сохраняем оригинал на private‑диске и получаем имя файла
+        $this->mediaFileService->storeOriginal($dto->file, $dto->model_type, $dto->model_id, $filename);
 
+        // 3. Сущность медиа
         $media = new MediaEntity(
             uuid: $uuid,
             modelType: $dto->model_type,
             modelId: $dto->model_id,
-            type: new MediaType($dto->type),
+            type: $type,
             fileName: $filename,
-            disk: $this->disk,
-            size: $file->getSize(),
+            disk: $this->mediaFileService->getOriginalDisk(),
+            size: $dto->file->getSize(),
             title: $dto->title,
             description: $dto->description,
             sort: $dto->sort ?? 0,
-            mimeType: $file->getMimeType(),
+            mimeType: $dto->file->getMimeType(),
         );
 
+        // 4. Сохраняем в БД через репозиторий (он выставит id, обработает sort)
         $media = $this->mediaRepository->save($media);
-        $this->imageProcessor->process($media);
+
+        // 5. Генерируем публичный кэш и все нарезки
+        $this->mediaFileService->generateCache($media);
 
         return $media;
+
     }
 }

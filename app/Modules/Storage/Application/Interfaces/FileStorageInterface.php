@@ -15,7 +15,11 @@ interface FileStorageInterface
      * Удаляет директорию и всё её содержимое на указанном диске.
      */
     public function deleteDirectory(string $path, string $disk): void;
+    public function get(string $path, string $disk): string;
     public function put(string $path, string $content, ?string $disk = null): void;
     public function exists(string $path, string $disk): bool;
     public function fullPath(string $path, string $disk): string;
+    public function delete(string $path, string $disk): void;
+
+    public function getUrl(string $path, string $disk): string;
 }

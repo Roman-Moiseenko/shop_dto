@@ -9,6 +9,7 @@ use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
 use App\Modules\Storage\Application\Interfaces\HttpClientInterface;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Application\Services\ImageProcessor;
+use App\Modules\Storage\Application\Services\MediaFileService;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
 use App\Modules\Storage\Domain\ValueObjects\MediaType;
 use Illuminate\Support\Facades\Http;
@@ -21,38 +22,60 @@ readonly class DownloadMediaUseCase
 
     public function __construct(
         private MediaRepositoryInterface $mediaRepository,
-        private ImageProcessor $imageProcessor,
-        private FileStorageInterface $fileStorage,
-        private HttpClientInterface $httpClient,   //
-        private string $disk = 'public',
-        private string $uploadBasePath = 'uploads',
+        private MediaFileService         $mediaFileService,
+        private HttpClientInterface $httpClient,
+
     ) {}
 
     public function execute(DownloadMediaData $dto, UserPermission $permissions): MediaEntity
     {
-        if (!$permissions->can('storage.media.create')) {
+        if (!$permissions->can('storage.media.create'))
             throw new AccessDeniedException();
-        }
 
+// 1. Загружаем файл по URL
         $response = $this->httpClient->get($dto->url);
-        if (!$response->successful())
+        if (!$response->successful()) {
             throw new \InvalidArgumentException('Не удалось загрузить файл');
+        }
 
         $content = $response->body();
         $mimeType = $response->header('Content-Type') ?? 'image/jpeg';
-        $ext = pathinfo(parse_url($dto->url, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg';
-        $filename = Uuid::uuid4()->toString() . '.' . $ext;
 
-        $basePath = $this->uploadBasePath . '/' . $dto->model_type . '/' . $dto->model_id . '/';
-        $this->fileStorage->put($basePath . $filename, $content, $this->disk);
+        $type = new MediaType($dto->type);
 
+        // 2. Для одиночного типа — удаляем предыдущий файл и запись
+        if ($type->isSingle()) {
+            $existing = $this->mediaRepository->findByEntityType(
+                $dto->model_type,
+                $dto->model_id,
+                $dto->type
+            );
+            if ($existing) {
+                $this->mediaFileService->deleteAllFiles($existing);
+                $this->mediaRepository->delete($existing->id);
+            }
+        }
+
+        // 3. Генерируем имя файла и сохраняем оригинал
+        $uuid = Uuid::uuid4()->toString();
+        $ext = $this->guessExtension($mimeType, $dto->url);
+        $filename = $uuid . '.' . $ext;
+
+        $this->mediaFileService->storeOriginalFromContent(
+            $content,
+            $dto->model_type,
+            $dto->model_id,
+            $filename
+        );
+
+        // 4. Создаём доменную сущность
         $media = new MediaEntity(
-            uuid: Uuid::uuid4()->toString(),
+            uuid: $uuid,
             modelType: $dto->model_type,
             modelId: $dto->model_id,
-            type: new MediaType($dto->type),
+            type: $type,
             fileName: $filename,
-            disk: $this->disk,
+            disk: $this->mediaFileService->getOriginalDisk(),
             size: strlen($content),
             title: $dto->title,
             description: $dto->description,
@@ -60,9 +83,34 @@ readonly class DownloadMediaUseCase
             mimeType: $mimeType,
         );
 
+        // 5. Сохраняем в БД
         $media = $this->mediaRepository->save($media);
-        $this->imageProcessor->process($media);
+
+        // 6. Генерируем публичный кэш (основной + нарезки)
+        $this->mediaFileService->generateCache($media);
 
         return $media;
+    }
+
+    /**
+     * Угадать расширение файла на основе MIME-типа или URL.
+     */
+    private function guessExtension(string $mimeType, string $url): string
+    {
+        // Пробуем извлечь из URL
+        $pathExt = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION);
+        if (!empty($pathExt) && in_array($pathExt, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'])) {
+            return $pathExt;
+        }
+
+        // Иначе определяем по MIME-типу
+        return match (true) {
+            str_contains($mimeType, 'jpeg') => 'jpg',
+            str_contains($mimeType, 'png') => 'png',
+            str_contains($mimeType, 'gif') => 'gif',
+            str_contains($mimeType, 'webp') => 'webp',
+            str_contains($mimeType, 'svg') => 'svg',
+            default => 'jpg',
+        };
     }
 }

@@ -7,6 +7,7 @@ use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use App\Modules\Storage\Application\DTOs\IndexMediaData;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
+use App\Modules\Storage\Infrastructure\Exceptions\MediaFileNotFoundException;
 
 readonly class ViewMediaUseCase
 {
@@ -16,7 +17,7 @@ readonly class ViewMediaUseCase
     public function execute(string $uuid): MediaEntity
     {
         $media = $this->mediaRepository->findByUuid($uuid);
-        if (!$media) throw new \InvalidArgumentException('Медиа не найдено');
+        if (!$media) throw new MediaFileNotFoundException('Медиа не найдено');
 
         return $media;
     }

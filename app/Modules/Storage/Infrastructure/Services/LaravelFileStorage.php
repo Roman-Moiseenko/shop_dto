@@ -23,7 +23,10 @@ class LaravelFileStorage implements FileStorageInterface
     {
         Storage::disk($disk)->put($path, $content);
     }
-
+    public function get(string $path, string $disk): string
+    {
+        return Storage::disk($disk)->get($path);
+    }
     public function exists(string $path, string $disk): bool
     {
         return Storage::disk($disk)->exists($path);
@@ -32,5 +35,15 @@ class LaravelFileStorage implements FileStorageInterface
     public function fullPath(string $path, string $disk): string
     {
         return Storage::disk($disk)->path($path);
+    }
+    public function delete(string $path, string $disk): void
+    {
+        Storage::disk($disk)->delete($path);
+    }
+
+    public function getUrl(string $path, string $disk): string
+    {
+        $fullUrl = Storage::disk($disk)->url($path);
+        return parse_url($fullUrl, PHP_URL_PATH);
     }
 }

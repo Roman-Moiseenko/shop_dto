@@ -15,52 +15,54 @@
  */
 
 return [
-    /*
-    |--------------------------------------------------------------------------
-    | Module Information
-    |--------------------------------------------------------------------------
-    |
-    | Basic module identification and status configuration.
-    |
-    */
 
     /**
      * Module name
      */
     'name' => 'Storage',
 
-    /**
-     * Architecture pattern used for this module
-     * Leave empty ('') to use default configuration
-     * Available in v2.0: 'custom', 'laravel', 'mvc', 'clean-architecture', 'ddd', 'event-sourcing', etc.
-     */
     'architecture_pattern' => '',
 
-    /*
-    |--------------------------------------------------------------------------
-    | Custom Module Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Add your own configuration values below. These will be accessible
-    | throughout your module using the config() helper function.
-    |
-    |
-    */
+
     //Нарезки, конфигурация
+    //Настройки для копий
+    'cache' => [
+        'disk' => env('CACHE_DISK', 'public'),
+        'max_width' => null,
+        'max_height' => null,
+        'watermark' => true,
+    ],
+    //Водяной знак, общие настройки
+    'watermark' => [
+        'disk' => 'local',
+        // путь к файлу водяного знака (относительно диска storage.local.disk)
+        'path' => 'watermark/watermark.png',
+
+        // доля от ширины изображения, которую займёт знак (0.05 = 5%)
+        'ratio' => 0.1,
+
+        // отступ от края в пикселях
+        'offset' => 20,
+
+        // положение: bottom-right, bottom-left, top-right, top-left
+        'position' => 'bottom-right',
+    ],
+    //Уменьшенные копии
     'thumbs' => [
         // entity_type -> type -> список нарезок
-        //Модуль.Сущность
+        //Модуль => Сущности
+
         'catalog.product' => [
             'image' => [
-                'card' => ['width' => 600, 'height' => 600],
+                'card' => ['width' => 600, 'height' => 600, 'fit' => true, 'watermark' => true],
                 'list' => ['width' => 150, 'height' => 150],
-                'thumb' => ['width' => 80, 'height' => 80],
+                'thumb' => ['width' => 80, 'height' => 80, 'fit' => true],
             ],
             'gallery' => [
                 'thumb' => ['width' => 120, 'height' => 120],
             ],
         ],
-        'catalog_category' => [
+        'catalog.category' => [
             'image' => [
                 'card' => ['width' => 600, 'height' => 600],
                 'list' => ['width' => 150, 'height' => 150],
@@ -69,6 +71,8 @@ return [
                 'thumb' => ['width' => 80, 'height' => 80],
             ],
         ],
+
+
         'auth.client' => [
             'image' => [
                 'avatar' => ['width' => 120, 'height' => 120],
@@ -84,9 +88,11 @@ return [
                 'avatar' => ['width' => 120, 'height' => 120],
             ],
         ],
+
+
     ],
     'local' => [
-        'disk' => env('STORAGE_DISK', 'public'),
+        'disk' => env('STORAGE_DISK', 'local'),
         'upload_path' => 'uploads',
         'cache_path' => 'cache',
     ],

@@ -6,24 +6,29 @@ use App\Modules\Shared\Domain\Entities\UserPermission;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
+use App\Modules\Storage\Application\Services\MediaFileService;
 use Illuminate\Support\Facades\Storage;
 
 readonly class DeleteMediaUseCase
 {
     public function __construct(
         private MediaRepositoryInterface $mediaRepository,
-        private FileStorageInterface $fileStorage,
+        private MediaFileService $mediaFileService,
     ) {}
     public function execute(int $id, UserPermission $permissions): void
     {
         if (!$permissions->can('storage.media.delete')) throw new AccessDeniedException();
 
+
         $media = $this->mediaRepository->findById($id);
-        if (!$media) throw new \InvalidArgumentException('Медиа не найдено');
+        if (!$media) {
+            throw new \InvalidArgumentException('Медиа не найдено');
+        }
 
+        // Удаляем все файлы (оригинал + кэш)
+        $this->mediaFileService->deleteAllFiles($media);
 
-        $this->fileStorage->deleteDirectory(dirname($media->getPath()), $media->disk);
-
+        // Удаляем запись из БД (репозиторий также корректирует sort для галерей)
         $this->mediaRepository->delete($id);
     }
 }

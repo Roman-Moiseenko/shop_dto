@@ -63,27 +63,6 @@ readonly class MediaRepository implements MediaRepositoryInterface
             return $this->hydrate($model);
         });
 
-
-     /*   if ($media->id ?? null) {
-            $model = Media::findOrFail($media->id);
-        } else {
-            $model = new Media();
-        }
-
-        $model->uuid = $media->uuid;
-        $model->model_type = $media->modelType;
-        $model->model_id = $media->modelId;
-        $model->type = $media->type->getValue();
-        $model->title = $media->title;
-        $model->description = $media->description;
-        $model->sort = $media->sort;
-        $model->file_name = $media->fileName;
-        $model->mime_type = $media->mimeType;
-        $model->disk = $media->disk;
-        $model->size = $media->size;
-        $model->save();
-
-        return $this->hydrate($model);*/
     }
 
     public function findById(int $id): ?MediaEntity
@@ -132,6 +111,22 @@ readonly class MediaRepository implements MediaRepositoryInterface
             ->all();
     }
 
+    public function listAll(?string $modelType = null, ?int $modelId = null): array
+    {
+        $query = Media::query();
+
+        if ($modelType) {
+            $query->where('model_type', $modelType);
+        }
+        if ($modelId) {
+            $query->where('model_id', $modelId);
+        }
+
+        return $query->get()
+            ->map(fn($model) => $this->hydrate($model))
+            ->all();
+    }
+
     private function hydrate(Media $model): MediaEntity
     {
         $media = new MediaEntity(
@@ -149,6 +144,16 @@ readonly class MediaRepository implements MediaRepositoryInterface
         );
         $media->id = $model->id;
         return $media;
+    }
+    public function findByEntityType(string $modelType, int $modelId, string $type): ?MediaEntity
+    {
+        $model = Media::where([
+            'model_type' => $modelType,
+            'model_id'   => $modelId,
+            'type'       => $type,
+        ])->first();
+
+        return $model ? $this->hydrate($model) : null;
     }
 
     private function reorderGalleryAfterChange(string $modelType, int $modelId, string $type, int $mediaId, int $oldSort, int $newSort): void

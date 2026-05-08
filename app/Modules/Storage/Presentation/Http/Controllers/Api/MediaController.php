@@ -4,10 +4,11 @@ namespace App\Modules\Storage\Presentation\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Storage\Application\Actions\ClearCacheUseCase;
 use App\Modules\Storage\Application\Actions\DeleteMediaUseCase;
 use App\Modules\Storage\Application\Actions\DownloadMediaUseCase;
 use App\Modules\Storage\Application\Actions\FileMediaUseCase;
-use App\Modules\Storage\Application\Actions\IndexMediaUseCase;
+use App\Modules\Storage\Application\Actions\PublicListMediaUseCase;
 use App\Modules\Storage\Application\Actions\UpdateMediaUseCase;
 use App\Modules\Storage\Application\Actions\UploadMediaUseCase;
 use App\Modules\Storage\Application\Actions\ViewMediaUseCase;
@@ -15,22 +16,29 @@ use App\Modules\Storage\Application\DTOs\DownloadMediaData;
 use App\Modules\Storage\Application\DTOs\IndexMediaData;
 use App\Modules\Storage\Application\DTOs\UpdateMediaData;
 use App\Modules\Storage\Application\DTOs\UploadMediaData;
-use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
-use App\Modules\Storage\Infrastructure\Models\Media;
+use App\Modules\Storage\Application\Services\MediaFileService;
 use Illuminate\Http\Request;
 
 class MediaController extends Controller
 {
     public function __construct(
-        private readonly UploadMediaUseCase   $uploadUseCase,
-        private readonly DownloadMediaUseCase $downloadUseCase,
-        private readonly IndexMediaUseCase    $indexUseCase,
-        private readonly ViewMediaUseCase     $viewUseCase,
-        private readonly UpdateMediaUseCase   $updateUseCase,
-        private readonly DeleteMediaUseCase   $deleteUseCase,
-        private readonly FileMediaUseCase     $fileMediaUseCase,
+        private readonly UploadMediaUseCase     $uploadUseCase,
+        private readonly DownloadMediaUseCase   $downloadUseCase,
+        private readonly ViewMediaUseCase       $viewUseCase,
+        private readonly UpdateMediaUseCase     $updateUseCase,
+        private readonly DeleteMediaUseCase     $deleteUseCase,
+        private readonly FileMediaUseCase       $fileMediaUseCase,
+        private readonly MediaFileService       $mediaFileService,
+        private readonly ClearCacheUseCase      $clearCacheUseCase,
+        private readonly PublicListMediaUseCase $publicListMediaUseCase,
     )
     {
+    }
+    public function publicIndex(IndexMediaData $dto)
+    {
+        $mediaList = $this->publicListMediaUseCase->execute($dto->model_type, $dto->model_id, $dto->type);
+
+        return response()->json($mediaList);
     }
 
     // Загрузка одного или нескольких файлов
@@ -38,10 +46,19 @@ class MediaController extends Controller
     {
         $media = $this->viewUseCase->execute($uuid);
         $thumb = $request->input('thumb');
-        return response()->json([
-            'id' => $media->uuid,
-            'url' => $thumb ? $media->getUrl($thumb) : $media->getUrl(),
-        ]);
+
+        $this->mediaFileService->ensureCacheExists($media);
+
+        if ($thumb) {
+            if (!$this->mediaFileService->thumbExists($media, $thumb)) {
+                return response()->json(['message' => 'Thumbnail not found'], 404);
+            }
+            $url = $this->mediaFileService->getThumbUrl($media, $thumb);
+        } else {
+            $url = $this->mediaFileService->getCacheFullUrl($media);
+        }
+
+        return response()->json(['url' => $url]);
     }
 
     public function upload(Request $request, UserPermission $permissions)
@@ -55,8 +72,13 @@ class MediaController extends Controller
             return response()->json(['message' => 'File is required'], 422);
         }
 
-        $media = $this->uploadUseCase->execute($dto, $permissions);
-        return response()->json($media->toArray(), 201);
+        try {
+            $media = $this->uploadUseCase->execute($dto, $permissions);
+            return response()->json($media->toArray(), 201);
+        } catch (\Throwable $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+
     }
 
     public function download(DownloadMediaData $dto, UserPermission $permissions)
@@ -65,11 +87,6 @@ class MediaController extends Controller
         return response()->json($media->toArray(), 201);
     }
 
-    public function index(IndexMediaData $dto, UserPermission $permissions)
-    {
-        $mediaList = $this->indexUseCase->execute($dto, $permissions);
-        return response()->json($mediaList);
-    }
 
     public function update(int $id, UpdateMediaData $dto, UserPermission $permissions)
     {
@@ -83,9 +100,25 @@ class MediaController extends Controller
         return response()->json(null, 204);
     }
 
+    /**
+     * Оригинальный файл
+     */
     public function file(string $uuid, UserPermission $permissions)
     {
         $file = $this->fileMediaUseCase->execute($uuid, $permissions);
         return response()->file($file);
+    }
+
+    public function clearCache(Request $request, UserPermission $permissions)
+    {
+        $modelType = $request->input('model_type');
+        $modelId = $request->input('model_id');
+
+        $count = $this->clearCacheUseCase->execute($permissions, $modelType, $modelId);
+
+        return response()->json([
+            'message' => "Кэш успешно очищен. Обработано записей: {$count}",
+            'count' => $count,
+        ]);
     }
 }

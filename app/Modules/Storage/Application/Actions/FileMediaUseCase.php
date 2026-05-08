@@ -20,7 +20,7 @@ readonly class FileMediaUseCase
         if (!$permissions->can('storage.media.view')) throw new AccessDeniedException();
 
         $media = $this->mediaRepository->findByUuid($uuid);
-        if (!$media) throw new \InvalidArgumentException('Медиа не найдено');
+        if (!$media) throw new MediaFileNotFoundException('Медиа не найдено');
         $path = $media->getPath(); // относительный путь на диске
         $disk = $media->disk;
 
