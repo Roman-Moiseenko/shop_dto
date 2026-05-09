@@ -46,8 +46,8 @@ Route::prefix('v1/auth')->group(function () {
             Route::post('/freelance/{id}/user', [FreelanceController::class, 'user']);
 
             //Управление ролями
-            Route::apiResource('roles', RoleController::class)->except(['create', 'edit']);
-            Route::get('permissions/grouped', [RoleController::class, 'permissions']);
+            Route::apiResource('role', RoleController::class)->except(['create', 'edit']);
+            Route::get('permission/grouped', [RoleController::class, 'permissions']);
         });
     });
 });

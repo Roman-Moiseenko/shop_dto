@@ -14,6 +14,9 @@ use App\Modules\Content\Application\DTOs\PageCreateData;
 use App\Modules\Content\Application\DTOs\PageUpdateData;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 class PageController extends Controller
 {
@@ -35,8 +38,13 @@ class PageController extends Controller
         return response()->json($pages);
     }
 
-    public function store(PageCreateData $dto, UserPermission $permissions): JsonResponse
+    public function store(Request $request, UserPermission $permissions): JsonResponse
     {
+        try {
+            $dto = PageCreateData::validateAndCreate($request->all());
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         $page = $this->createUseCase->execute($dto, $permissions);
         return response()->json($page, 201);
     }
@@ -47,8 +55,13 @@ class PageController extends Controller
         return response()->json($page);
     }
 
-    public function update(int $id, PageUpdateData $dto, UserPermission $permissions): JsonResponse
+    public function update(int $id, Request $request, UserPermission $permissions): JsonResponse
     {
+        try {
+            $dto = PageUpdateData::validateAndCreate($request->all());
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         $page = $this->updateUseCase->execute($id, $dto, $permissions);
         return response()->json($page);
     }
@@ -58,7 +71,6 @@ class PageController extends Controller
         $this->deleteUseCase->execute($id, $permissions);
         return response()->json(null, 204);
     }
-
 
     public function forceDestroy(int $id, UserPermission $permissions): JsonResponse
     {

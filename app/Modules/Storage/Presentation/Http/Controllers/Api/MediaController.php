@@ -18,6 +18,8 @@ use App\Modules\Storage\Application\DTOs\UpdateMediaData;
 use App\Modules\Storage\Application\DTOs\UploadMediaData;
 use App\Modules\Storage\Application\Services\MediaFileService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 class MediaController extends Controller
 {
@@ -34,8 +36,13 @@ class MediaController extends Controller
     )
     {
     }
-    public function publicIndex(IndexMediaData $dto)
+    public function publicIndex(Request $request)
     {
+        try {
+            $dto = IndexMediaData::validateAndCreate($request);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         $mediaList = $this->publicListMediaUseCase->execute($dto->model_type, $dto->model_id, $dto->type);
 
         return response()->json($mediaList);
@@ -81,15 +88,27 @@ class MediaController extends Controller
 
     }
 
-    public function download(DownloadMediaData $dto, UserPermission $permissions)
+    public function download(Request $request, UserPermission $permissions)
     {
+        try {
+            $dto = DownloadMediaData::validateAndCreate($request);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $media = $this->downloadUseCase->execute($dto, $permissions);
         return response()->json($media->toArray(), 201);
     }
 
 
-    public function update(int $id, UpdateMediaData $dto, UserPermission $permissions)
+    public function update(int $id, Request $request, UserPermission $permissions)
     {
+        try {
+            $dto = UpdateMediaData::validateAndCreate($request);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $media = $this->updateUseCase->execute($id, $dto, $permissions);
         return response()->json($media->toArray());
     }

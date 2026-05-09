@@ -10,18 +10,27 @@ use App\Modules\Storage\Application\Actions\ClientUploadMediaUseCase;
 use App\Modules\Storage\Application\DTOs\IndexMediaData;
 use App\Modules\Storage\Application\DTOs\UploadMediaData;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 class ClientMediaController extends Controller
 {
     public function __construct(
         private readonly ClientUploadMediaUseCase $clientUploadUseCase,
         private readonly ClientDeleteMediaUseCase $clientDeleteUseCase,
-        private readonly ClientListMediaUseCase  $clientListMediaUseCase,
-    ) {}
+        private readonly ClientListMediaUseCase   $clientListMediaUseCase,
+    )
+    {
+    }
 
     public function store(Request $request, UserPermission $permissions)
     {
-        $dto = UploadMediaData::validateAndCreate($request->all());
+        try {
+            $dto = UploadMediaData::validateAndCreate($request->all());
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         if ($request->hasFile('file')) {
             $dto->file = $request->file('file');
         } else {
@@ -38,8 +47,14 @@ class ClientMediaController extends Controller
         return response()->json(null, 204);
     }
 
-    public function index(IndexMediaData $dto, UserPermission $permissions)
+    public function index(Request $request, UserPermission $permissions)
     {
+        try {
+            $dto = IndexMediaData::validateAndCreate($request->all());
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $mediaList = $this->clientListMediaUseCase->execute($dto->model_type, $dto->model_id, $permissions);
 
         return response()->json($mediaList);

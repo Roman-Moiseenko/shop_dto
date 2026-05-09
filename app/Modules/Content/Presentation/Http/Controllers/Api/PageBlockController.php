@@ -12,18 +12,26 @@ use App\Modules\Content\Application\DTOs\ReorderSingleBlockData;
 use App\Modules\Content\Application\DTOs\UpdateBlockCaptionData;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 class PageBlockController extends Controller
 {
     public function __construct(
         private readonly AddBlockToPageUseCase      $addBlockUseCase,
         private readonly RemoveBlockFromPageUseCase $removeBlockUseCase,
-        private UpdateBlockCaptionUseCase           $updateBlockCaptionUseCase,
+        private readonly UpdateBlockCaptionUseCase  $updateBlockCaptionUseCase,
         private readonly ReorderSingleBlockUseCase  $reorderSingleBlockUseCase,
     ) {}
 
-    public function addBlock(int $id, AddBlockData $dto, UserPermission $permissions): JsonResponse
+    public function addBlock(int $id, Request $request, UserPermission $permissions): JsonResponse
     {
+        try {
+            $dto = AddBlockData::validateAndCreate($request->all());
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         $block = $this->addBlockUseCase->execute($id, $dto, $permissions);
         return response()->json($block, 201);
     }
@@ -34,14 +42,24 @@ class PageBlockController extends Controller
         return response()->json(null, 204);
     }
 
-    public function updateSort(int $id, ReorderSingleBlockData $dto, UserPermission $permissions): JsonResponse
+    public function updateSort(int $id, Request $request, UserPermission $permissions): JsonResponse
     {
+        try {
+            $dto = ReorderSingleBlockData::validateAndCreate($request->all());
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         $this->reorderSingleBlockUseCase->execute($id, $dto, $permissions);
         return response()->json(['message' => 'Порядок обновлён']);
     }
 
-    public function updateCaption(int $id, UpdateBlockCaptionData $dto, UserPermission $permissions): JsonResponse
+    public function updateCaption(int $id, Request $request, UserPermission $permissions): JsonResponse
     {
+        try {
+            $dto = UpdateBlockCaptionData::validateAndCreate($request->all());
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         $block = $this->updateBlockCaptionUseCase->execute($id, $dto, $permissions);
         return response()->json($block);
     }

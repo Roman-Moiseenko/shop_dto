@@ -12,8 +12,8 @@ Route::prefix('v1/content')->group(function () {
 
     //С доступом для админки
     Route::middleware('auth:sanctum')->group(function () {
-        Route::apiResource('widgets', WidgetController::class);
-        Route::apiResource('widget-instances', WidgetInstanceController::class);
+        Route::apiResource('widget', WidgetController::class);
+        Route::apiResource('widget-instance', WidgetInstanceController::class);
         Route::apiResource('page', PageController::class);
         // Дополнительный маршрут для жёсткого удаления
         Route::delete('/page/{id}/force', [PageController::class, 'forceDestroy']);

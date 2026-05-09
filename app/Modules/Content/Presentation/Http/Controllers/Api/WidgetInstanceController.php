@@ -12,6 +12,8 @@ use App\Modules\Content\Application\DTOs\WidgetInstanceData;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 class WidgetInstanceController extends Controller
 {
@@ -30,8 +32,13 @@ class WidgetInstanceController extends Controller
         return response()->json($instances);
     }
 
-    public function store(WidgetInstanceData $dto, UserPermission $permissions): JsonResponse
+    public function store(Request $request, UserPermission $permissions): JsonResponse
     {
+        try {
+            $dto = WidgetInstanceData::validateAndCreate($request->all());
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         $instance = $this->createUseCase->execute($dto, $permissions);
         return response()->json($instance, 201);
     }
@@ -42,8 +49,13 @@ class WidgetInstanceController extends Controller
         return response()->json($instance);
     }
 
-    public function update(int $id, WidgetInstanceData $dto, UserPermission $permissions): JsonResponse
+    public function update(int $id, Request $request, UserPermission $permissions): JsonResponse
     {
+        try {
+            $dto = WidgetInstanceData::validateAndCreate($request->all());
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         $instance = $this->updateUseCase->execute($id, $dto, $permissions);
         return response()->json($instance);
     }
