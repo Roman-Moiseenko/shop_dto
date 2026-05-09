@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('widget_instance_id')->constrained('widget_instances')->cascadeOnDelete();
             $table->unsignedInteger('sort_order')->default(0);
             $table->string('section', 50)->nullable();
+            $table->string('caption')->nullable();
             $table->timestamps();
             $table->index(['container_type', 'container_id']);
         });

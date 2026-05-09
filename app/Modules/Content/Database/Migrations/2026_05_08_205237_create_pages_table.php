@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text('meta')->nullable(); // JSON
             $table->unsignedBigInteger ('author_id')->nullable();
             $table->timestamp('published_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

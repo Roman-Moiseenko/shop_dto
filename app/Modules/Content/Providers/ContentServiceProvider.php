@@ -2,12 +2,26 @@
 
 namespace App\Modules\Content\Providers;
 
+use App\Modules\Content\Application\Interfaces\ContentBlockRepositoryInterface;
+use App\Modules\Content\Application\Interfaces\PageRepositoryInterface;
+use App\Modules\Content\Application\Interfaces\WidgetInstanceRepositoryInterface;
+use App\Modules\Content\Application\Interfaces\WidgetRepositoryInterface;
+use App\Modules\Content\Infrastructure\Exceptions\ContentBlockNotFoundException;
+use App\Modules\Content\Infrastructure\Exceptions\PageNotFoundException;
+use App\Modules\Content\Infrastructure\Exceptions\WidgetInstanceNotFoundException;
+use App\Modules\Content\Infrastructure\Exceptions\WidgetNotFoundException;
+use App\Modules\Content\Infrastructure\Persistence\ContentBlockRepository;
+use App\Modules\Content\Infrastructure\Persistence\PageRepository;
+use App\Modules\Content\Infrastructure\Persistence\WidgetInstanceRepository;
+use App\Modules\Content\Infrastructure\Persistence\WidgetRepository;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Service Provider for Content module
@@ -73,6 +87,27 @@ class ContentServiceProvider extends ServiceProvider
         $this->registerMigrations();
         $this->registerFactories();
         $this->registerSeeders();
+
+        $this->app->booted(function () {
+            $handler = $this->app->make(ExceptionHandler::class);
+            $handler->renderable(function (PageNotFoundException $e) {
+                return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+            });
+            $handler->renderable(function (ContentBlockNotFoundException $e) {
+                return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+            });
+
+            $handler->renderable(function (WidgetInstanceNotFoundException $e) {
+                return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+            });
+
+            $handler->renderable(function (WidgetNotFoundException $e) {
+                return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+            });
+
+
+        });
+
     }
 
     /**
@@ -80,9 +115,25 @@ class ContentServiceProvider extends ServiceProvider
      *
      * CORRECTION: Signature sans type de retour (classe parente n'en a pas)
      */
-    public function register()
+    public function register(): void
     {
         // Register module-specific services
+        $this->app->bind(
+            ContentBlockRepositoryInterface::class,
+            ContentBlockRepository::class
+        );
+        $this->app->bind(
+            PageRepositoryInterface::class,
+            PageRepository::class
+        );
+        $this->app->bind(
+            WidgetInstanceRepositoryInterface::class,
+            WidgetInstanceRepository::class
+        );
+        $this->app->bind(
+            WidgetRepositoryInterface::class,
+            WidgetRepository::class
+        );
     }
 
     // =====================================================================

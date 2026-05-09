@@ -32,7 +32,17 @@ class WidgetInstanceRepository implements WidgetInstanceRepositoryInterface
         $model = WidgetInstance::where('uuid', $uuid)->first();
         return $model ? $this->hydrate($model) : null;
     }
+    public function all(?int $widgetId = null): array
+    {
+        $query = WidgetInstance::query();
+        if ($widgetId !== null) {
+            $query->where('widget_id', $widgetId);
+        }
 
+        return $query->get()
+            ->map(fn($model) => $this->hydrate($model))
+            ->all();
+    }
     public function delete(int $id): void
     {
         WidgetInstance::destroy($id);

@@ -22,11 +22,11 @@ class ContentRoleSeeder extends Seeder
         $this->createPermission($blog);
         $this->setPermissions('content', $blog);
 
-        //Доступ к данным
+        //Доступ к данным, наполнять страницы, создавать экземпляры виджетов
         $data = $this->fillArrayPermissions('content', 'data', $this->listPermissions(true, true));
         $this->createPermission($data);
         $this->setPermissions('content', $data);
-        //Доступ к настройкам
+        //Доступ к настройкам, создавать виджеты и др.
         $this->addRole('settings', 'Настройки системы'); //Дублируется по модулям
         $settings = $this->fillArrayPermissions('content', 'settings', $this->listPermissions());
         $this->createPermission($settings);

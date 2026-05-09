@@ -12,4 +12,6 @@ interface ContentBlockRepositoryInterface
     public function delete(int $id): void;
     public function listByContainer(ContainerType $containerType, int $containerId): array;
     public function reorder(ContainerType $containerType, int $containerId, array $orderedIds): void;
+
+    public function updateSortOrder(int $blockId, int $newSortOrder, ContainerType $containerType, int $containerId): void;
 }

@@ -13,7 +13,10 @@ final class ContentBlockEntity
         get => $this->id;
         set => $this->id = $value;
     }
-
+    public ?string $caption = null {
+        get => $this->caption;
+        set => $this->caption = $value;
+    }
     public ContainerType $containerType {
         get => $this->containerType;
     }
@@ -52,11 +55,13 @@ final class ContentBlockEntity
         int $widgetInstanceId,
         int $sortOrder = 0,
         ?string $section = null,
+        ?string $caption = null
     ) {
         $this->containerType = $containerType;
         $this->containerId = $containerId;
         $this->widgetInstanceId = $widgetInstanceId;
         $this->sortOrder = $sortOrder;
         $this->section = $section;
+        $this->caption = $caption;
     }
 }

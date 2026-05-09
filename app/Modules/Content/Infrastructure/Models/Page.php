@@ -2,10 +2,13 @@
 
 namespace App\Modules\Content\Infrastructure\Models;
 
+use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
+ * @property int $id
  * @property string $title
  * @property string $slug
  * @property string $content
@@ -14,10 +17,16 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property string $template
  * @property array meta
  * @property int $author_id
- * @property ?\DateTimeImmutable $published_at
+ *
+ * @property ?DateTime $published_at
+ * @property ?DateTime $created_at
+ * @property ?DateTime $updated_at
+ * @property ?DateTime $deleted_at
  */
 class Page extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'title', 'slug', 'content', 'status', 'content_type', 'template', 'meta', 'author_id', 'published_at'
     ];

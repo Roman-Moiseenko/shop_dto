@@ -69,6 +69,16 @@ class PageEntity
         get => $this->template;
         set => $this->template = $value;
     }
+
+    public ?DateTimeImmutable $deletedAt = null {
+        get => $this->deletedAt;
+        set => $this->deletedAt = $value;
+    }
+
+    public bool $isTrashed {
+        get => $this->deletedAt !== null;
+    }
+
     public function __construct(
         string $title,
         Slug $slug,

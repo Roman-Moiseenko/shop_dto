@@ -10,4 +10,6 @@ interface WidgetInstanceRepositoryInterface
     public function findById(int $id): ?WidgetInstanceEntity;
     public function findByUuid(string $uuid): ?WidgetInstanceEntity;
     public function delete(int $id): void;
+
+    public function all(?int $widgetId);
 }
