@@ -8,13 +8,13 @@ use App\Modules\Content\Application\Actions\Widgets\DeleteWidgetUseCase;
 use App\Modules\Content\Application\Actions\Widgets\IndexWidgetUseCase;
 use App\Modules\Content\Application\Actions\Widgets\UpdateWidgetUseCase;
 use App\Modules\Content\Application\Actions\Widgets\ViewWidgetUseCase;
-use App\Modules\Content\Application\DTOs\WidgetIndexData;
-use App\Modules\Content\Application\DTOs\WidgetOptionData;
-use App\Modules\Content\Application\DTOs\WidgetUpdateData;
-use App\Modules\Content\Application\DTOs\WidgetViewData;
+use App\Modules\Content\Application\DTOs\Widget\WidgetIndexData;
+use App\Modules\Content\Application\DTOs\Widget\WidgetOptionData;
+use App\Modules\Content\Application\DTOs\Widget\WidgetUpdateData;
+use App\Modules\Content\Application\DTOs\Widget\WidgetViewData;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 

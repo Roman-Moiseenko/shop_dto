@@ -3,7 +3,7 @@
 namespace App\Modules\Content\Tests\Unit\Application\Actions\Widgets;
 
 use App\Modules\Content\Application\Actions\Widgets\CreateWidgetInstanceUseCase;
-use App\Modules\Content\Application\DTOs\WidgetInstanceData;
+use App\Modules\Content\Application\DTOs\Widget\WidgetInstanceData;
 use App\Modules\Content\Application\Interfaces\WidgetInstanceRepositoryInterface;
 use App\Modules\Content\Domain\Entities\WidgetInstanceEntity;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;

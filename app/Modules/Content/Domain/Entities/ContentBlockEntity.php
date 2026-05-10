@@ -56,14 +56,14 @@ final class ContentBlockEntity
         ContainerType $containerType,
         int $containerId,
         int $widgetInstanceId,
-        ?int $sortOrder = null,
+        ?int $sort = null,
         ?string $section = null,
         ?string $caption = null
     ) {
         $this->containerType = $containerType;
         $this->containerId = $containerId;
         $this->widgetInstanceId = $widgetInstanceId;
-        $this->sort = $sortOrder;
+        $this->sort = $sort;
         $this->section = $section;
         $this->caption = $caption;
     }

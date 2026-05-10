@@ -3,13 +3,13 @@
 namespace App\Modules\Content\Tests\Unit\Application\Actions\ContentBlocks;
 
 use App\Modules\Content\Application\Actions\ContentBlocks\AddBlockToPageUseCase;
-use App\Modules\Content\Application\DTOs\AddBlockData;
+use App\Modules\Content\Application\DTOs\ContentBlocks\AddContentBlockData;
 use App\Modules\Content\Application\Interfaces\ContentBlockRepositoryInterface;
 use App\Modules\Content\Domain\Entities\ContentBlockEntity;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Mockery;
 use Tests\Trait\MockPermission;
 
 class AddBlockToPageUseCaseTest extends TestCase
@@ -39,8 +39,8 @@ class AddBlockToPageUseCaseTest extends TestCase
     public function adds_block_successfully_and_returns_saved_entity(): void
     {
         $pageId = 10;
-        $dto = new AddBlockData(
-            widgetInstanceId: 5,
+        $dto = new AddContentBlockData(
+            instanceId: 5,
             sort: 3,
             section: 'sidebar',
             caption: 'Рекламный блок'
@@ -51,7 +51,7 @@ class AddBlockToPageUseCaseTest extends TestCase
             ->with(Mockery::on(function (ContentBlockEntity $block) use ($pageId, $dto) {
                 return $block->containerType->getValue() === 'page'
                     && $block->containerId === $pageId
-                    && $block->widgetInstanceId === $dto->widgetInstanceId
+                    && $block->widgetInstanceId === $dto->instanceId
                     && $block->sort === $dto->sort
                     && $block->section === $dto->section
                     && $block->caption === $dto->caption;
@@ -72,7 +72,7 @@ class AddBlockToPageUseCaseTest extends TestCase
     public function throws_access_denied_when_missing_create_permission(): void
     {
         $pageId = 10;
-        $dto = new AddBlockData(widgetInstanceId: 1, sort: 0);
+        $dto = new AddContentBlockData(instanceId: 1, sort: 0);
 
         $this->blockRepo->shouldNotReceive('save');
 

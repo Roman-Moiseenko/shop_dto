@@ -2,13 +2,12 @@
 
 namespace App\Modules\Content\Application\Actions\Widgets;
 
-use App\Modules\Content\Application\DTOs\WidgetInstanceData;
+use App\Modules\Content\Application\DTOs\Widget\WidgetInstanceData;
 use App\Modules\Content\Application\Interfaces\WidgetInstanceRepositoryInterface;
 use App\Modules\Content\Domain\Entities\WidgetInstanceEntity;
 use App\Modules\Content\Infrastructure\Exceptions\WidgetInstanceNotFoundException;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
-use InvalidArgumentException;
 
 class UpdateWidgetInstanceUseCase
 {

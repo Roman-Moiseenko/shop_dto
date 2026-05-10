@@ -7,10 +7,10 @@ use App\Modules\Content\Application\Actions\ContentBlocks\AddBlockToPageUseCase;
 use App\Modules\Content\Application\Actions\ContentBlocks\RemoveBlockFromPageUseCase;
 use App\Modules\Content\Application\Actions\ContentBlocks\ReorderSingleBlockUseCase;
 use App\Modules\Content\Application\Actions\ContentBlocks\UpdateBlockCaptionUseCase;
-use App\Modules\Content\Application\DTOs\AddBlockData;
-use App\Modules\Content\Application\DTOs\ContentBlockViewData;
-use App\Modules\Content\Application\DTOs\ReorderSingleBlockData;
-use App\Modules\Content\Application\DTOs\UpdateBlockCaptionData;
+use App\Modules\Content\Application\DTOs\ContentBlocks\AddContentBlockData;
+use App\Modules\Content\Application\DTOs\ContentBlocks\ContentBlockViewData;
+use App\Modules\Content\Application\DTOs\ContentBlocks\ReorderSingleBlockData;
+use App\Modules\Content\Application\DTOs\ContentBlocks\UpdateBlockCaptionData;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -29,7 +29,7 @@ class PageBlockController extends Controller
     public function addBlock(int $id, Request $request, UserPermission $permissions): JsonResponse
     {
         try {
-            $dto = AddBlockData::validateAndCreate($request->all());
+            $dto = AddContentBlockData::validateAndCreate($request->all());
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }

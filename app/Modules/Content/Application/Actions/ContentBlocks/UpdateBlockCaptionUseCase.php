@@ -2,7 +2,7 @@
 
 namespace App\Modules\Content\Application\Actions\ContentBlocks;
 
-use App\Modules\Content\Application\DTOs\UpdateBlockCaptionData;
+use App\Modules\Content\Application\DTOs\ContentBlocks\UpdateBlockCaptionData;
 use App\Modules\Content\Application\Interfaces\ContentBlockRepositoryInterface;
 use App\Modules\Content\Domain\Entities\ContentBlockEntity;
 use App\Modules\Content\Infrastructure\Exceptions\ContentBlockNotFoundException;

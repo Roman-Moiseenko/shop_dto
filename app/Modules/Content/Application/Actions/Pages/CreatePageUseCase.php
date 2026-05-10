@@ -2,7 +2,7 @@
 
 namespace App\Modules\Content\Application\Actions\Pages;
 
-use App\Modules\Content\Application\DTOs\PageCreateData;
+use App\Modules\Content\Application\DTOs\Page\PageCreateData;
 use App\Modules\Content\Application\Interfaces\PageRepositoryInterface;
 use App\Modules\Content\Domain\Entities\PageEntity;
 use App\Modules\Content\Domain\ValueObjects\ContentType;

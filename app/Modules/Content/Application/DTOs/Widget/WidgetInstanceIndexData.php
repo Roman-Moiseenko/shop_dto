@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Modules\Content\Application\DTOs;
+namespace App\Modules\Content\Application\DTOs\Widget;
 
 use App\Modules\Content\Domain\Entities\WidgetInstanceEntity;
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Data;
 
 class WidgetInstanceIndexData extends Data
 {

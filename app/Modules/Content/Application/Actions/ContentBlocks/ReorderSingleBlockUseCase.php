@@ -2,7 +2,7 @@
 
 namespace App\Modules\Content\Application\Actions\ContentBlocks;
 
-use App\Modules\Content\Application\DTOs\ReorderSingleBlockData;
+use App\Modules\Content\Application\DTOs\ContentBlocks\ReorderSingleBlockData;
 use App\Modules\Content\Application\Interfaces\ContentBlockRepositoryInterface;
 use App\Modules\Content\Domain\ValueObjects\ContainerType;
 use App\Modules\Content\Infrastructure\Exceptions\ContentBlockNotFoundException;

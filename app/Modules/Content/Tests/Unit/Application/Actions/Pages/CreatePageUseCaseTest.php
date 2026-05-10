@@ -3,13 +3,13 @@
 namespace App\Modules\Content\Tests\Unit\Application\Actions\Pages;
 
 use App\Modules\Content\Application\Actions\Pages\CreatePageUseCase;
-use App\Modules\Content\Application\DTOs\PageCreateData;
+use App\Modules\Content\Application\DTOs\Page\PageCreateData;
 use App\Modules\Content\Application\Interfaces\PageRepositoryInterface;
 use App\Modules\Content\Domain\Entities\PageEntity;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Mockery;
 use Tests\Trait\MockPermission;
 
 class CreatePageUseCaseTest extends TestCase

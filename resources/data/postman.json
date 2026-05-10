@@ -1,0 +1,3620 @@
+{
+    "info": {
+        "_postman_id": "807b7ffd-19f5-4d5e-acdf-fa0dac349df6",
+        "name": "Shop_DTO",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "45244204",
+        "_collection_link": "https://go.postman.co/collection/45244204-807b7ffd-19f5-4d5e-acdf-fa0dac349df6?source=collection_link"
+    },
+    "item": [
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Staff",
+                    "item": [
+                        {
+                            "name": "Create",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "lastName",
+                                            "value": "Сидоров",
+                                            "type": "text",
+                                            "uuid": "df1b7ffc-aeb9-4439-8879-b274d05eed2f"
+                                        },
+                                        {
+                                            "key": "firstName",
+                                            "value": "Узбек",
+                                            "type": "text",
+                                            "uuid": "6fd1a9bd-59e6-44b6-992d-a69bffb85cff"
+                                        },
+                                        {
+                                            "key": "middleName",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "15fe14dd-2337-42db-a3f4-067f9fee48cf"
+                                        },
+                                        {
+                                            "key": "position",
+                                            "value": "Менеджер",
+                                            "type": "text",
+                                            "uuid": "f05a07f4-945e-4496-86e2-0c0471568438"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/staff",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "staff"
+                                    ]
+                                },
+                                "description": "## Endpoint Description\n\nThis endpoint is used to create a new staff member in the system. By sending a POST request to `{{base_url}}/v1/auth/staff`, you can register a staff member by providing their personal and professional details.\n\n### Request Parameters\n\nThe request body must be sent in `form-data` format and should include the following parameters:\n\n- **lastName** (text): The last name of the staff member.\n    \n- **firstName** (text): The first name of the staff member.\n    \n- **middleName** (text): The middle name of the staff member (optional).\n    \n- **position** (text): The position or job title of the staff member.\n    \n\n### Response Structure\n\nUpon a successful request, the server will respond with a status code of `201 Created` and a JSON object containing the following fields:\n\n- **id**: A unique identifier for the newly created staff member.\n    \n- **lastName**: The last name of the staff member.\n    \n- **firstName**: The first name of the staff member.\n    \n- **middleName**: The middle name of the staff member.\n    \n- **position**: The position or job title of the staff member.\n    \n- **department**: The department the staff member belongs to (may be null).\n    \n- **workPhone**: The work phone number of the staff member (may be null).\n    \n- **personalPhone**: The personal phone number of the staff member (may be null).\n    \n- **workEmail**: The work email address of the staff member (may be null).\n    \n- **hireDate**: The date the staff member was hired (may be null).\n    \n- **birthDate**: The birth date of the staff member (may be null).\n    \n- **telegramChatId**: The Telegram chat ID for the staff member (may be null).\n    \n- **maxChatId**: The maximum chat ID for the staff member (may be null).\n    \n- **notes**: Any additional notes regarding the staff member (may be null).\n    \n- **terminated**: A boolean indicating whether the staff member is terminated.\n    \n\n### Usage Notes\n\nEnsure that all required fields are provided in the request. The response will confirm the creation of the staff member and provide their details. Utilize the `id` field for any further operations related to the staff member."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "lastName",
+                                            "value": "Иванов",
+                                            "type": "text",
+                                            "uuid": "df1b7ffc-aeb9-4439-8879-b274d05eed2f"
+                                        },
+                                        {
+                                            "key": "firstName",
+                                            "value": "Иван",
+                                            "type": "text",
+                                            "uuid": "6fd1a9bd-59e6-44b6-992d-a69bffb85cff"
+                                        },
+                                        {
+                                            "key": "middleName",
+                                            "value": "Иванович",
+                                            "type": "text",
+                                            "uuid": "15fe14dd-2337-42db-a3f4-067f9fee48cf"
+                                        },
+                                        {
+                                            "key": "position",
+                                            "value": "Администратор",
+                                            "type": "text",
+                                            "uuid": "f05a07f4-945e-4496-86e2-0c0471568438"
+                                        },
+                                        {
+                                            "key": "department",
+                                            "value": "ИТ",
+                                            "type": "text",
+                                            "uuid": "975a60da-7f4a-48dd-9181-aad1d13caab4"
+                                        },
+                                        {
+                                            "key": "workPhone",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "0cdf1b34-eb5e-413c-aa3b-29e892de828d"
+                                        },
+                                        {
+                                            "key": "personalPhone",
+                                            "value": "+78009001001",
+                                            "type": "text",
+                                            "uuid": "6ed7a357-6fff-4c56-a983-3e1fe47ca15d"
+                                        },
+                                        {
+                                            "key": "workEmail",
+                                            "value": "ivanov@shop.api",
+                                            "type": "text",
+                                            "uuid": "ede121e3-fd73-449c-b1cd-4fbd04f033ca"
+                                        },
+                                        {
+                                            "key": "hireDate",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "429b9000-b25d-4e7e-9ddf-fc0937181f41"
+                                        },
+                                        {
+                                            "key": "birthDate",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "d7554ae7-8571-489f-a6a8-07aa014452e9"
+                                        },
+                                        {
+                                            "key": "telegramChatId",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "3240cf72-820c-4846-95ed-086a11786876"
+                                        },
+                                        {
+                                            "key": "maxChatId",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "f6a5f778-0585-4a3b-bfaa-a323cdc34461"
+                                        },
+                                        {
+                                            "key": "notes",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "8b7f4386-1572-47b4-ad36-96bed0e08185"
+                                        },
+                                        {
+                                            "key": "terminated",
+                                            "value": "0",
+                                            "type": "text",
+                                            "uuid": "8793c1c9-a0d2-42b6-aae0-56cddbcc094b"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/staff/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "staff",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "4"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "User",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "active",
+                                            "value": "1",
+                                            "type": "text",
+                                            "uuid": "db9f1a8d-0c52-4d53-95e5-e236eafb15b7"
+                                        },
+                                        {
+                                            "key": "email",
+                                            "value": "ivanov@shop.api",
+                                            "type": "text",
+                                            "uuid": "8ed0c385-9fd9-4052-a687-3228f6b064a6"
+                                        },
+                                        {
+                                            "key": "password",
+                                            "value": "12345678",
+                                            "type": "text",
+                                            "uuid": "c7a4e8d0-d361-45a5-8501-457474e7d378"
+                                        },
+                                        {
+                                            "key": "roleNames[0]",
+                                            "type": "text",
+                                            "uuid": "c8b1d652-c76f-44c5-baad-60a6f7d20e4d",
+                                            "value": "admin"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/staff/:id/user",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "staff",
+                                        ":id",
+                                        "user"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "4"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Delete",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/staff/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "staff",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "5"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Index",
+                            "protocolProfileBehavior": {
+                                "disableBodyPruning": true
+                            },
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "lastName",
+                                            "value": "Петров",
+                                            "type": "text",
+                                            "uuid": "df1b7ffc-aeb9-4439-8879-b274d05eed2f"
+                                        },
+                                        {
+                                            "key": "firstName",
+                                            "value": "Иван",
+                                            "type": "text",
+                                            "uuid": "6fd1a9bd-59e6-44b6-992d-a69bffb85cff"
+                                        },
+                                        {
+                                            "key": "middleName",
+                                            "value": "Ивнович",
+                                            "type": "text",
+                                            "uuid": "15fe14dd-2337-42db-a3f4-067f9fee48cf"
+                                        },
+                                        {
+                                            "key": "position",
+                                            "value": "Администратор",
+                                            "type": "text",
+                                            "uuid": "f05a07f4-945e-4496-86e2-0c0471568438"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/staff",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "staff"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Show",
+                            "protocolProfileBehavior": {
+                                "disableBodyPruning": true
+                            },
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": []
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/staff/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "staff",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "4"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Freelance",
+                    "item": [
+                        {
+                            "name": "Create",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "lastName",
+                                            "value": "Сидорова",
+                                            "type": "text",
+                                            "uuid": "df1b7ffc-aeb9-4439-8879-b274d05eed2f"
+                                        },
+                                        {
+                                            "key": "firstName",
+                                            "value": "Таргетовна",
+                                            "type": "text",
+                                            "uuid": "6fd1a9bd-59e6-44b6-992d-a69bffb85cff"
+                                        },
+                                        {
+                                            "key": "middleName",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "15fe14dd-2337-42db-a3f4-067f9fee48cf"
+                                        },
+                                        {
+                                            "key": "position",
+                                            "value": "Маркетолог",
+                                            "type": "text",
+                                            "uuid": "f05a07f4-945e-4496-86e2-0c0471568438"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/freelance",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "freelance"
+                                    ]
+                                },
+                                "description": "## Endpoint Description\n\nThis endpoint is used to create a new staff member in the system. By sending a POST request to `{{base_url}}/v1/auth/staff`, you can register a staff member by providing their personal and professional details.\n\n### Request Parameters\n\nThe request body must be sent in `form-data` format and should include the following parameters:\n\n- **lastName** (text): The last name of the staff member.\n    \n- **firstName** (text): The first name of the staff member.\n    \n- **middleName** (text): The middle name of the staff member (optional).\n    \n- **position** (text): The position or job title of the staff member.\n    \n\n### Response Structure\n\nUpon a successful request, the server will respond with a status code of `201 Created` and a JSON object containing the following fields:\n\n- **id**: A unique identifier for the newly created staff member.\n    \n- **lastName**: The last name of the staff member.\n    \n- **firstName**: The first name of the staff member.\n    \n- **middleName**: The middle name of the staff member.\n    \n- **position**: The position or job title of the staff member.\n    \n- **department**: The department the staff member belongs to (may be null).\n    \n- **workPhone**: The work phone number of the staff member (may be null).\n    \n- **personalPhone**: The personal phone number of the staff member (may be null).\n    \n- **workEmail**: The work email address of the staff member (may be null).\n    \n- **hireDate**: The date the staff member was hired (may be null).\n    \n- **birthDate**: The birth date of the staff member (may be null).\n    \n- **telegramChatId**: The Telegram chat ID for the staff member (may be null).\n    \n- **maxChatId**: The maximum chat ID for the staff member (may be null).\n    \n- **notes**: Any additional notes regarding the staff member (may be null).\n    \n- **terminated**: A boolean indicating whether the staff member is terminated.\n    \n\n### Usage Notes\n\nEnsure that all required fields are provided in the request. The response will confirm the creation of the staff member and provide their details. Utilize the `id` field for any further operations related to the staff member."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "lastName",
+                                            "value": "Сидорова",
+                                            "type": "text",
+                                            "uuid": "df1b7ffc-aeb9-4439-8879-b274d05eed2f"
+                                        },
+                                        {
+                                            "key": "firstName",
+                                            "value": "Таргет",
+                                            "type": "text",
+                                            "uuid": "6fd1a9bd-59e6-44b6-992d-a69bffb85cff"
+                                        },
+                                        {
+                                            "key": "middleName",
+                                            "value": "Таргетован",
+                                            "type": "text",
+                                            "uuid": "15fe14dd-2337-42db-a3f4-067f9fee48cf"
+                                        },
+                                        {
+                                            "key": "position",
+                                            "value": "Маркетолог",
+                                            "type": "text",
+                                            "uuid": "f05a07f4-945e-4496-86e2-0c0471568438"
+                                        },
+                                        {
+                                            "key": "personalEmai",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "0cdf1b34-eb5e-413c-aa3b-29e892de828d"
+                                        },
+                                        {
+                                            "key": "personalPhone",
+                                            "value": "+78009001001",
+                                            "type": "text",
+                                            "uuid": "6ed7a357-6fff-4c56-a983-3e1fe47ca15d"
+                                        },
+                                        {
+                                            "key": "hireDate",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "429b9000-b25d-4e7e-9ddf-fc0937181f41"
+                                        },
+                                        {
+                                            "key": "telegramChatId",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "3240cf72-820c-4846-95ed-086a11786876"
+                                        },
+                                        {
+                                            "key": "maxChatId",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "f6a5f778-0585-4a3b-bfaa-a323cdc34461"
+                                        },
+                                        {
+                                            "key": "notes",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "8b7f4386-1572-47b4-ad36-96bed0e08185"
+                                        },
+                                        {
+                                            "key": "terminated",
+                                            "value": "0",
+                                            "type": "text",
+                                            "uuid": "8793c1c9-a0d2-42b6-aae0-56cddbcc094b"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/freelance/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "freelance",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "User",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "active",
+                                            "value": "1",
+                                            "type": "text",
+                                            "uuid": "db9f1a8d-0c52-4d53-95e5-e236eafb15b7"
+                                        },
+                                        {
+                                            "key": "email",
+                                            "value": "sidorova@shop.api",
+                                            "type": "text",
+                                            "uuid": "8ed0c385-9fd9-4052-a687-3228f6b064a6"
+                                        },
+                                        {
+                                            "key": "password",
+                                            "value": "12345678",
+                                            "type": "text",
+                                            "uuid": "c7a4e8d0-d361-45a5-8501-457474e7d378"
+                                        },
+                                        {
+                                            "key": "roleNames[0]",
+                                            "type": "text",
+                                            "uuid": "c8b1d652-c76f-44c5-baad-60a6f7d20e4d",
+                                            "value": "admin"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/freelance/:id/user",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "freelance",
+                                        ":id",
+                                        "user"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Delete",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/freelance/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "freelance",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "5"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Index",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/freelance",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "freelance"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Show",
+                            "protocolProfileBehavior": {
+                                "disableBodyPruning": true
+                            },
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": []
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/freelance/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "freelance",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Client",
+                    "item": [
+                        {
+                            "name": "Index",
+                            "protocolProfileBehavior": {
+                                "disableBodyPruning": true
+                            },
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": []
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/client",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "client"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Show",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/client/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "client",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "6"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Create",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "lastName",
+                                            "value": "Петрова",
+                                            "type": "text",
+                                            "uuid": "04ae6d20-df7b-4878-b3dc-3ba7f259e24b"
+                                        },
+                                        {
+                                            "key": "firstName",
+                                            "value": "Тетя",
+                                            "type": "text",
+                                            "uuid": "2c6dd5dd-53bc-45e2-9d7b-30b20b838536"
+                                        },
+                                        {
+                                            "key": "middleName",
+                                            "value": "Ивановна",
+                                            "type": "text",
+                                            "uuid": "79dbb2cf-588e-4e13-8620-7e644d2f3a7e"
+                                        },
+                                        {
+                                            "key": "email",
+                                            "value": "pokup2@mail.ru",
+                                            "type": "text",
+                                            "uuid": "d7b89636-6679-4644-8a67-d3066828b49c"
+                                        },
+                                        {
+                                            "key": "phone",
+                                            "value": "+79991002627",
+                                            "type": "text",
+                                            "uuid": "7da685e6-5d69-4f8b-9f51-742bc27b7636"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/client",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "client"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "lastName",
+                                            "value": "Конин",
+                                            "type": "text",
+                                            "uuid": "de87e02e-83d6-4a59-93c3-049eeb3a10dd"
+                                        },
+                                        {
+                                            "key": "firstName",
+                                            "value": "Иван",
+                                            "type": "text",
+                                            "uuid": "954caf8f-4f58-414b-99f2-0b9de6b947d8"
+                                        },
+                                        {
+                                            "key": "middleName",
+                                            "value": "Сидорович",
+                                            "type": "text",
+                                            "uuid": "5bd7d477-08b7-460d-93d1-a3d4f35857a6"
+                                        },
+                                        {
+                                            "key": "phone",
+                                            "value": "+79991002626",
+                                            "type": "text",
+                                            "uuid": "ace87d50-d9e2-4bd1-9ee7-e7fe803669ce"
+                                        },
+                                        {
+                                            "key": "email",
+                                            "value": "pokup@mail.ru",
+                                            "type": "text",
+                                            "uuid": "201e17df-5512-4972-923a-cbbff56c58dd"
+                                        },
+                                        {
+                                            "key": "birthDate",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "e2599449-b728-4778-a0b8-85bc310306cf"
+                                        },
+                                        {
+                                            "key": "gender",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "766a7519-cca3-4b69-94d0-affd71f5f66b"
+                                        },
+                                        {
+                                            "key": "country",
+                                            "value": "Россия",
+                                            "type": "text",
+                                            "uuid": "6fb28929-db5c-45ef-ac6d-843e94aa7209"
+                                        },
+                                        {
+                                            "key": "region",
+                                            "value": "Москва",
+                                            "type": "text",
+                                            "uuid": "431ac41f-0685-4089-878c-f51e1b2217d0"
+                                        },
+                                        {
+                                            "key": "city",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "b5442f8e-4539-4c46-ae83-d20642a815e0"
+                                        },
+                                        {
+                                            "key": "street",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "e98ba429-bdcf-421d-ad43-1b9931ff9905"
+                                        },
+                                        {
+                                            "key": "postalCode",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "6121a511-6664-4778-9684-a519d9ac4651"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/client/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "client",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "4"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Register",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "password",
+                                            "value": "12345678",
+                                            "type": "text",
+                                            "uuid": "1df5901f-6ef1-4427-a0af-6cce91e0df28"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/client/:id/register",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "client",
+                                        ":id",
+                                        "register"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "4"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "VerifyEmail",
+                            "request": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/verify-email?token=AAJ5lfZQYixuntRxYM5HhTDsBO7r2c3gw6w1Zr9jhQEMAt5QPTEammfbJU9m",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "verify-email"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "token",
+                                            "value": "AAJ5lfZQYixuntRxYM5HhTDsBO7r2c3gw6w1Zr9jhQEMAt5QPTEammfbJU9m"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Registration",
+                            "request": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "password",
+                                            "value": "12345678",
+                                            "type": "text",
+                                            "uuid": "1df5901f-6ef1-4427-a0af-6cce91e0df28"
+                                        },
+                                        {
+                                            "key": "lastName",
+                                            "value": "Киркоров",
+                                            "type": "text",
+                                            "uuid": "d45c2dac-6b66-42b9-a5b0-f08539757f38"
+                                        },
+                                        {
+                                            "key": "firstName",
+                                            "value": "Федя",
+                                            "type": "text",
+                                            "uuid": "60fdb2f4-5a9f-4180-bb64-3aa1fd66103f"
+                                        },
+                                        {
+                                            "key": "email",
+                                            "value": "kira@mail.ru",
+                                            "type": "text",
+                                            "uuid": "2fb8f516-6eda-4fa2-ba9b-faa7b06f0b89"
+                                        },
+                                        {
+                                            "key": "policyVersion",
+                                            "value": "v1.0 01/01/2026",
+                                            "description": "Версия политики ПД",
+                                            "type": "text",
+                                            "uuid": "d27e8bbf-251c-4b2d-b1bc-599f179ec77c"
+                                        },
+                                        {
+                                            "key": "actionIdentifier",
+                                            "value": "189.45.23.108",
+                                            "description": "IP Клиента",
+                                            "type": "text",
+                                            "uuid": "c180ada7-815b-4e5a-8e65-0814dc371c05"
+                                        },
+                                        {
+                                            "key": "middleName",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "a2260a37-f996-460b-8a66-1d599887bd01"
+                                        },
+                                        {
+                                            "key": "phone",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "f3b46c91-8c79-4d6c-ab90-f7a3146e61ca"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/client/registration",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "client",
+                                        "registration"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Credentials",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "currentEmail",
+                                            "value": "kira01@mail.ru",
+                                            "type": "text",
+                                            "uuid": "1df5901f-6ef1-4427-a0af-6cce91e0df28"
+                                        },
+                                        {
+                                            "key": "currentPassword",
+                                            "value": "1234567890",
+                                            "type": "text",
+                                            "uuid": "d45c2dac-6b66-42b9-a5b0-f08539757f38"
+                                        },
+                                        {
+                                            "key": "newEmail",
+                                            "value": "kira02@mail.ru",
+                                            "description": "!null если меняем",
+                                            "type": "text",
+                                            "uuid": "60fdb2f4-5a9f-4180-bb64-3aa1fd66103f"
+                                        },
+                                        {
+                                            "key": "newPassword",
+                                            "value": "",
+                                            "description": "!null если меняем",
+                                            "type": "text",
+                                            "uuid": "2fb8f516-6eda-4fa2-ba9b-faa7b06f0b89"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/client/credentials",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "client",
+                                        "credentials"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Profile",
+                            "protocolProfileBehavior": {
+                                "disableBodyPruning": true
+                            },
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": []
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/client/profile",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "client",
+                                        "profile"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "ProfileUpdate",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "lastName",
+                                            "value": "Киркоров",
+                                            "type": "text",
+                                            "uuid": "e403aa6e-8014-479a-ab02-3d7e4384685b"
+                                        },
+                                        {
+                                            "key": "firstName",
+                                            "value": "Седор",
+                                            "type": "text",
+                                            "uuid": "03c13a1f-b041-46b3-8fbc-0edb54955824"
+                                        },
+                                        {
+                                            "key": "middleName",
+                                            "value": "Федукович",
+                                            "type": "text",
+                                            "uuid": "f31e4566-7e9f-48c8-9807-60d45dc8b4ec"
+                                        },
+                                        {
+                                            "key": "phone",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "ac029f1f-352f-4aa4-bc19-14c1ecd28fc3"
+                                        },
+                                        {
+                                            "key": "email",
+                                            "value": "kira01@mail.ru",
+                                            "type": "text",
+                                            "uuid": "9e2b8602-4646-4b10-a6d4-b019886d0173"
+                                        },
+                                        {
+                                            "key": "birthDate",
+                                            "value": "05.05.1999",
+                                            "type": "text",
+                                            "uuid": "071b4d27-c270-4ee3-b541-f24bbb641ee9"
+                                        },
+                                        {
+                                            "key": "gender",
+                                            "value": "MALE",
+                                            "type": "text",
+                                            "uuid": "58a6bdc8-d587-4770-baa5-3e5869ddf023"
+                                        },
+                                        {
+                                            "key": "country",
+                                            "value": "РФ",
+                                            "type": "text",
+                                            "uuid": "726ebe39-322b-44b3-b844-e1f468597991"
+                                        },
+                                        {
+                                            "key": "region",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "930928a8-ecec-4614-834a-9cf4e73d5a34"
+                                        },
+                                        {
+                                            "key": "city",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "d5a87ef9-3403-4e81-a51a-6244217126f4"
+                                        },
+                                        {
+                                            "key": "street",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "a60500c0-cd7c-4999-8ed6-0a1e6297ef91"
+                                        },
+                                        {
+                                            "key": "postalCode",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "61857c2c-6704-4534-8d63-eb57a4d5026d"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/client/profile",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "client",
+                                        "profile"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Delete",
+                            "request": {
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/client/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "client",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "4"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Role",
+                    "item": [
+                        {
+                            "name": "Index",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/role?type=system",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "role"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "type",
+                                            "value": "system"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Show",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/role/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "role",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "17"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Create",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "name",
+                                            "value": "hr",
+                                            "type": "text",
+                                            "uuid": "22712a59-a529-420c-a6d6-b94613809b0b"
+                                        },
+                                        {
+                                            "key": "permissions[0]",
+                                            "value": "auth.employee.create",
+                                            "type": "text",
+                                            "uuid": "1e5247f2-e72b-459d-99c9-14f48c3863b9"
+                                        },
+                                        {
+                                            "key": "permissions[1]",
+                                            "value": "auth.employee.edit",
+                                            "type": "text",
+                                            "uuid": "f817b0c7-a6f6-4981-91ce-32f1f251eb41"
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "Кадровый специалист",
+                                            "type": "text",
+                                            "uuid": "574522cc-e906-4c60-a769-1cf38fcc128e"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/role",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "role"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "name",
+                                            "value": "hr",
+                                            "type": "text",
+                                            "uuid": "f9641a62-e77c-48a7-97ca-3365e36cc94b"
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "Кадровик",
+                                            "type": "text",
+                                            "uuid": "6c093032-dd68-4394-9441-b5537204932f"
+                                        },
+                                        {
+                                            "key": "permissions[0]",
+                                            "value": "auth.employee.create",
+                                            "type": "text",
+                                            "uuid": "1765f772-fcbe-4316-b9a7-70e7af1041e2"
+                                        },
+                                        {
+                                            "key": "permissions[1]",
+                                            "value": "auth.employee.edit",
+                                            "type": "text",
+                                            "uuid": "7013d396-6f12-44b2-8154-e3ba5cca1f1c"
+                                        },
+                                        {
+                                            "key": "permissions[2]",
+                                            "value": "auth.employee.view",
+                                            "type": "text",
+                                            "uuid": "099e9238-aa14-4dd0-9b77-242fc900041f"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/role/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "role",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "17"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Permissions",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/permission/grouped",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "permission",
+                                        "grouped"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Delete",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/auth/role/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "auth",
+                                        "role",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "18"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "register",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/v1/auth/register?email=kira@mail.ru&password=12345678&remember=false",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "auth",
+                                "register"
+                            ],
+                            "query": [
+                                {
+                                    "key": "email",
+                                    "value": "kira@mail.ru"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "12345678"
+                                },
+                                {
+                                    "key": "remember",
+                                    "value": "false"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "const responseJson = pm.response.json();\r",
+                                    "console.log(\"token пользователя в базе :\", pm.collectionVariables.get(\"token\"));\r",
+                                    "const token = responseJson.token;\r",
+                                    "if (token) {\r",
+                                    "    pm.collectionVariables.set(\"token\", token);\r",
+                                    "    console.log(\"token пользователя извлечён:\", token);\r",
+                                    "    console.log(\"token пользователя в базе :\", pm.collectionVariables.get(\"token\"));\r",
+                                    "} else {\r",
+                                    "    console.warn(\"token пользователя не найден в ответе.\");\r",
+                                    "}"
+                                ],
+                                "type": "text/javascript",
+                                "packages": {},
+                                "requests": {}
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "email",
+                                    "value": "admin@shop.api",
+                                    "type": "text",
+                                    "uuid": "8339e108-dfab-423b-8e50-4ac990edd5ce"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "12345678",
+                                    "type": "text",
+                                    "uuid": "f9c478bb-d60f-4041-ac31-e5e23afda1e5"
+                                },
+                                {
+                                    "key": "remember",
+                                    "value": "1",
+                                    "type": "text",
+                                    "uuid": "62056600-f9fb-410c-9a55-5adbe2fefede"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/v1/auth/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "auth",
+                                "login"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "user",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/v1/auth/user",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "auth",
+                                "user"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ],
+            "description": "Модуль аутентификации и настройки прав доступа"
+        },
+        {
+            "name": "Storage",
+            "item": [
+                {
+                    "name": "Media",
+                    "item": [
+                        {
+                            "name": "Upload",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "model_type",
+                                            "value": "catalog.product",
+                                            "type": "text",
+                                            "uuid": "70461a79-fcc6-4705-9900-2490cf5737b8"
+                                        },
+                                        {
+                                            "key": "model_id",
+                                            "value": "1",
+                                            "type": "text",
+                                            "uuid": "5020c404-3e00-4918-899a-d8689f69baf1"
+                                        },
+                                        {
+                                            "key": "type",
+                                            "value": "gallery",
+                                            "type": "text",
+                                            "uuid": "e1c817cf-62ad-40fc-886c-3b4b07045663"
+                                        },
+                                        {
+                                            "key": "title",
+                                            "value": "Товар 1",
+                                            "type": "text",
+                                            "uuid": "d6669dd4-9e9f-4d96-af8a-2879439805af"
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "ea8f771c-c238-4b4d-b22b-9f149384cd1f"
+                                        },
+                                        {
+                                            "key": "sort",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "b558844b-8520-4524-974e-d089b44f77cd"
+                                        },
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "uuid": "edc5c755-1a59-4310-a468-9112caf69791",
+                                            "src": "postman-cloud:///1f1496d8-adcd-4ff0-9b47-5d8a2e877860"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/storage/media/upload",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "storage",
+                                        "media",
+                                        "upload"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Download",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "model_type",
+                                            "value": "catalog.product",
+                                            "type": "text",
+                                            "uuid": "70461a79-fcc6-4705-9900-2490cf5737b8"
+                                        },
+                                        {
+                                            "key": "model_id",
+                                            "value": "2",
+                                            "type": "text",
+                                            "uuid": "5020c404-3e00-4918-899a-d8689f69baf1"
+                                        },
+                                        {
+                                            "key": "type",
+                                            "value": "gallery",
+                                            "type": "text",
+                                            "uuid": "e1c817cf-62ad-40fc-886c-3b4b07045663"
+                                        },
+                                        {
+                                            "key": "title",
+                                            "value": "Товар 2",
+                                            "type": "text",
+                                            "uuid": "d6669dd4-9e9f-4d96-af8a-2879439805af"
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "ea8f771c-c238-4b4d-b22b-9f149384cd1f"
+                                        },
+                                        {
+                                            "key": "sort",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "b558844b-8520-4524-974e-d089b44f77cd"
+                                        },
+                                        {
+                                            "key": "url",
+                                            "value": "https://website39.site/wp-content/uploads/2023/01/main_img_1.jpg",
+                                            "type": "text",
+                                            "uuid": "66bc3871-0c08-4a06-bb30-a972c3133050"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/storage/media/download",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "storage",
+                                        "media",
+                                        "download"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "ClearCache",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "model_type",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "fbc64397-b7c1-4794-928a-844ee7f04093"
+                                        },
+                                        {
+                                            "key": "model_id",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "a7197440-1fd5-4a9e-b858-b66d31008345"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/storage/media/clear-cache",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "storage",
+                                        "media",
+                                        "clear-cache"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "title",
+                                            "value": "Изображение с боку",
+                                            "type": "text",
+                                            "uuid": "161f84c4-fc48-4c3a-a101-bd457a7df6ab"
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "Описание изображения",
+                                            "type": "text",
+                                            "uuid": "ebaf52bb-53d6-4638-b800-9cbd297cd925"
+                                        },
+                                        {
+                                            "key": "sort",
+                                            "value": "1",
+                                            "type": "text",
+                                            "uuid": "f84f8eb0-0cfc-40a7-b775-3e1fc331d652"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/storage/media/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "storage",
+                                        "media",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "42"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Delete",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "model_type",
+                                            "value": "catalog.product",
+                                            "type": "text",
+                                            "uuid": "70461a79-fcc6-4705-9900-2490cf5737b8"
+                                        },
+                                        {
+                                            "key": "model_id",
+                                            "value": "1",
+                                            "type": "text",
+                                            "uuid": "5020c404-3e00-4918-899a-d8689f69baf1"
+                                        },
+                                        {
+                                            "key": "type",
+                                            "value": "image",
+                                            "type": "text",
+                                            "uuid": "e1c817cf-62ad-40fc-886c-3b4b07045663"
+                                        },
+                                        {
+                                            "key": "title",
+                                            "value": "Товар 1",
+                                            "type": "text",
+                                            "uuid": "d6669dd4-9e9f-4d96-af8a-2879439805af"
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "ea8f771c-c238-4b4d-b22b-9f149384cd1f"
+                                        },
+                                        {
+                                            "key": "sort",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "b558844b-8520-4524-974e-d089b44f77cd"
+                                        },
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "uuid": "edc5c755-1a59-4310-a468-9112caf69791",
+                                            "src": "postman-cloud:///1f1496d8-adcd-4ff0-9b47-5d8a2e877860"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/storage/media/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "storage",
+                                        "media",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "27"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Show",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/storage/media/:uuid?thumb=card",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "storage",
+                                        "media",
+                                        ":uuid"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "thumb",
+                                            "value": "card"
+                                        }
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "uuid",
+                                            "value": "50382ceb-061e-40ac-8299-969ec4518f17"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "File",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/storage/media/:uuid/file",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "storage",
+                                        "media",
+                                        ":uuid",
+                                        "file"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "uuid",
+                                            "value": "50382ceb-061e-40ac-8299-969ec4518f17"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "IndexPublic",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/storage/media/public?model_type=catalog.product&model_id=1",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "storage",
+                                        "media",
+                                        "public"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "model_type",
+                                            "value": "catalog.product"
+                                        },
+                                        {
+                                            "key": "model_id",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "type",
+                                            "value": "image",
+                                            "disabled": true
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Client",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "model_type",
+                                            "value": "auth.client",
+                                            "type": "text",
+                                            "uuid": "161f84c4-fc48-4c3a-a101-bd457a7df6ab"
+                                        },
+                                        {
+                                            "key": "model_id",
+                                            "value": "6",
+                                            "type": "text",
+                                            "uuid": "ebaf52bb-53d6-4638-b800-9cbd297cd925"
+                                        },
+                                        {
+                                            "key": "type",
+                                            "value": "image",
+                                            "type": "text",
+                                            "uuid": "f84f8eb0-0cfc-40a7-b775-3e1fc331d652"
+                                        },
+                                        {
+                                            "key": "title",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "3b9aacb1-af6d-491b-98aa-ab38322cf071"
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "bafd2568-e179-4c12-ac0c-3af96cc38d4d"
+                                        },
+                                        {
+                                            "key": "sort",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "2462d06f-649b-4dd7-a4fa-2afd93ad417e"
+                                        },
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "uuid": "b8cba418-48c8-44b2-b48d-38ae25614ce6",
+                                            "src": "postman-cloud:///1f14abc7-3b9c-4ea0-8f17-5de70a706542"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/storage/client/media",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "storage",
+                                        "client",
+                                        "media"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "ClientIndex",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/storage/client/media?model_type=auth.client&model_id=6",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "storage",
+                                        "client",
+                                        "media"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "model_type",
+                                            "value": "auth.client",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "model_id",
+                                            "value": "6",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "type",
+                                            "value": null,
+                                            "type": "text",
+                                            "disabled": true
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "ClientDelete",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/storage/client/media/:uuid",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "storage",
+                                        "client",
+                                        "media",
+                                        ":uuid"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "uuid",
+                                            "value": "a111f4f5-697b-4178-94aa-108aa16e8c8a"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Client",
+                    "item": []
+                }
+            ],
+            "description": "Хранилище медиа и файлов"
+        },
+        {
+            "name": "Content",
+            "item": [
+                {
+                    "name": "Widget",
+                    "item": [
+                        {
+                            "name": "Create",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "name",
+                                            "value": "Заголовок2",
+                                            "type": "text",
+                                            "uuid": "ee8dbbcf-b7ac-478e-b53f-c99e28903b9a"
+                                        },
+                                        {
+                                            "key": "slug",
+                                            "value": "block_title2",
+                                            "type": "text",
+                                            "uuid": "0a0fd5ed-d38d-41fc-9396-2191290ec479"
+                                        },
+                                        {
+                                            "key": "category",
+                                            "value": "content",
+                                            "type": "text",
+                                            "uuid": "ee7a1345-e4ab-4abd-aded-8414221fa43d"
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "7cc780cd-beaa-4fee-be4e-4b1bcef15c87"
+                                        },
+                                        {
+                                            "key": "schema[type]",
+                                            "value": "object",
+                                            "type": "text",
+                                            "uuid": "8a124679-8cf7-430f-b456-2427f3ea5be3"
+                                        },
+                                        {
+                                            "key": "schema[properties][content][type]",
+                                            "value": "string",
+                                            "type": "text",
+                                            "uuid": "a2b3eb3f-3b8d-4ad8-bf12-e25caf7c1538"
+                                        },
+                                        {
+                                            "key": "schema[properties][content][title]",
+                                            "value": "Текст",
+                                            "type": "text",
+                                            "uuid": "2822d2da-791c-49b0-bb79-ff9bab82ea0c"
+                                        },
+                                        {
+                                            "key": "schema[properties][text_align][type]",
+                                            "value": "string",
+                                            "type": "text",
+                                            "uuid": "4dae3c02-92a2-4d35-b1ed-132745a4f870"
+                                        },
+                                        {
+                                            "key": "schema[properties][text_align][enum][0]",
+                                            "value": "left",
+                                            "type": "text",
+                                            "uuid": "72716604-aa7e-4708-b07a-ce64dcd392a3"
+                                        },
+                                        {
+                                            "key": "schema[properties][text_align][enum][1]",
+                                            "value": "center",
+                                            "type": "text",
+                                            "uuid": "e5e0ebad-df09-4922-9677-a5ada27183a6"
+                                        },
+                                        {
+                                            "key": "schema[properties][text_align][enum][2]",
+                                            "value": "right",
+                                            "type": "text",
+                                            "uuid": "b527571e-5c28-49d7-a089-b66043c45815"
+                                        },
+                                        {
+                                            "key": "schema[properties][text_align][default]",
+                                            "value": "left",
+                                            "type": "text",
+                                            "uuid": "855a1c7d-8f25-41f3-9f9a-d784a035746b"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/widget",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "widget"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "name",
+                                            "value": "Заголовок",
+                                            "type": "text",
+                                            "uuid": "ee8dbbcf-b7ac-478e-b53f-c99e28903b9a"
+                                        },
+                                        {
+                                            "key": "slug",
+                                            "value": "block_title",
+                                            "type": "text",
+                                            "uuid": "0a0fd5ed-d38d-41fc-9396-2191290ec479"
+                                        },
+                                        {
+                                            "key": "category",
+                                            "value": "content",
+                                            "type": "text",
+                                            "uuid": "ee7a1345-e4ab-4abd-aded-8414221fa43d"
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "Заголовок с настройками выравнивания",
+                                            "type": "text",
+                                            "uuid": "7cc780cd-beaa-4fee-be4e-4b1bcef15c87"
+                                        },
+                                        {
+                                            "key": "schema[type]",
+                                            "value": "object",
+                                            "type": "text",
+                                            "uuid": "8a124679-8cf7-430f-b456-2427f3ea5be3"
+                                        },
+                                        {
+                                            "key": "schema[properties][content][type]",
+                                            "value": "string",
+                                            "type": "text",
+                                            "uuid": "a2b3eb3f-3b8d-4ad8-bf12-e25caf7c1538"
+                                        },
+                                        {
+                                            "key": "schema[properties][content][title]",
+                                            "value": "Текст",
+                                            "type": "text",
+                                            "uuid": "2822d2da-791c-49b0-bb79-ff9bab82ea0c"
+                                        },
+                                        {
+                                            "key": "schema[properties][text_align][type]",
+                                            "value": "string",
+                                            "type": "text",
+                                            "uuid": "4dae3c02-92a2-4d35-b1ed-132745a4f870"
+                                        },
+                                        {
+                                            "key": "schema[properties][text_align][enum][0]",
+                                            "value": "left",
+                                            "type": "text",
+                                            "uuid": "72716604-aa7e-4708-b07a-ce64dcd392a3"
+                                        },
+                                        {
+                                            "key": "schema[properties][text_align][enum][1]",
+                                            "value": "center",
+                                            "type": "text",
+                                            "uuid": "e5e0ebad-df09-4922-9677-a5ada27183a6"
+                                        },
+                                        {
+                                            "key": "schema[properties][text_align][enum][2]",
+                                            "value": "right",
+                                            "type": "text",
+                                            "uuid": "b527571e-5c28-49d7-a089-b66043c45815"
+                                        },
+                                        {
+                                            "key": "schema[properties][text_align][default]",
+                                            "value": "left",
+                                            "type": "text",
+                                            "uuid": "855a1c7d-8f25-41f3-9f9a-d784a035746b"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/widget/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "widget",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Show",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/widget/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "widget",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Delete",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/widget/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "widget",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "2"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Index",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/widget",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "widget"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Options",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/widget/options",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "widget",
+                                        "options"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "WidgetInstance",
+                    "item": [
+                        {
+                            "name": "Create",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "widget_id",
+                                            "value": "1",
+                                            "type": "text",
+                                            "uuid": "a166f4e2-6a23-414c-b351-5fa95464db9c"
+                                        },
+                                        {
+                                            "key": "title",
+                                            "value": "Первый заголовок",
+                                            "type": "text",
+                                            "uuid": "2526c1af-7025-43e4-a46b-589bc2294917"
+                                        },
+                                        {
+                                            "key": "params[content]",
+                                            "value": "<h1>Название страницы</h1>",
+                                            "type": "text",
+                                            "uuid": "398a577b-9b15-4c0a-bb14-9008c6bd24e0"
+                                        },
+                                        {
+                                            "key": "params[text_align]",
+                                            "value": "center",
+                                            "type": "text",
+                                            "uuid": "2ef3c4f9-6c7e-47b5-aeed-4ea549aa4068"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/widget-instance",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "widget-instance"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "widget_id",
+                                            "value": "1",
+                                            "type": "text",
+                                            "uuid": "a166f4e2-6a23-414c-b351-5fa95464db9c"
+                                        },
+                                        {
+                                            "key": "title",
+                                            "value": "Главный заголовок",
+                                            "type": "text",
+                                            "uuid": "2526c1af-7025-43e4-a46b-589bc2294917"
+                                        },
+                                        {
+                                            "key": "params[content]",
+                                            "value": "<h1>Название компании</h1>",
+                                            "type": "text",
+                                            "uuid": "398a577b-9b15-4c0a-bb14-9008c6bd24e0"
+                                        },
+                                        {
+                                            "key": "params[text_align]",
+                                            "value": "center",
+                                            "type": "text",
+                                            "uuid": "2ef3c4f9-6c7e-47b5-aeed-4ea549aa4068"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/widget-instance/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "widget-instance",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Index",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/widget-instance",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "widget-instance"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Show",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/widget-instance/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "widget-instance",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Delete",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/widget-instance/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "widget-instance",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "3"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "ContentBlock",
+                    "item": [
+                        {
+                            "name": "Add",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "instanceId",
+                                            "value": "2",
+                                            "type": "text",
+                                            "uuid": "6aeacb4e-dc91-4d93-b841-3a782b463195"
+                                        },
+                                        {
+                                            "key": "sort",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "676ce91d-b146-45e1-a5ae-38d98d38a1a0"
+                                        },
+                                        {
+                                            "key": "section",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "83bc06be-d2d9-4619-aa4c-eacb556a2126"
+                                        },
+                                        {
+                                            "key": "caption",
+                                            "value": "H2 доп",
+                                            "type": "text",
+                                            "uuid": "cbd6db0b-bcb0-4f10-94ee-b9d3498208d3"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/page/:id/block",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "page",
+                                        ":id",
+                                        "block"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Sort",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "id",
+                                            "value": "5",
+                                            "type": "text",
+                                            "uuid": "6aeacb4e-dc91-4d93-b841-3a782b463195"
+                                        },
+                                        {
+                                            "key": "sort",
+                                            "value": "0",
+                                            "type": "text",
+                                            "uuid": "676ce91d-b146-45e1-a5ae-38d98d38a1a0"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/page/:id/block/sort",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "page",
+                                        ":id",
+                                        "block",
+                                        "sort"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Sort Copy",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PATCH",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "id",
+                                            "value": "5",
+                                            "type": "text",
+                                            "uuid": "6aeacb4e-dc91-4d93-b841-3a782b463195"
+                                        },
+                                        {
+                                            "key": "caption",
+                                            "value": "Первый H2",
+                                            "type": "text",
+                                            "uuid": "676ce91d-b146-45e1-a5ae-38d98d38a1a0"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/page/:id/block/caption",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "page",
+                                        ":id",
+                                        "block",
+                                        "caption"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Remove",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/page/:id/block/:blockId",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "page",
+                                        ":id",
+                                        "block",
+                                        ":blockId"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "blockId",
+                                            "value": "4"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Page",
+                    "item": [
+                        {
+                            "name": "Create",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "title",
+                                            "value": "Главная2",
+                                            "type": "text",
+                                            "uuid": "ee8dbbcf-b7ac-478e-b53f-c99e28903b9a"
+                                        },
+                                        {
+                                            "key": "slug",
+                                            "value": "home2",
+                                            "type": "text",
+                                            "uuid": "0a0fd5ed-d38d-41fc-9396-2191290ec479"
+                                        },
+                                        {
+                                            "key": "contentType",
+                                            "value": "simple",
+                                            "type": "text",
+                                            "uuid": "ee7a1345-e4ab-4abd-aded-8414221fa43d"
+                                        },
+                                        {
+                                            "key": "content",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "8a124679-8cf7-430f-b456-2427f3ea5be3"
+                                        },
+                                        {
+                                            "key": "meta[title]",
+                                            "value": "Наша компания2",
+                                            "type": "text",
+                                            "uuid": "a2b3eb3f-3b8d-4ad8-bf12-e25caf7c1538"
+                                        },
+                                        {
+                                            "key": "meta[description]",
+                                            "value": "Текст",
+                                            "type": "text",
+                                            "uuid": "2822d2da-791c-49b0-bb79-ff9bab82ea0c"
+                                        },
+                                        {
+                                            "key": "template",
+                                            "value": "default",
+                                            "type": "text",
+                                            "uuid": "4dae3c02-92a2-4d35-b1ed-132745a4f870"
+                                        },
+                                        {
+                                            "key": "authorId",
+                                            "value": "4",
+                                            "type": "text",
+                                            "uuid": "72716604-aa7e-4708-b07a-ce64dcd392a3"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/page",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "page"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "title",
+                                            "value": "Главная",
+                                            "type": "text",
+                                            "uuid": "ee8dbbcf-b7ac-478e-b53f-c99e28903b9a"
+                                        },
+                                        {
+                                            "key": "slug",
+                                            "value": "home",
+                                            "type": "text",
+                                            "uuid": "0a0fd5ed-d38d-41fc-9396-2191290ec479"
+                                        },
+                                        {
+                                            "key": "contentType",
+                                            "value": "simple",
+                                            "type": "text",
+                                            "uuid": "ee7a1345-e4ab-4abd-aded-8414221fa43d"
+                                        },
+                                        {
+                                            "key": "content",
+                                            "value": "",
+                                            "type": "text",
+                                            "uuid": "8a124679-8cf7-430f-b456-2427f3ea5be3"
+                                        },
+                                        {
+                                            "key": "meta[title]",
+                                            "value": "Наша компания",
+                                            "type": "text",
+                                            "uuid": "a2b3eb3f-3b8d-4ad8-bf12-e25caf7c1538"
+                                        },
+                                        {
+                                            "key": "meta[description]",
+                                            "value": "Текст Об компании",
+                                            "type": "text",
+                                            "uuid": "2822d2da-791c-49b0-bb79-ff9bab82ea0c"
+                                        },
+                                        {
+                                            "key": "template",
+                                            "value": "default",
+                                            "type": "text",
+                                            "uuid": "4dae3c02-92a2-4d35-b1ed-132745a4f870"
+                                        },
+                                        {
+                                            "key": "authorId",
+                                            "value": "6",
+                                            "type": "text",
+                                            "uuid": "72716604-aa7e-4708-b07a-ce64dcd392a3"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/page/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "page",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Index",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/page",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "page"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Show",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/page/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "page",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Delete",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/page/:id",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "page",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "2"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Force",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/page/:id/force",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "page",
+                                        ":id",
+                                        "force"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "2"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Restore",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PATCH",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/v1/content/page/:id/restore",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "v1",
+                                        "content",
+                                        "page",
+                                        ":id",
+                                        "restore"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "2"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                    ""
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                    ""
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": ""
+        },
+        {
+            "key": "token",
+            "value": ""
+        },
+        {
+            "key": "token_client",
+            "value": ""
+        },
+        {
+            "key": "token_staff",
+            "value": ""
+        }
+    ]
+}

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Content\Application\DTOs;
+namespace App\Modules\Content\Application\DTOs\Widget;
 
 use App\Modules\Content\Domain\Entities\WidgetEntity;
 use Spatie\LaravelData\Attributes\Validation\IntegerType;
@@ -10,7 +10,7 @@ use Spatie\LaravelData\Data;
 /**
  * DTO для возврата данных на фронтенд
  */
-class WidgetIndexData extends Data
+class WidgetViewData extends Data
 {
     public function __construct(
         #[Required, IntegerType]
@@ -19,6 +19,9 @@ class WidgetIndexData extends Data
         public readonly string  $slug,
         public readonly ?string $description = null,
         public readonly string  $category,
+        public readonly ?array  $schema = null,
+        public readonly ?string $createdAt = null,
+        public readonly ?string $updatedAt = null,
 
     )
     {
@@ -32,16 +35,10 @@ class WidgetIndexData extends Data
             $widget->slug,
             $widget->description,
             $widget->category->getValue(),
-
+            $widget->schema->toArray(),
+            $widget->createdAt->format('c'),
+            $widget->updatedAt->format('c'),
         );
     }
 
-    public static function from(mixed ...$payloads): static
-    {
-        if (count($payloads) === 1 && $payloads[0] instanceof WidgetEntity) {
-            return static::fromEntity($payloads[0]);
-        }
-
-        return parent::from(...$payloads);
-    }
 }

@@ -6,6 +6,8 @@ use App\Modules\Content\Application\Interfaces\ContentBlockRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\PageRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\WidgetInstanceRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\WidgetRepositoryInterface;
+use App\Modules\Content\Database\Seeders\ContentRoleSeeder;
+use App\Modules\Content\Database\Seeders\RequiredPagesSeeder;
 use App\Modules\Content\Infrastructure\Exceptions\ContentBlockNotFoundException;
 use App\Modules\Content\Infrastructure\Exceptions\PageNotFoundException;
 use App\Modules\Content\Infrastructure\Exceptions\WidgetInstanceNotFoundException;
@@ -16,7 +18,6 @@ use App\Modules\Content\Infrastructure\Persistence\WidgetInstanceRepository;
 use App\Modules\Content\Infrastructure\Persistence\WidgetRepository;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use RecursiveDirectoryIterator;
@@ -431,7 +432,8 @@ class ContentServiceProvider extends ServiceProvider
 
         $this->app->afterResolving('seed.handler', function ($handler) {
             $handler->register([
-                // Add seeder classes here
+                ContentRoleSeeder::class,
+                RequiredPagesSeeder::class,
             ]);
         });
     }

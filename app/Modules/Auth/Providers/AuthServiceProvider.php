@@ -8,6 +8,7 @@ use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\StaffRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
+use App\Modules\Auth\Database\Seeders\AuthRoleSeeder;
 use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\Services\PermissionProviderInterface;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
@@ -448,7 +449,7 @@ class AuthServiceProvider extends ServiceProvider
 
         $this->app->afterResolving('seed.handler', function ($handler) {
             $handler->register([
-                // Add seeder classes here
+                AuthRoleSeeder::class,
             ]);
         });
     }

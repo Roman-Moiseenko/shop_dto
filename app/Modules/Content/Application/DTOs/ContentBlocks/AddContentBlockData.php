@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Modules\Content\Application\DTOs;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
+namespace App\Modules\Content\Application\DTOs\ContentBlocks;
 use Spatie\LaravelData\Attributes\Validation\IntegerType;
-class AddBlockData extends Data
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Data;
+
+class AddContentBlockData extends Data
 {
     public function __construct(
         #[Required, IntegerType]

@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Modules\Content\Application\DTOs;
+namespace App\Modules\Content\Application\DTOs\Widget;
 
 use App\Modules\Content\Domain\Entities\WidgetEntity;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Data;
 
 /**

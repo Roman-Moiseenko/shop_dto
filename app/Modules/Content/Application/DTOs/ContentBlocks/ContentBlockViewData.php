@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Modules\Content\Application\DTOs;
+namespace App\Modules\Content\Application\DTOs\ContentBlocks;
 
+use App\Modules\Content\Application\DTOs\Widget\WidgetInstanceViewData;
 use App\Modules\Content\Domain\Entities\ContentBlockEntity;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
 
 class ContentBlockViewData extends Data
 {

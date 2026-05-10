@@ -6,6 +6,7 @@ use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
 use App\Modules\Storage\Application\Interfaces\HttpClientInterface;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Application\Services\StorageConfig;
+use App\Modules\Storage\Database\Seeders\StorageRoleSeeder;
 use App\Modules\Storage\Infrastructure\Exceptions\MediaFileNotFoundException;
 use App\Modules\Storage\Infrastructure\Persistence\MediaRepository;
 use App\Modules\Storage\Infrastructure\Services\LaravelFileStorage;
@@ -125,33 +126,6 @@ class StorageServiceProvider extends ServiceProvider
             MediaRepositoryInterface::class,
             MediaRepository::class
         );
-
-        /*
-        $this->app->when(UploadMediaUseCase::class)
-            ->needs('$disk')
-            ->give(config('storage.local.disk', 'public'));
-
-        $this->app->when(UploadMediaUseCase::class)
-            ->needs('$uploadBasePath')
-            ->give(config('storage.local.upload_path', 'uploads'));
-
-        $this->app->when(DownloadMediaUseCase::class)
-            ->needs('$disk')
-            ->give(config('storage.local.disk', 'public'));
-
-        $this->app->when(DownloadMediaUseCase::class)
-            ->needs('$uploadBasePath')
-            ->give(config('storage.local.upload_path', 'uploads'));
-
-        $this->app->when(ClientUploadMediaUseCase::class)
-            ->needs('$disk')
-            ->give(config('storage.local.disk', 'public'));
-
-        $this->app->when(ClientUploadMediaUseCase::class)
-            ->needs('$uploadBasePath')
-            ->give(config('storage.local.upload_path', 'uploads'));
-*/
-
     }
 
     // =====================================================================
@@ -449,7 +423,7 @@ class StorageServiceProvider extends ServiceProvider
 
         $this->app->afterResolving('seed.handler', function ($handler) {
             $handler->register([
-                // Add seeder classes here
+                StorageRoleSeeder::class,
             ]);
         });
     }

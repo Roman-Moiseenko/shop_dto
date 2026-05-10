@@ -2,12 +2,12 @@
 
 use App\Modules\Content\Presentation\Http\Controllers\Api\PageBlockController;
 use App\Modules\Content\Presentation\Http\Controllers\Api\PageController;
+use App\Modules\Content\Presentation\Http\Controllers\Api\PublicPageController;
 use App\Modules\Content\Presentation\Http\Controllers\Api\WidgetController;
 use App\Modules\Content\Presentation\Http\Controllers\Api\WidgetInstanceController;
 
 Route::prefix('v1/content')->group(function () {
 
-    //Без доступа для клиентской части
 
 
     //С доступом для админки
@@ -19,7 +19,8 @@ Route::prefix('v1/content')->group(function () {
         // Дополнительный маршрут для жёсткого удаления
         Route::delete('/page/{id}/force', [PageController::class, 'forceDestroy']);
         Route::patch('/page/{id}/restore', [PageController::class, 'restore']);
-
+        Route::post('page/{id}/publish', [PageController::class, 'publish']);
+        Route::post('page/{id}/unpublish', [PageController::class, 'unpublish']);
         // Блоки страниц
         Route::prefix('page/{page}/block')->group(function () {
             Route::post('/', [PageBlockController::class, 'addBlock']);
@@ -28,4 +29,10 @@ Route::prefix('v1/content')->group(function () {
             Route::patch('/caption', [PageBlockController::class, 'updateCaption']);
         });
     });
+});
+
+//Без доступа для клиентской части
+Route::prefix('v1/public')->group(function () {
+    Route::get('/page/home', [PublicPageController::class, 'home']);
+    Route::get('/page/{slug}', [PublicPageController::class, 'show']);
 });

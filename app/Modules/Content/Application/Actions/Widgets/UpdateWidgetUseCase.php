@@ -2,7 +2,7 @@
 
 namespace App\Modules\Content\Application\Actions\Widgets;
 
-use App\Modules\Content\Application\DTOs\WidgetUpdateData;
+use App\Modules\Content\Application\DTOs\Widget\WidgetUpdateData;
 use App\Modules\Content\Application\Interfaces\WidgetRepositoryInterface;
 use App\Modules\Content\Domain\Entities\WidgetEntity;
 use App\Modules\Content\Domain\ValueObjects\WidgetCategory;
@@ -10,7 +10,6 @@ use App\Modules\Content\Domain\ValueObjects\WidgetSchema;
 use App\Modules\Content\Infrastructure\Exceptions\WidgetNotFoundException;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
-use InvalidArgumentException;
 
 class UpdateWidgetUseCase
 {

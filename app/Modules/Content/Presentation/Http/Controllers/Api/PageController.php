@@ -7,13 +7,15 @@ use App\Modules\Content\Application\Actions\Pages\CreatePageUseCase;
 use App\Modules\Content\Application\Actions\Pages\DeletePageUseCase;
 use App\Modules\Content\Application\Actions\Pages\ForceDeletePageUseCase;
 use App\Modules\Content\Application\Actions\Pages\IndexPageUseCase;
+use App\Modules\Content\Application\Actions\Pages\PublishPageUseCase;
 use App\Modules\Content\Application\Actions\Pages\RestorePageUseCase;
+use App\Modules\Content\Application\Actions\Pages\UnpublishPageUseCase;
 use App\Modules\Content\Application\Actions\Pages\UpdatePageUseCase;
 use App\Modules\Content\Application\Actions\Pages\ViewPageUseCase;
-use App\Modules\Content\Application\DTOs\PageCreateData;
-use App\Modules\Content\Application\DTOs\PageIndexData;
-use App\Modules\Content\Application\DTOs\PageUpdateData;
-use App\Modules\Content\Application\DTOs\PageViewData;
+use App\Modules\Content\Application\DTOs\Page\PageCreateData;
+use App\Modules\Content\Application\DTOs\Page\PageIndexData;
+use App\Modules\Content\Application\DTOs\Page\PageUpdateData;
+use App\Modules\Content\Application\DTOs\Page\PageViewData;
 use App\Modules\Content\Application\Interfaces\ContentBlockRepositoryInterface;
 use App\Modules\Content\Domain\ValueObjects\ContainerType;
 use App\Modules\Shared\Domain\Entities\UserPermission;
@@ -25,14 +27,16 @@ use Symfony\Component\HttpFoundation\Response;
 class PageController extends Controller
 {
     public function __construct(
-        private readonly CreatePageUseCase      $createUseCase,
-        private readonly UpdatePageUseCase      $updateUseCase,
-        private readonly DeletePageUseCase      $deleteUseCase,
-        private readonly IndexPageUseCase       $indexUseCase,
-        private readonly ViewPageUseCase        $viewUseCase,
-        private readonly ForceDeletePageUseCase $forceDeleteUseCase,
-        private readonly RestorePageUseCase $restoreUseCase,
+        private readonly CreatePageUseCase               $createUseCase,
+        private readonly UpdatePageUseCase               $updateUseCase,
+        private readonly DeletePageUseCase               $deleteUseCase,
+        private readonly IndexPageUseCase                $indexUseCase,
+        private readonly ViewPageUseCase                 $viewUseCase,
+        private readonly ForceDeletePageUseCase          $forceDeleteUseCase,
+        private readonly RestorePageUseCase              $restoreUseCase,
         private readonly ContentBlockRepositoryInterface $contentBlockRepository,
+        private readonly PublishPageUseCase              $publishPageUseCase,
+        private readonly UnpublishPageUseCase            $unpublishPageUseCase,
     )
     {
     }
@@ -92,5 +96,17 @@ class PageController extends Controller
     {
         $this->restoreUseCase->execute($id, $permissions);
         return response()->json(['message' => 'Страница восстановлена']);
+    }
+
+    public function publish(int $id, UserPermission $permissions): JsonResponse
+    {
+        $this->publishPageUseCase->execute($id, $permissions);
+        return response()->json(['message' => 'Страница опубликована']);
+    }
+
+    public function unpublish(int $id, UserPermission $permissions): JsonResponse
+    {
+        $this->unpublishPageUseCase->execute($id, $permissions);
+        return response()->json(['message' => 'Страница снята с публикации']);
     }
 }

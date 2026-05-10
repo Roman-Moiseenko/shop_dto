@@ -18,7 +18,7 @@ class ContentBlockEntityTest extends TestCase
         $this->assertSame('page', $block->containerType->getValue());
         $this->assertSame(10, $block->containerId);
         $this->assertSame(5, $block->widgetInstanceId);
-        $this->assertSame(0, $block->sort);
+        $this->assertSame(null, $block->sort);
         $this->assertNull($block->section);
         $this->assertNull($block->createdAt);
         $this->assertNull($block->updatedAt);
