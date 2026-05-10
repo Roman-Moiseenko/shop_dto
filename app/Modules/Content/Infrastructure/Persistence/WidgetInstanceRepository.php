@@ -23,18 +23,18 @@ class WidgetInstanceRepository implements WidgetInstanceRepositoryInterface
 
     public function findById(int $id): ?WidgetInstanceEntity
     {
-        $model = WidgetInstance::find($id);
+        $model = WidgetInstance::with('widget')->find($id);
         return $model ? $this->hydrate($model) : null;
     }
 
     public function findByUuid(string $uuid): ?WidgetInstanceEntity
     {
-        $model = WidgetInstance::where('uuid', $uuid)->first();
+        $model = WidgetInstance::with('widget')->where('uuid', $uuid)->first();
         return $model ? $this->hydrate($model) : null;
     }
     public function all(?int $widgetId = null): array
     {
-        $query = WidgetInstance::query();
+        $query = WidgetInstance::with('widget');
         if ($widgetId !== null) {
             $query->where('widget_id', $widgetId);
         }
@@ -60,6 +60,13 @@ class WidgetInstanceRepository implements WidgetInstanceRepositoryInterface
         $instance->uuid = $model->uuid;
         $instance->createdAt = DateTimeImmutable::createFromMutable($model->created_at);
         $instance->updatedAt = DateTimeImmutable::createFromMutable($model->updated_at);
+        $instance->widgetName = $model->widget->name;
+        $instance->widgetSlug = $model->widget->slug;
         return $instance;
+    }
+
+    public function hydrateWidgetInstance(WidgetInstance $model): WidgetInstanceEntity
+    {
+        return $this->hydrate($model);
     }
 }

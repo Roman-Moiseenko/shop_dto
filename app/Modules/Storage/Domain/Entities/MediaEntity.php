@@ -131,26 +131,4 @@ class MediaEntity
         return $base . $filename;
     }
 
-    //TODO Удалить и вынести в DTO
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->id,
-            'uuid' => $this->uuid,
-            'model_type' => $this->modelType,
-            'model_id' => $this->modelId,
-            'type' => $this->type,
-            'title' => $this->title,
-            'description' => $this->description,
-            'sort' => $this->sort,
-            'file_name' => $this->fileName,
-            'mime_type' => $this->mimeType,
-            'disk' => $this->disk,
-            'size' => $this->size,
-            'custom_properties' => $this->customProperties,
-            'created_at' => $this->createdAt?->format('c'),
-            'updated_at' => $this->updatedAt?->format('c'),
-        ];
-    }
-
 }

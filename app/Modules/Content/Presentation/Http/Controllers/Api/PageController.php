@@ -11,7 +11,11 @@ use App\Modules\Content\Application\Actions\Pages\RestorePageUseCase;
 use App\Modules\Content\Application\Actions\Pages\UpdatePageUseCase;
 use App\Modules\Content\Application\Actions\Pages\ViewPageUseCase;
 use App\Modules\Content\Application\DTOs\PageCreateData;
+use App\Modules\Content\Application\DTOs\PageIndexData;
 use App\Modules\Content\Application\DTOs\PageUpdateData;
+use App\Modules\Content\Application\DTOs\PageViewData;
+use App\Modules\Content\Application\Interfaces\ContentBlockRepositoryInterface;
+use App\Modules\Content\Domain\ValueObjects\ContainerType;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,6 +32,7 @@ class PageController extends Controller
         private readonly ViewPageUseCase        $viewUseCase,
         private readonly ForceDeletePageUseCase $forceDeleteUseCase,
         private readonly RestorePageUseCase $restoreUseCase,
+        private readonly ContentBlockRepositoryInterface $contentBlockRepository,
     )
     {
     }
@@ -35,7 +40,7 @@ class PageController extends Controller
     public function index(UserPermission $permissions): JsonResponse
     {
         $pages = $this->indexUseCase->execute($permissions);
-        return response()->json($pages);
+        return response()->json(PageIndexData::collect($pages), Response::HTTP_OK);
     }
 
     public function store(Request $request, UserPermission $permissions): JsonResponse
@@ -46,13 +51,15 @@ class PageController extends Controller
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $page = $this->createUseCase->execute($dto, $permissions);
-        return response()->json($page, 201);
+        return response()->json(PageViewData::fromEntity($page), 201);
     }
 
     public function show(int $id, UserPermission $permissions): JsonResponse
     {
         $page = $this->viewUseCase->execute($id, $permissions);
-        return response()->json($page);
+        $blocks = $this->contentBlockRepository->listByContainer(ContainerType::page(), $id);
+
+        return response()->json(PageViewData::fromEntity($page, $blocks));
     }
 
     public function update(int $id, Request $request, UserPermission $permissions): JsonResponse
@@ -63,7 +70,7 @@ class PageController extends Controller
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $page = $this->updateUseCase->execute($id, $dto, $permissions);
-        return response()->json($page);
+        return response()->json(PageViewData::fromEntity($page));
     }
 
     public function destroy(int $id, UserPermission $permissions): JsonResponse

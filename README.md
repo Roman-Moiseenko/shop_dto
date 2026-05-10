@@ -17,6 +17,32 @@
 ### Обработка исключений
 Исключения модулей обрабатываются в своих провайдерах, см. на примере **AuthServiceProvider**
 
+### DTO и Валидация
+Для DTO и Валидации используем Spatie\Laravel\Data
+- {Entity}Data - универсальный DTO для создания и изменения, с валидацией
+- {Entity}CreateData - DTO для создания с валидацией
+- {Entity}UpdateData - DTO для редактирования с валидацией
+- {Entity}IndexData - DTO для списков при получении данных через Index{Entity}UseCase без валидации. Обязательное поле **id**
+- {Entity}ViewData - DTO для полных данных сущности при получении данных через View{Entity}UseCase без валидации. Обязательное поле **id**
+- {Entity}OptionData - DTO для списков в компонент **\<select />** без валидации, два параметра id(:key) и name(:label)
+
+Во всех {Entity}ViewData необходим метод **public static function fromEntity({Entity}Entity $entity): self**, который мапает закрытые поля в объект
+Во всех {Entity}IndexData необходимо переопределить метод from для использования коллекции
+
+>Возможно использование одного DTO {Entity}ViewData если сущность содержит мало полей и кол-во в таблице совпадает со всем кол-вом полей 
+
+
+```
+public static function from(mixed ...$payloads): static
+{
+    if (count($payloads) === 1 && $payloads[0] instanceof {Entity}Entity) {
+        return static::fromEntity($payloads[0]);
+    }
+
+    return parent::from(...$payloads);
+}
+``` 
+
 ## Модуль Share
 ### Интерфейсы
 - MailServiceInterface - почтовый интерфейс, для отправки почты. При монолите прописан будет в модуле почты, при микросервисах отправка будет через очереди в Shared
@@ -85,33 +111,35 @@
  1. Создание нового типа виджета (Widget)
    Системный администратор через API добавляет запись в таблицу widgets. Он указывает name, slug и самое главное — schema в формате JSON Schema. Эта схема служит "контрактом" для будущих экземпляров
 
-
-    slug: "text_block"
-    category: "content"
-    schema:  
-        {
-            "type": "object",
-            "properties": {
-                "content": { "type": "string", "title": "Текст" },
-                "text_align": { "type": "string", "enum": ["left", "center", "right"], "default": "left" }
-            }
+```
+slug: "text_block"
+category: "content"
+schema:  
+    {
+        "type": "object",
+        "properties": {
+            "content": { "type": "string", "title": "Текст" },
+            "text_align": { "type": "string", "enum": ["left", "center", "right"], "default": "left" }
         }
+    }
+```
 
 2. Создание и настройка экземпляра виджета (WidgetInstance)
 
 Менеджер в админке выбирает тип виджета (widget_id), и интерфейс на основе его schema динамически генерирует форму. Менеджер заполняет параметры, и создаётся запись в widget_instances, где params содержит уже конкретные значения.
-
-    widget_id: 1 (ссылается на text_block)
-    uuid: a1b2c3d4...
-    params:
-    {
+```
+widget_id: 1 (ссылается на text_block)
+uuid: a1b2c3d4...
+params:
+{
     "content": "<p>Наша компания является лидером...</p>",
     "text_align": "center"
-    }
-
+}
+```
 3. Размещение виджета на странице (ContentBlock)
    Чтобы добавить созданный экземпляр виджета на страницу, менеджер переходит в редактор страницы (с типом контента widget_based). Он выбирает один из готовых экземпляров виджетов и указывает его позицию (sort_order). Так создаётся запись в таблице content_blocks, связывающая page (через container_type и container_id) с widget_instance_id.
 
+4. Примеры схем в фале resources\data\widget_example.json
 
 ## Модуль Mailing
 **В разработке** 

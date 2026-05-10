@@ -14,6 +14,7 @@ use App\Modules\Storage\Application\Actions\UploadMediaUseCase;
 use App\Modules\Storage\Application\Actions\ViewMediaUseCase;
 use App\Modules\Storage\Application\DTOs\DownloadMediaData;
 use App\Modules\Storage\Application\DTOs\IndexMediaData;
+use App\Modules\Storage\Application\DTOs\MediaViewData;
 use App\Modules\Storage\Application\DTOs\UpdateMediaData;
 use App\Modules\Storage\Application\DTOs\UploadMediaData;
 use App\Modules\Storage\Application\Services\MediaFileService;
@@ -81,7 +82,7 @@ class MediaController extends Controller
 
         try {
             $media = $this->uploadUseCase->execute($dto, $permissions);
-            return response()->json($media->toArray(), 201);
+            return response()->json(MediaViewData::fromEntity($media), Response::HTTP_CREATED);
         } catch (\Throwable $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }
@@ -97,7 +98,7 @@ class MediaController extends Controller
         }
 
         $media = $this->downloadUseCase->execute($dto, $permissions);
-        return response()->json($media->toArray(), 201);
+        return response()->json(MediaViewData::fromEntity($media), Response::HTTP_CREATED);
     }
 
 
@@ -110,7 +111,7 @@ class MediaController extends Controller
         }
 
         $media = $this->updateUseCase->execute($id, $dto, $permissions);
-        return response()->json($media->toArray());
+        return response()->json(MediaViewData::fromEntity($media), Response::HTTP_CREATED);
     }
 
     public function destroy(int $id, UserPermission $permissions)

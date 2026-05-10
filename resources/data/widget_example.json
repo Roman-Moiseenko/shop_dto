@@ -1,0 +1,478 @@
+[
+    "1. Текстовый блок с колонками и заголовком",
+    {
+        "type": "object",
+        "properties": {
+            "title": {
+                "type": "string",
+                "title": "Заголовок блока",
+                "default": ""
+            },
+            "columns": {
+                "type": "integer",
+                "title": "Количество колонок",
+                "minimum": 1,
+                "maximum": 4,
+                "default": 1
+            },
+            "content_1": {
+                "type": "string",
+                "title": "Контент колонки 1",
+                "format": "html",
+                "default": ""
+            },
+            "content_2": {
+                "type": "string",
+                "title": "Контент колонки 2",
+                "format": "html",
+                "default": ""
+            },
+            "content_3": {
+                "type": "string",
+                "title": "Контент колонки 3",
+                "format": "html",
+                "default": ""
+            },
+            "content_4": {
+                "type": "string",
+                "title": "Контент колонки 4",
+                "format": "html",
+                "default": ""
+            }
+        },
+        "required": [
+            "columns"
+        ]
+    },
+    "2. Два изображения с ссылками",
+    {
+        "type": "object",
+        "properties": {
+            "image_1": {
+                "type": "string",
+                "title": "Изображение 1",
+                "format": "uuid",
+                "description": "UUID изображения из Storage"
+            },
+            "link_1": {
+                "type": "string",
+                "title": "Ссылка 1",
+                "format": "uri",
+                "default": ""
+            },
+            "alt_1": {
+                "type": "string",
+                "title": "Alt текст 1",
+                "default": ""
+            },
+            "image_2": {
+                "type": "string",
+                "title": "Изображение 2",
+                "format": "uuid"
+            },
+            "link_2": {
+                "type": "string",
+                "title": "Ссылка 2",
+                "format": "uri",
+                "default": ""
+            },
+            "alt_2": {
+                "type": "string",
+                "title": "Alt текст 2",
+                "default": ""
+            }
+        },
+        "required": [
+            "image_1",
+            "image_2"
+        ]
+    },
+    "3. Блок с изображением, текстом и двумя кнопками",
+    {
+        "type": "object",
+        "properties": {
+            "image": {
+                "type": "string",
+                "title": "Изображение",
+                "format": "uuid"
+            },
+            "title": {
+                "type": "string",
+                "title": "Заголовок",
+                "default": ""
+            },
+            "text": {
+                "type": "string",
+                "title": "Текст",
+                "format": "html",
+                "default": ""
+            },
+            "button_1_label": {
+                "type": "string",
+                "title": "Текст кнопки 1",
+                "default": "Подробнее"
+            },
+            "button_1_link": {
+                "type": "string",
+                "title": "Ссылка кнопки 1",
+                "format": "uri",
+                "default": ""
+            },
+            "button_2_label": {
+                "type": "string",
+                "title": "Текст кнопки 2",
+                "default": "Купить"
+            },
+            "button_2_link": {
+                "type": "string",
+                "title": "Ссылка кнопки 2",
+                "format": "uri",
+                "default": ""
+            }
+        },
+        "required": [
+            "image"
+        ]
+    },
+    "4. Блок с иконкой, заголовком и списком преимуществ",
+    {
+        "type": "object",
+        "properties": {
+            "icon": {
+                "type": "string",
+                "title": "Иконка",
+                "format": "uuid"
+            },
+            "title": {
+                "type": "string",
+                "title": "Заголовок",
+                "default": ""
+            },
+            "items": {
+                "type": "array",
+                "title": "Преимущества",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "icon": {
+                            "type": "string",
+                            "title": "Иконка пункта",
+                            "format": "uuid"
+                        },
+                        "text": {
+                            "type": "string",
+                            "title": "Текст пункта"
+                        }
+                    }
+                },
+                "default": []
+            }
+        },
+        "required": [
+            "title"
+        ]
+    },
+    "5. Слайдер изображений",
+    {
+        "type": "object",
+        "properties": {
+            "autoplay": {
+                "type": "boolean",
+                "title": "Автопрокрутка",
+                "default": true
+            },
+            "interval": {
+                "type": "integer",
+                "title": "Интервал (мс)",
+                "default": 3000,
+                "minimum": 1000
+            },
+            "slides": {
+                "type": "array",
+                "title": "Слайды",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "image": {
+                            "type": "string",
+                            "title": "Изображение",
+                            "format": "uuid"
+                        },
+                        "title": {
+                            "type": "string",
+                            "title": "Заголовок слайда",
+                            "default": ""
+                        },
+                        "description": {
+                            "type": "string",
+                            "title": "Описание",
+                            "default": ""
+                        },
+                        "link": {
+                            "type": "string",
+                            "title": "Ссылка",
+                            "format": "uri",
+                            "default": ""
+                        }
+                    },
+                    "required": [
+                        "image"
+                    ]
+                }
+            }
+        },
+        "required": [
+            "slides"
+        ]
+    },
+    "6. Блок с видео (YouTube/Vimeo)",
+    {
+        "type": "object",
+        "properties": {
+            "title": {
+                "type": "string",
+                "title": "Заголовок",
+                "default": ""
+            },
+            "video_url": {
+                "type": "string",
+                "title": "Ссылка на видео",
+                "format": "uri"
+            },
+            "cover_image": {
+                "type": "string",
+                "title": "Обложка видео",
+                "format": "uuid"
+            },
+            "autoplay": {
+                "type": "boolean",
+                "title": "Автовоспроизведение",
+                "default": false
+            }
+        },
+        "required": [
+            "video_url"
+        ]
+    },
+    "7. Блок товаров (рекомендации, новинки)",
+    {
+        "type": "object",
+        "properties": {
+            "title": {
+                "type": "string",
+                "title": "Заголовок блока",
+                "default": ""
+            },
+            "product_ids": {
+                "type": "array",
+                "title": "Список товаров",
+                "description": "ID товаров из модуля Catalog",
+                "items": {
+                    "type": "integer"
+                },
+                "default": []
+            },
+            "display_mode": {
+                "type": "string",
+                "title": "Вид отображения",
+                "enum": [
+                    "grid",
+                    "list",
+                    "slider"
+                ],
+                "default": "grid"
+            },
+            "limit": {
+                "type": "integer",
+                "title": "Максимальное количество",
+                "minimum": 1,
+                "maximum": 20,
+                "default": 4
+            }
+        },
+        "required": [
+            "product_ids"
+        ]
+    },
+    "8. Блок с отзывами",
+    {
+        "type": "object",
+        "properties": {
+            "title": {
+                "type": "string",
+                "title": "Заголовок блока",
+                "default": "Отзывы"
+            },
+            "reviews": {
+                "type": "array",
+                "title": "Отзывы",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "author": {
+                            "type": "string",
+                            "title": "Имя автора"
+                        },
+                        "avatar": {
+                            "type": "string",
+                            "title": "Аватар",
+                            "format": "uuid"
+                        },
+                        "text": {
+                            "type": "string",
+                            "title": "Текст отзыва",
+                            "format": "html"
+                        },
+                        "rating": {
+                            "type": "integer",
+                            "title": "Оценка",
+                            "minimum": 1,
+                            "maximum": 5
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "9. Форма обратной связи",
+    {
+        "type": "object",
+        "properties": {
+            "title": {
+                "type": "string",
+                "title": "Заголовок формы",
+                "default": "Обратная связь"
+            },
+            "description": {
+                "type": "string",
+                "title": "Описание под заголовком",
+                "format": "html",
+                "default": ""
+            },
+            "success_message": {
+                "type": "string",
+                "title": "Сообщение об успехе",
+                "default": "Спасибо! Ваше сообщение отправлено."
+            },
+            "submit_label": {
+                "type": "string",
+                "title": "Текст кнопки отправки",
+                "default": "Отправить"
+            },
+            "fields": {
+                "type": "array",
+                "title": "Поля формы",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "title": "Имя поля (slug)"
+                        },
+                        "label": {
+                            "type": "string",
+                            "title": "Подпись поля"
+                        },
+                        "type": {
+                            "type": "string",
+                            "title": "Тип поля",
+                            "enum": [
+                                "text",
+                                "email",
+                                "phone",
+                                "textarea",
+                                "checkbox",
+                                "select",
+                                "file"
+                            ]
+                        },
+                        "required": {
+                            "type": "boolean",
+                            "title": "Обязательное",
+                            "default": false
+                        },
+                        "placeholder": {
+                            "type": "string",
+                            "title": "Placeholder",
+                            "default": ""
+                        },
+                        "options": {
+                            "type": "array",
+                            "title": "Варианты для select",
+                            "items": {
+                                "type": "string"
+                            },
+                            "default": []
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "label",
+                        "type"
+                    ]
+                },
+                "default": []
+            }
+        },
+        "required": [
+            "fields"
+        ]
+    },
+    "10. Карта (с выбором точки)",
+    {
+        "type": "object",
+        "properties": {
+            "latitude": {
+                "type": "number",
+                "title": "Широта"
+            },
+            "longitude": {
+                "type": "number",
+                "title": "Долгота"
+            },
+            "zoom": {
+                "type": "integer",
+                "title": "Масштаб",
+                "minimum": 1,
+                "maximum": 20,
+                "default": 14
+            },
+            "title": {
+                "type": "string",
+                "title": "Заголовок маркера",
+                "default": ""
+            },
+            "address": {
+                "type": "string",
+                "title": "Адрес",
+                "default": ""
+            }
+        },
+        "required": [
+            "latitude",
+            "longitude"
+        ]
+    },
+    {
+        "type": "object",
+        "properties": {
+            "content": {
+                "type": "string",
+                "title": "\u0422\u0435\u043a\u0441\u0442"
+            },
+            "text_align": {
+                "type": "string",
+                "enum": [
+                    "left",
+                    "center",
+                    "right"
+                ],
+                "default": "left"
+            }
+        }
+    }
+]
+
+
+
+

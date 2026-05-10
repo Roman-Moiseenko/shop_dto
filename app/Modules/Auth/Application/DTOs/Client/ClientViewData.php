@@ -2,7 +2,7 @@
 
 namespace App\Modules\Auth\Application\DTOs\Client;
 
-use App\Modules\Auth\Application\DTOs\User\UserData;
+use App\Modules\Auth\Application\DTOs\User\UserViewData;
 use App\Modules\Auth\Domain\Entities\ClientEntity;
 use Spatie\LaravelData\Attributes\Validation\BooleanType;
 use Spatie\LaravelData\Attributes\Validation\Email;
@@ -11,55 +11,35 @@ use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Data;
 
-class ClientUserData extends Data
+class ClientViewData extends Data
 {
     public function __construct(
         #[IntegerType]
         public readonly int $id,
-        #[StringType]
         public readonly string $lastName,
-        #[StringType]
         public readonly string $firstName,
-        #[Nullable, StringType]
         public readonly ?string $middleName,
-        #[Email]
         public readonly string $email,
-        #[Nullable, StringType]
         public readonly ?string $phone,
-        #[Nullable, StringType]
         public readonly ?string $birthDate,
-        #[Nullable, StringType]
         public readonly ?string $gender,
         // адрес
-        #[Nullable, StringType]
         public readonly ?string $country,
-        #[Nullable, StringType]
         public readonly ?string $region,
-        #[Nullable, StringType]
         public readonly ?string $city,
-        #[Nullable, StringType]
         public readonly ?string $street,
-        #[Nullable, StringType]
         public readonly ?string $postalCode,
         // бан и активность
-        #[Nullable, StringType]
-        public readonly ?string $bannedAt,
-        #[BooleanType]
-        public readonly bool $isActive,
+        public readonly ?string       $bannedAt,
+        public readonly bool          $isActive,
         // согласие на ПД
-        #[BooleanType]
-        public readonly bool $consented,
-        #[Nullable, StringType]
-        public readonly ?string $consentedAt,
-        #[StringType]
-        public readonly string $policyVersion,
-        #[Nullable, StringType]
-        public readonly ?string $actionIdentifier,
-        #[BooleanType]
-        public readonly bool $consentActive,
+        public readonly bool          $consented,
+        public readonly ?string       $consentedAt,
+        public readonly string        $policyVersion,
+        public readonly ?string       $actionIdentifier,
+        public readonly bool          $consentActive,
         // связанный пользователь (учётная запись)
-        #[Nullable]
-        public readonly ?UserData $user = null,
+        public readonly ?UserViewData $user = null,
     ) {}
 
     /**
@@ -91,7 +71,7 @@ class ClientUserData extends Data
             policyVersion: $consent?->policyVersion ?? '',
             actionIdentifier: $consent?->actionIdentifier ?? '',
             consentActive: $consent?->active ?? false,
-            user: $clientEntity->user ? UserData::fromEntity($clientEntity->user) : null,
+            user: $clientEntity->user ? UserViewData::fromEntity($clientEntity->user) : null,
         );
     }
 }

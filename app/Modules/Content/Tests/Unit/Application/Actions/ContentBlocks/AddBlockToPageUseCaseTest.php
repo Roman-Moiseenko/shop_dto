@@ -41,7 +41,7 @@ class AddBlockToPageUseCaseTest extends TestCase
         $pageId = 10;
         $dto = new AddBlockData(
             widgetInstanceId: 5,
-            sortOrder: 3,
+            sort: 3,
             section: 'sidebar',
             caption: 'Рекламный блок'
         );
@@ -52,7 +52,7 @@ class AddBlockToPageUseCaseTest extends TestCase
                 return $block->containerType->getValue() === 'page'
                     && $block->containerId === $pageId
                     && $block->widgetInstanceId === $dto->widgetInstanceId
-                    && $block->sortOrder === $dto->sortOrder
+                    && $block->sort === $dto->sort
                     && $block->section === $dto->section
                     && $block->caption === $dto->caption;
             }))
@@ -72,7 +72,7 @@ class AddBlockToPageUseCaseTest extends TestCase
     public function throws_access_denied_when_missing_create_permission(): void
     {
         $pageId = 10;
-        $dto = new AddBlockData(widgetInstanceId: 1, sortOrder: 0);
+        $dto = new AddBlockData(widgetInstanceId: 1, sort: 0);
 
         $this->blockRepo->shouldNotReceive('save');
 

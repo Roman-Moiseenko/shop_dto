@@ -2,7 +2,7 @@
 
 namespace App\Modules\Content\Tests\Unit\Application\Actions\Widgets;
 use App\Modules\Content\Application\Actions\Widgets\CreateWidgetUseCase;
-use App\Modules\Content\Application\DTOs\WidgetData;
+use App\Modules\Content\Application\DTOs\WidgetUpdateData;
 use App\Modules\Content\Application\Interfaces\WidgetRepositoryInterface;
 use App\Modules\Content\Domain\Entities\WidgetEntity;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
@@ -35,7 +35,7 @@ class CreateWidgetUseCaseTest extends TestCase
     #[Test]
     public function creates_widget_successfully(): void
     {
-        $dto = new WidgetData(
+        $dto = new WidgetUpdateData(
             name: 'Text Block',
             slug: 'text-block',
             category: 'content',
@@ -59,7 +59,7 @@ class CreateWidgetUseCaseTest extends TestCase
     #[Test]
     public function throws_access_denied_when_permission_absent(): void
     {
-        $dto = new WidgetData(
+        $dto = new WidgetUpdateData(
             name: 'Test',
             slug: 'test',
             category: 'content',

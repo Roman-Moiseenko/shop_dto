@@ -2,7 +2,7 @@
 
 namespace App\Modules\Content\Tests\Unit\Application\Actions\Widgets;
 use App\Modules\Content\Application\Actions\Widgets\UpdateWidgetUseCase;
-use App\Modules\Content\Application\DTOs\WidgetData;
+use App\Modules\Content\Application\DTOs\WidgetUpdateData;
 use App\Modules\Content\Application\Interfaces\WidgetRepositoryInterface;
 use App\Modules\Content\Domain\Entities\WidgetEntity;
 use App\Modules\Content\Domain\ValueObjects\WidgetCategory;
@@ -60,7 +60,7 @@ class UpdateWidgetUseCaseTest extends TestCase
             ->with(Mockery::type(WidgetEntity::class))
             ->andReturn($existing);
 
-        $dto = new WidgetData(
+        $dto = new WidgetUpdateData(
             name: 'New Name',
             slug: 'new-slug',
             category: 'media',
@@ -79,7 +79,7 @@ class UpdateWidgetUseCaseTest extends TestCase
     #[Test]
     public function throws_access_denied_when_permission_absent(): void
     {
-        $dto = new WidgetData(
+        $dto = new WidgetUpdateData(
             name: 'New Name',
             slug: 'new-slug',
             category: 'content',
@@ -101,7 +101,7 @@ class UpdateWidgetUseCaseTest extends TestCase
             ->once()
             ->andReturn(null);
 
-        $dto = new WidgetData(
+        $dto = new WidgetUpdateData(
             name: 'New Name',
             slug: 'new-slug',
             category: 'content',

@@ -10,18 +10,14 @@ use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Data;
 
-class UserData extends Data
+class UserViewData extends Data
 {
     public function __construct(
-        #[BooleanType]
-        public bool $active,
         #[Required, IntegerType]
         public int $id,
-        #[Required, Email]
+        public bool $active,
         public string $email,
-        #[Required, ArrayType]
         public array $roleNames,
-        #[Required, BooleanType]
         public bool $isVerified,
     )
     {
@@ -30,8 +26,8 @@ class UserData extends Data
     public static function fromEntity(UserEntity $entity): self
     {
         return new self(
-            !$entity->isBanned,
             $entity->id,
+            !$entity->isBanned,
             $entity->email,
             $entity->roles,
             $entity->isEmailVerified(),

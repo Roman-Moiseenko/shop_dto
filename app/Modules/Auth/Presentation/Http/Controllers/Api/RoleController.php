@@ -10,12 +10,10 @@ use App\Modules\Auth\Application\Actions\Role\UpdateCustomRoleUseCase;
 use App\Modules\Auth\Application\Actions\Role\ViewCustomRoleUseCase;
 use App\Modules\Auth\Application\DTOs\Role\RoleCreateData;
 use App\Modules\Auth\Application\DTOs\Role\RoleUpdateData;
+use App\Modules\Auth\Application\DTOs\Role\RoleViewData;
 use App\Modules\Auth\Domain\Services\PermissionProviderInterface;
-use App\Modules\Auth\Domain\ValueObjects\RoleName;
-use App\Modules\Auth\Presentation\Http\Resources\RoleResource;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use Illuminate\Validation\ValidationException;
-use Spatie\Permission\Models\Role;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,16 +32,15 @@ class RoleController extends Controller
     // Список всех ролей (можно добавить фильтр по is_system через параметр запроса)
     public function index(Request $request, UserPermission $userPermission): JsonResponse
     {
-
         $is_system = $request->has('type') && $request->type == 'system';
         $roles = $this->indexCustomRoleUseCase->execute($is_system, $userPermission);
-        return RoleResource::collection($roles)->response();
+        return response()->json(RoleViewData::collect($roles), Response::HTTP_CREATED);
     }
 
     public function show(int $id, UserPermission $userPermission): JsonResponse
     {
         $role = $this->viewCustomRoleUseCase->execute($id, $userPermission);
-        return new RoleResource($role)->response();
+        return response()->json(RoleViewData::fromEntity($role), Response::HTTP_CREATED);
     }
 
     public function store(Request $request, UserPermission $userPermission): JsonResponse
@@ -55,7 +52,7 @@ class RoleController extends Controller
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $role = $this->createRole->execute($dto, $userPermission);
-        return new RoleResource($role)->response()->setStatusCode(201);
+        return response()->json(RoleViewData::fromEntity($role), Response::HTTP_CREATED);
     }
 
     public function update(int $id, Request $request, UserPermission $userPermission): JsonResponse
@@ -68,7 +65,7 @@ class RoleController extends Controller
         }
 
         $updatedRole = $this->updateRole->execute($id, $dto, $userPermission);
-        return new RoleResource($updatedRole)->response();
+        return response()->json(RoleViewData::fromEntity($updatedRole), Response::HTTP_CREATED);
     }
 
     public function destroy(int $id, UserPermission $userPermission): JsonResponse

@@ -2,7 +2,7 @@
 
 namespace App\Modules\Auth\Application\Actions\Freelance;
 
-use App\Modules\Auth\Application\DTOs\Freelance\FreelanceUserData;
+use App\Modules\Auth\Application\DTOs\Freelance\FreelanceViewData;
 use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\FreelanceEntity;
 use App\Modules\Auth\Infrastructure\Exceptions\StaffNotFoundException;

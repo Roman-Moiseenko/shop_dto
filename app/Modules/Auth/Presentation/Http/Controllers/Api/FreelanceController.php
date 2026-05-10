@@ -11,13 +11,12 @@ use App\Modules\Auth\Application\Actions\Freelance\ViewFreelanceUseCase;
 use App\Modules\Auth\Application\Actions\User\RegisterFreelanceUserUseCase;
 use App\Modules\Auth\Application\Actions\User\UpdateUserUseCase;
 use App\Modules\Auth\Application\DTOs\Freelance\FreelanceCreateData;
+use App\Modules\Auth\Application\DTOs\Freelance\FreelanceIndexData;
 use App\Modules\Auth\Application\DTOs\Freelance\FreelanceUpdateData;
-use App\Modules\Auth\Application\DTOs\Freelance\FreelanceUserData;
+use App\Modules\Auth\Application\DTOs\Freelance\FreelanceViewData;
 use App\Modules\Auth\Application\DTOs\User\UpdateUserData;
-use App\Modules\Auth\Application\DTOs\User\UserData;
+use App\Modules\Auth\Application\DTOs\User\UserViewData;
 use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;
-use App\Modules\Auth\Infrastructure\Models\Freelance;
-use App\Modules\Auth\Presentation\Http\Resources\FreelanceResource;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -42,14 +41,15 @@ class FreelanceController extends Controller
     public function index(UserPermission $userPermission): JsonResponse
     {
         $freelances = $this->indexFreelanceUseCase->execute($userPermission);
+        return response()->json(FreelanceIndexData::collect($freelances), Response::HTTP_CREATED);
 
-        return FreelanceResource::collection($freelances)->response();
+      //  return FreelanceResource::collection($freelances)->response();
     }
 
     public function show(int $id, UserPermission $userPermission): JsonResponse
     {
         $freelance = $this->viewFreelanceUseCase->execute($id, $userPermission);
-        return response()->json(FreelanceUserData::fromEntity($freelance), Response::HTTP_OK);
+        return response()->json(FreelanceViewData::fromEntity($freelance), Response::HTTP_OK);
     }
 
     /**
@@ -64,7 +64,7 @@ class FreelanceController extends Controller
         }
 
         $freelanceDTO = $this->createFreelanceUseCase->execute($dto, $userPermission);
-        return response()->json(FreelanceUserData::fromEntity($freelanceDTO), Response::HTTP_CREATED);
+        return response()->json(FreelanceViewData::fromEntity($freelanceDTO), Response::HTTP_CREATED);
     }
 
     /**
@@ -79,7 +79,7 @@ class FreelanceController extends Controller
         }
 
         $freelance = $this->updateFreelanceUseCase->execute($id, $dto, $userPermission);
-        return response()->json(FreelanceUserData::fromEntity($freelance));
+        return response()->json(FreelanceViewData::fromEntity($freelance));
     }
 
     public function destroy(int $id, UserPermission $userPermission): JsonResponse
@@ -109,7 +109,7 @@ class FreelanceController extends Controller
         } else {
             $userOut = $this->updateUserUseCase->execute($id, $dto, $userPermission);
         }
-        return response()->json(UserData::fromEntity($userOut), Response::HTTP_OK);
+        return response()->json(UserViewData::fromEntity($userOut), Response::HTTP_OK);
     }
 
 

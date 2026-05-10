@@ -33,6 +33,7 @@ final class WidgetEntity
 
     public WidgetSchema $schema {
         get => $this->schema;
+        set => $this->schema = $value;
     }
 
     public ?DateTimeImmutable $createdAt = null {

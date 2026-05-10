@@ -12,6 +12,7 @@ Route::prefix('v1/content')->group(function () {
 
     //С доступом для админки
     Route::middleware('auth:sanctum')->group(function () {
+        Route::get('widget/options', [WidgetController::class, 'options']);
         Route::apiResource('widget', WidgetController::class);
         Route::apiResource('widget-instance', WidgetInstanceController::class);
         Route::apiResource('page', PageController::class);

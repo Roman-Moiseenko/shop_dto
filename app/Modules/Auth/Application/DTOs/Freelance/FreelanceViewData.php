@@ -2,7 +2,7 @@
 
 namespace App\Modules\Auth\Application\DTOs\Freelance;
 
-use App\Modules\Auth\Application\DTOs\User\UserData;
+use App\Modules\Auth\Application\DTOs\User\UserViewData;
 use App\Modules\Auth\Domain\Entities\FreelanceEntity;
 use Spatie\LaravelData\Attributes\Validation\BooleanType;
 use Spatie\LaravelData\Attributes\Validation\Date;
@@ -17,35 +17,23 @@ use Spatie\LaravelData\Data;
 /**
  * DTO для возврата данных на фронтенд
  */
-class FreelanceUserData extends Data
+class FreelanceViewData extends Data
 {
     public function __construct(
         #[Required, IntegerType]
         public int $id,
-        #[Required, StringType, Max(255)]
         public readonly string $lastName,
-        #[Required, StringType, Max(255)]
-        public readonly string $firstName,
-        #[Nullable, StringType, Max(255)]
-        public readonly ?string $middleName = null,
-        #[Required, StringType, Max(255)]
-        public readonly string $position,
-        #[Nullable, StringType, Max(255)]
-        public readonly ?string $personalPhone = null,
-        #[Nullable, Email, Max(255)]
-        public readonly ?string $personalEmail = null,
-        #[Nullable, Date]
-        public readonly ?string $hireDate = null,
-        #[Nullable, StringType, Max(255)]
-        public readonly ?string $telegramChatId = null,
-        #[Nullable, StringType, Max(255)]
-        public readonly ?string $maxChatId = null,
-        #[Nullable, StringType]
-        public readonly ?string $notes = null,
-        #[BooleanType]
-        public readonly bool $terminated = false,
-        #[Nullable]
-        public readonly ?UserData $user = null,
+        public readonly string        $firstName,
+        public readonly ?string       $middleName = null,
+        public readonly string        $position,
+        public readonly ?string       $personalPhone = null,
+        public readonly ?string       $personalEmail = null,
+        public readonly ?string       $hireDate = null,
+        public readonly ?string       $telegramChatId = null,
+        public readonly ?string       $maxChatId = null,
+        public readonly ?string       $notes = null,
+        public readonly bool          $terminated = false,
+        public readonly ?UserViewData $user = null,
     ) {}
 
     public static function fromEntity(FreelanceEntity $freelanceEntity): self
@@ -63,7 +51,7 @@ class FreelanceUserData extends Data
             $freelanceEntity->maxChatId,
             $freelanceEntity->notes,
             !$freelanceEntity->isActive,
-            $freelanceEntity->user ? UserData::fromEntity($freelanceEntity->user) : null,
+            $freelanceEntity->user ? UserViewData::fromEntity($freelanceEntity->user) : null,
         );
     }
 }

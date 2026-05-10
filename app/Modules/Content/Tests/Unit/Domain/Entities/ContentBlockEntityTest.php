@@ -18,7 +18,7 @@ class ContentBlockEntityTest extends TestCase
         $this->assertSame('page', $block->containerType->getValue());
         $this->assertSame(10, $block->containerId);
         $this->assertSame(5, $block->widgetInstanceId);
-        $this->assertSame(0, $block->sortOrder);
+        $this->assertSame(0, $block->sort);
         $this->assertNull($block->section);
         $this->assertNull($block->createdAt);
         $this->assertNull($block->updatedAt);
@@ -34,15 +34,15 @@ class ContentBlockEntityTest extends TestCase
             'sidebar'
         );
 
-        $this->assertSame(3, $block->sortOrder);
+        $this->assertSame(3, $block->sort);
         $this->assertSame('sidebar', $block->section);
     }
 
     #[Test] public function can_change_sort_order(): void
     {
         $block = new ContentBlockEntity(ContainerType::page(), 1, 2);
-        $block->sortOrder = 5;
-        $this->assertSame(5, $block->sortOrder);
+        $block->sort = 5;
+        $this->assertSame(5, $block->sort);
     }
 
     #[Test] public function can_set_dates(): void

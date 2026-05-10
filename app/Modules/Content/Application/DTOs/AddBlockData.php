@@ -11,9 +11,9 @@ class AddBlockData extends Data
 {
     public function __construct(
         #[Required, IntegerType]
-        public readonly int $widgetInstanceId,
-        #[Required, IntegerType]
-        public readonly int $sortOrder,
+        public readonly int     $instanceId,
+        #[Nullable, IntegerType]
+        public readonly ?int    $sort = null,
         #[Nullable, StringType, Max(100)]
         public readonly ?string $section = null,
         #[Nullable, StringType, Max(255)]

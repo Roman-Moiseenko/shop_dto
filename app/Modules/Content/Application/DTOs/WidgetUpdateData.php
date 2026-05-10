@@ -7,7 +7,7 @@ use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Attributes\Validation\ArrayType;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Attributes\Validation\Max;
-class WidgetData extends Data
+class WidgetUpdateData extends Data
 {
     public function __construct(
         #[Required, StringType, Max(255)]

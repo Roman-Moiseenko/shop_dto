@@ -2,7 +2,7 @@
 
 namespace App\Modules\Content\Application\Actions\Widgets;
 
-use App\Modules\Content\Application\DTOs\WidgetData;
+use App\Modules\Content\Application\DTOs\WidgetUpdateData;
 use App\Modules\Content\Application\Interfaces\WidgetRepositoryInterface;
 use App\Modules\Content\Domain\Entities\WidgetEntity;
 use App\Modules\Content\Domain\ValueObjects\WidgetCategory;
@@ -16,7 +16,7 @@ class UpdateWidgetUseCase
 {
     public function __construct(private WidgetRepositoryInterface $widgetRepository) {}
 
-    public function execute(int $id, WidgetData $dto, UserPermission $permissions): WidgetEntity
+    public function execute(int $id, WidgetUpdateData $dto, UserPermission $permissions): WidgetEntity
     {
         if (!$permissions->can('content.settings.edit')) {
             throw new AccessDeniedException();

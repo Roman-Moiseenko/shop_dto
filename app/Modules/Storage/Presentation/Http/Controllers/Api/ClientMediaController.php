@@ -8,6 +8,7 @@ use App\Modules\Storage\Application\Actions\ClientDeleteMediaUseCase;
 use App\Modules\Storage\Application\Actions\ClientListMediaUseCase;
 use App\Modules\Storage\Application\Actions\ClientUploadMediaUseCase;
 use App\Modules\Storage\Application\DTOs\IndexMediaData;
+use App\Modules\Storage\Application\DTOs\MediaViewData;
 use App\Modules\Storage\Application\DTOs\UploadMediaData;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -38,7 +39,7 @@ class ClientMediaController extends Controller
         }
 
         $media = $this->clientUploadUseCase->execute($dto, $permissions);
-        return response()->json($media->toArray(), 201);
+        return response()->json(MediaViewData::fromEntity($media), Response::HTTP_CREATED);
     }
 
     public function destroy(string $uuid, UserPermission $permissions)

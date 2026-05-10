@@ -8,6 +8,7 @@ use App\Modules\Content\Application\Actions\ContentBlocks\RemoveBlockFromPageUse
 use App\Modules\Content\Application\Actions\ContentBlocks\ReorderSingleBlockUseCase;
 use App\Modules\Content\Application\Actions\ContentBlocks\UpdateBlockCaptionUseCase;
 use App\Modules\Content\Application\DTOs\AddBlockData;
+use App\Modules\Content\Application\DTOs\ContentBlockViewData;
 use App\Modules\Content\Application\DTOs\ReorderSingleBlockData;
 use App\Modules\Content\Application\DTOs\UpdateBlockCaptionData;
 use App\Modules\Shared\Domain\Entities\UserPermission;
@@ -33,7 +34,7 @@ class PageBlockController extends Controller
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $block = $this->addBlockUseCase->execute($id, $dto, $permissions);
-        return response()->json($block, 201);
+        return response()->json(ContentBlockViewData::fromEntity($block), 201);
     }
 
     public function removeBlock(int $id, int $blockId, UserPermission $permissions): JsonResponse
@@ -61,6 +62,6 @@ class PageBlockController extends Controller
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $block = $this->updateBlockCaptionUseCase->execute($id, $dto, $permissions);
-        return response()->json($block);
+        return response()->json(ContentBlockViewData::fromEntity($block));
     }
 }

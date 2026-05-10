@@ -49,9 +49,12 @@ class WidgetRepository implements WidgetRepositoryInterface
             new WidgetSchema($model->schema),
             $model->description,
         );
+
+
         $widget->id = $model->id;
         $widget->createdAt = DateTimeImmutable::createFromMutable($model->created_at);
         $widget->updatedAt = DateTimeImmutable::createFromMutable($model->updated_at);
+
         return $widget;
     }
 }

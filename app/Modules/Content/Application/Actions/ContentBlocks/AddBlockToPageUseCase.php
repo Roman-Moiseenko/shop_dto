@@ -22,8 +22,8 @@ class AddBlockToPageUseCase
         $block = new ContentBlockEntity(
             ContainerType::page(),
             $pageId,
-            $dto->widgetInstanceId,
-            $dto->sortOrder,
+            $dto->instanceId,
+            $dto->sort,
             $dto->section,
             $dto->caption
         );

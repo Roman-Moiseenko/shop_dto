@@ -9,6 +9,8 @@ use App\Modules\Content\Application\Actions\Widgets\IndexWidgetInstanceUseCase;
 use App\Modules\Content\Application\Actions\Widgets\UpdateWidgetInstanceUseCase;
 use App\Modules\Content\Application\Actions\Widgets\ViewWidgetInstanceUseCase;
 use App\Modules\Content\Application\DTOs\WidgetInstanceData;
+use App\Modules\Content\Application\DTOs\WidgetInstanceIndexData;
+use App\Modules\Content\Application\DTOs\WidgetInstanceViewData;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -29,7 +31,7 @@ class WidgetInstanceController extends Controller
     {
         $widgetId = $request->query('widget_id');
         $instances = $this->indexUseCase->execute($widgetId, $permissions);
-        return response()->json($instances);
+        return response()->json(WidgetInstanceIndexData::collect($instances), RESPONSE::HTTP_OK);
     }
 
     public function store(Request $request, UserPermission $permissions): JsonResponse
@@ -40,13 +42,13 @@ class WidgetInstanceController extends Controller
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $instance = $this->createUseCase->execute($dto, $permissions);
-        return response()->json($instance, 201);
+        return response()->json(WidgetInstanceViewData::fromEntity($instance), Response::HTTP_CREATED);
     }
 
     public function show(int $id, UserPermission $permissions): JsonResponse
     {
         $instance = $this->viewUseCase->execute($id, $permissions);
-        return response()->json($instance);
+        return response()->json(WidgetInstanceViewData::fromEntity($instance), Response::HTTP_OK);
     }
 
     public function update(int $id, Request $request, UserPermission $permissions): JsonResponse
@@ -57,12 +59,12 @@ class WidgetInstanceController extends Controller
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $instance = $this->updateUseCase->execute($id, $dto, $permissions);
-        return response()->json($instance);
+        return response()->json(WidgetInstanceViewData::fromEntity($instance), Response::HTTP_CREATED);
     }
 
     public function destroy(int $id, UserPermission $permissions): JsonResponse
     {
         $this->deleteUseCase->execute($id, $permissions);
-        return response()->json(null, 204);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

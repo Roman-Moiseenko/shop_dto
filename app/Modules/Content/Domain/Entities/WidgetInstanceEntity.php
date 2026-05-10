@@ -43,6 +43,14 @@ final class WidgetInstanceEntity
         set => $this->updatedAt = $value;
     }
 
+    public string $widgetName {
+        get => $this->widgetName;
+        set => $this->widgetName = $value;
+    }
+    public string $widgetSlug {
+        get => $this->widgetSlug;
+        set => $this->widgetSlug = $value;
+    }
 
     public function __construct(
         int     $widgetId,

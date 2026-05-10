@@ -29,9 +29,9 @@ final class ContentBlockEntity
         get => $this->widgetInstanceId;
     }
 
-    public int $sortOrder = 0 {
-        get => $this->sortOrder;
-        set => $this->sortOrder = $value;
+    public ?int $sort = null {
+        get => $this->sort;
+        set => $this->sort = $value;
     }
 
     public ?string $section = null {
@@ -48,19 +48,22 @@ final class ContentBlockEntity
         get => $this->updatedAt;
         set => $this->updatedAt = $value;
     }
-
+    public ?WidgetInstanceEntity $widgetInstance = null {
+        get => $this->widgetInstance;
+        set => $this->widgetInstance = $value;
+    }
     public function __construct(
         ContainerType $containerType,
         int $containerId,
         int $widgetInstanceId,
-        int $sortOrder = 0,
+        ?int $sortOrder = null,
         ?string $section = null,
         ?string $caption = null
     ) {
         $this->containerType = $containerType;
         $this->containerId = $containerId;
         $this->widgetInstanceId = $widgetInstanceId;
-        $this->sortOrder = $sortOrder;
+        $this->sort = $sortOrder;
         $this->section = $section;
         $this->caption = $caption;
     }

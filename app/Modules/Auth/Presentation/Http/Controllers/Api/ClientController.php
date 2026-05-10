@@ -13,15 +13,14 @@ use App\Modules\Auth\Application\Actions\User\ConfirmEmailUseCase;
 use App\Modules\Auth\Application\Actions\User\RegisterUserClientUseCase;
 use App\Modules\Auth\Application\DTOs\Client\ClientCreateData;
 use App\Modules\Auth\Application\DTOs\Client\ClientCreateWithConsentData;
+use App\Modules\Auth\Application\DTOs\Client\ClientIndexData;
 use App\Modules\Auth\Application\DTOs\Client\ClientUpdateData;
-use App\Modules\Auth\Application\DTOs\Client\ClientUserData;
+use App\Modules\Auth\Application\DTOs\Client\ClientViewData;
 use App\Modules\Auth\Application\DTOs\User\ChangeUserCredentialsData;
 use App\Modules\Auth\Application\DTOs\User\RegisterUserData;
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
-use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Infrastructure\Models\Client;
 use App\Modules\Auth\Infrastructure\Models\User;
-use App\Modules\Auth\Presentation\Http\Resources\ClientResource;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -48,13 +47,13 @@ class ClientController extends Controller
     public function index(UserPermission $userPermission): JsonResponse
     {
         $clients = $this->indexClientUseCase->execute($userPermission);
-        return ClientResource::collection($clients)->response();
+        return response()->json(ClientIndexData::collect($clients), Response::HTTP_CREATED);
     }
 
     public function show(int $id, UserPermission $userPermission): JsonResponse
     {
         $client = $this->viewClientUseCase->execute($id, $userPermission);
-        return response()->json(ClientUserData::fromEntity($client), Response::HTTP_OK);
+        return response()->json(ClientViewData::fromEntity($client), Response::HTTP_OK);
     }
 
     /**
@@ -69,7 +68,7 @@ class ClientController extends Controller
         }
 
         $client = $this->createClientUseCase->execute($dto, $userPermission);
-        return response()->json(ClientUserData::fromEntity($client), Response::HTTP_CREATED);
+        return response()->json(ClientViewData::fromEntity($client), Response::HTTP_CREATED);
     }
 
     /**
@@ -94,7 +93,7 @@ class ClientController extends Controller
                 $userPermission
             );
             $client->user = $user;
-            return response()->json(ClientUserData::fromEntity($client), Response::HTTP_OK);
+            return response()->json(ClientViewData::fromEntity($client), Response::HTTP_OK);
         });
     }
 
@@ -145,7 +144,7 @@ class ClientController extends Controller
         $dto = new RegisterUserData($client->email->value, (string)$password);
         $user = $this->registerUserClientUseCase->execute($id, $dto, $userPermission);
         $client->user = $user;
-        return response()->json(ClientUserData::fromEntity($client), Response::HTTP_OK);
+        return response()->json(ClientViewData::fromEntity($client), Response::HTTP_OK);
     }
 
     /**
@@ -164,7 +163,7 @@ class ClientController extends Controller
             return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $client = $this->updateClientUseCase->execute($id, $dto, $userPermission);
-        return response()->json(ClientUserData::fromEntity($client), Response::HTTP_OK);
+        return response()->json(ClientViewData::fromEntity($client), Response::HTTP_OK);
     }
 
     public function destroy(int $id, UserPermission $userPermission): JsonResponse
@@ -198,7 +197,7 @@ class ClientController extends Controller
             return response()->json(['message' => 'Профиль клиента не найден'], Response::HTTP_NOT_FOUND);
         }
 
-        return response()->json(ClientUserData::fromEntity($client), Response::HTTP_CREATED);
+        return response()->json(ClientViewData::fromEntity($client), Response::HTTP_CREATED);
     }
 
     /**
@@ -226,7 +225,7 @@ class ClientController extends Controller
             // 3. Вызываем тот же Use Case, но с ID, полученным из аутентификации
         $client = $this->updateClientUseCase->execute($clientId, $dto, $userPermission);
 
-        return response()->json(ClientUserData::fromEntity($client), Response::HTTP_CREATED);
+        return response()->json(ClientViewData::fromEntity($client), Response::HTTP_CREATED);
     }
 
 }

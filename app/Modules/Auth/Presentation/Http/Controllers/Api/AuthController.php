@@ -9,7 +9,6 @@ use App\Modules\Auth\Application\Actions\Auth\ResetPasswordUseCase;
 use App\Modules\Auth\Application\Actions\Auth\SendPasswordResetLinkUseCase;
 use App\Modules\Auth\Application\DTOs\LoginData;
 use App\Modules\Auth\Infrastructure\Exceptions\InvalidCredentialsException;
-use App\Modules\Auth\Presentation\Http\Requests\LoginRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -18,13 +17,15 @@ use Symfony\Component\HttpFoundation\Response;
 class AuthController extends Controller
 {
     public function __construct(
-       // private readonly RegisterUserUseCase          $registerUser,
+        // private readonly RegisterUserUseCase          $registerUser,
         private readonly LoginUserUseCase             $loginUser,
         private readonly LogoutUserUseCase            $logoutUser,
         private readonly SendPasswordResetLinkUseCase $sendResetLink,
         private readonly ResetPasswordUseCase         $resetPassword,
-      //  private readonly AssignRoleToUserUseCase      $assignRoleUser,
-    ) {}
+        //  private readonly AssignRoleToUserUseCase      $assignRoleUser,
+    )
+    {
+    }
 
     /*
     public function register(RegisterRequest $request): JsonResponse
@@ -42,15 +43,15 @@ class AuthController extends Controller
         }
     }
 */
-    public function login(LoginRequest $request): JsonResponse
+    public function login(Request $request): JsonResponse
     {
         try {
-            $dto = new LoginData(...$request->validated());
-            $token = $this->loginUser->execute($dto);
-            return response()->json(['token' => $token]);
+            $dto = LoginData::validateAndCreate($request);
         } catch (InvalidCredentialsException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_UNAUTHORIZED);
         }
+        $token = $this->loginUser->execute($dto);
+        return response()->json(['token' => $token]);
     }
 
     public function logout(Request $request): JsonResponse
@@ -58,16 +59,17 @@ class AuthController extends Controller
         $this->logoutUser->execute($request);
         return response()->json(['message' => 'Выход выполнен']);
     }
-/*
-    public function user(Request $request): JsonResponse
-    {
-        // Получаем аутентифицированного пользователя через guard
-        $user = $request->user();
-        // Здесь нужно преобразовать модель Eloquent в доменную сущность, если необходимо
-        // Для простоты можно вернуть модель, но лучше через репозиторий
-        return response()->json($user);
-    }
-*/
+
+    /*
+        public function user(Request $request): JsonResponse
+        {
+            // Получаем аутентифицированного пользователя через guard
+            $user = $request->user();
+            // Здесь нужно преобразовать модель Eloquent в доменную сущность, если необходимо
+            // Для простоты можно вернуть модель, но лучше через репозиторий
+            return response()->json($user);
+        }
+    */
     public function forgotPassword(Request $request): JsonResponse
     {
         $request->validate(['email' => 'required|email']);

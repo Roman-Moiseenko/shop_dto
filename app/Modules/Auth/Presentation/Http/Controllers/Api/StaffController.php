@@ -11,15 +11,13 @@ use App\Modules\Auth\Application\Actions\Staff\ViewStaffUseCase;
 use App\Modules\Auth\Application\Actions\User\RegisterStaffUserUseCase;
 use App\Modules\Auth\Application\Actions\User\UpdateUserUseCase;
 use App\Modules\Auth\Application\DTOs\Staff\StaffCreateData;
+use App\Modules\Auth\Application\DTOs\Staff\StaffIndexData;
 use App\Modules\Auth\Application\DTOs\Staff\StaffUpdateData;
-use App\Modules\Auth\Application\DTOs\Staff\StaffUserData;
+use App\Modules\Auth\Application\DTOs\Staff\StaffViewData;
 use App\Modules\Auth\Application\DTOs\User\UpdateUserData;
-use App\Modules\Auth\Application\DTOs\User\UserData;
+use App\Modules\Auth\Application\DTOs\User\UserViewData;
 use App\Modules\Auth\Application\Interfaces\StaffRepositoryInterface;
-use App\Modules\Auth\Infrastructure\Models\Staff;
-use App\Modules\Auth\Presentation\Http\Resources\StaffResource;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -44,13 +42,13 @@ class StaffController extends Controller
     {
         $staffs = $this->indexStaffUseCase->execute($userPermission);
 
-        return StaffResource::collection($staffs)->response();
+        return response()->json(StaffIndexData::collect($staffs), Response::HTTP_CREATED);
     }
 
     public function show(int $id, UserPermission $userPermission): JsonResponse
     {
         $staff = $this->viewStaffUseCase->execute($id, $userPermission);
-        return response()->json(StaffUserData::fromEntity($staff), Response::HTTP_CREATED); //new StaffResource($staff)->response();
+        return response()->json(StaffViewData::fromEntity($staff), Response::HTTP_CREATED);
     }
 
     /**
@@ -65,7 +63,7 @@ class StaffController extends Controller
         }
 
         $staffDTO = $this->createStaffUseCase->execute($dto, $userPermission);
-        return response()->json(StaffUserData::fromEntity($staffDTO), Response::HTTP_CREATED);
+        return response()->json(StaffViewData::fromEntity($staffDTO), Response::HTTP_CREATED);
     }
 
     /**
@@ -80,7 +78,7 @@ class StaffController extends Controller
         }
 
         $staff = $this->updateStaffUseCase->execute($id, $dto, $userPermission);
-        return response()->json(StaffUserData::fromEntity($staff));
+        return response()->json(StaffViewData::fromEntity($staff));
     }
 
     public function destroy(int $id, UserPermission $userPermission): JsonResponse
@@ -109,7 +107,7 @@ class StaffController extends Controller
         } else {
             $userOut = $this->updateUserUseCase->execute($id, $dto, $userPermission);
         }
-        return response()->json(UserData::fromEntity($userOut), Response::HTTP_OK);
+        return response()->json(UserViewData::fromEntity($userOut), Response::HTTP_OK);
     }
 
 }
