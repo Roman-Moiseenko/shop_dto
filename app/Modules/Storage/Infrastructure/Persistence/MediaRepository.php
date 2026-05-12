@@ -3,10 +3,15 @@
 namespace App\Modules\Storage\Infrastructure\Persistence;
 
 use App\Modules\Shared\Domain\Services\TransactionManagerInterface;
+use App\Modules\Shared\Domain\ValueObjects\Slug;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
+use App\Modules\Storage\Domain\Entities\MediaTagEntity;
 use App\Modules\Storage\Domain\ValueObjects\MediaType;
+use App\Modules\Storage\Domain\ValueObjects\TagName;
 use App\Modules\Storage\Infrastructure\Models\Media;
+use App\Modules\Storage\Infrastructure\Models\MediaTag;
+use DateTimeImmutable;
 
 readonly class MediaRepository implements MediaRepositoryInterface
 {
@@ -67,7 +72,7 @@ readonly class MediaRepository implements MediaRepositoryInterface
 
     public function findById(int $id): ?MediaEntity
     {
-        $model = Media::find($id);
+        $model = Media::find($id)->with('tags');
         return $model ? $this->hydrate($model) : null;
     }
 
@@ -97,20 +102,43 @@ readonly class MediaRepository implements MediaRepositoryInterface
         });
     }
 
-    public function listByEntity(string $modelType, int $modelId, ?string $type = null): array
+    public function listByEntity(string $modelType, int $modelId, array $filters = []): array
     {
-        $query = Media::where('model_type', $modelType)
+        $query = Media::with('tags')
+            ->where('model_type', $modelType)
             ->where('model_id', $modelId);
 
-        if ($type) {
-            $query->where('type', $type);
+        if (!empty($filters['type'])) {
+            $query->where('type', $filters['type']);
         }
 
-        return $query->orderBy('sort')->get()
+        if (!empty($filters['tag'])) {
+            $query->whereHas('tags', function ($q) use ($filters) {
+                $q->where('slug', $filters['tag']);
+            });
+        }
+
+        // Всегда подгружаем теги
+        $query->with('tags');
+
+        return $query->orderBy('sort')
+            ->get()
             ->map(fn($model) => $this->hydrate($model))
             ->all();
     }
+    public function getDistinctTagsByEntity(string $modelType, int $modelId): array
+    {
+        $mediaIds = Media::where('model_type', $modelType)
+            ->where('model_id', $modelId)
+            ->pluck('id');
 
+        // Получаем уникальные теги, связанные с этими медиа
+        return MediaTag::whereHas('medias', function ($q) use ($mediaIds) {
+            $q->whereIn('media_id', $mediaIds);
+        })->orderBy('name')->get()
+            ->map(fn($model) => $this->hydrateTag($model))
+            ->all();
+    }
     public function listAll(?string $modelType = null, ?int $modelId = null): array
     {
         $query = Media::query();
@@ -126,7 +154,17 @@ readonly class MediaRepository implements MediaRepositoryInterface
             ->map(fn($model) => $this->hydrate($model))
             ->all();
     }
+    public function syncTags(int $mediaId, array $tagIds): void
+    {
+        $media = Media::findOrFail($mediaId);
+        $media->tags()->sync($tagIds);
+    }
 
+    public function getTags(int $mediaId): array
+    {
+        $media = Media::with('tags')->findOrFail($mediaId);
+        return $media->tags->all(); // коллекция моделей MediaTag
+    }
     private function hydrate(Media $model): MediaEntity
     {
         $media = new MediaEntity(
@@ -143,6 +181,20 @@ readonly class MediaRepository implements MediaRepositoryInterface
             mimeType: $model->mime_type,
         );
         $media->id = $model->id;
+
+        if ($model->relationLoaded('tags') && $model->tags->isNotEmpty()) {
+            $tagEntities = $model->tags->map(function ($tagModel) {
+                $tag = new MediaTagEntity(
+                    new TagName($tagModel->name),
+                    new Slug($tagModel->slug)
+                );
+                $tag->id = $tagModel->id;
+                return $tag;
+                // Здесь можно использовать hydrate MediaTagEntity, но для простоты создаём напрямую
+            })->all();
+            $media->tags = $tagEntities;
+        }
+
         return $media;
     }
     public function findByEntityType(string $modelType, int $modelId, string $type): ?MediaEntity
@@ -190,5 +242,17 @@ readonly class MediaRepository implements MediaRepositoryInterface
         foreach ($items as $item) {
             $item->save();
         }
+    }
+
+    private function hydrateTag(MediaTag $model): MediaTagEntity
+    {
+        $tag = new MediaTagEntity(
+            new TagName($model->name),
+            new Slug($model->slug),
+        );
+        $tag->id = $model->id;
+        $tag->createdAt = $model->created_at ? DateTimeImmutable::createFromMutable($model->created_at) : null;
+        $tag->updatedAt = $model->updated_at ? DateTimeImmutable::createFromMutable($model->updated_at) : null;
+        return $tag;
     }
 }

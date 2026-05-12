@@ -3,12 +3,14 @@
 namespace App\Modules\Storage\Providers;
 
 use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
+use App\Modules\Storage\Application\Interfaces\GalleryRepositoryInterface;
 use App\Modules\Storage\Application\Interfaces\HttpClientInterface;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Application\Interfaces\MediaTagRepositoryInterface;
 use App\Modules\Storage\Application\Services\StorageConfig;
 use App\Modules\Storage\Database\Seeders\StorageRoleSeeder;
 use App\Modules\Storage\Infrastructure\Exceptions\MediaFileNotFoundException;
+use App\Modules\Storage\Infrastructure\Persistence\GalleryRepository;
 use App\Modules\Storage\Infrastructure\Persistence\MediaRepository;
 use App\Modules\Storage\Infrastructure\Persistence\MediaTagRepository;
 use App\Modules\Storage\Infrastructure\Services\LaravelFileStorage;
@@ -131,6 +133,10 @@ class StorageServiceProvider extends ServiceProvider
         $this->app->bind(
             MediaTagRepositoryInterface::class,
             MediaTagRepository::class
+        );
+        $this->app->bind(
+            GalleryRepositoryInterface::class,
+            GalleryRepository::class
         );
     }
 

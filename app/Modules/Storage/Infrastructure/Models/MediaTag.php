@@ -2,6 +2,7 @@
 
 namespace App\Modules\Storage\Infrastructure\Models;
 
+use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string $name
  * @property string $slug
  * @property Media[] $medias
+ * @property DateTime $created_at
+ * @property DateTime $updated_at
  */
 class MediaTag extends Model
 {
@@ -23,6 +26,6 @@ class MediaTag extends Model
             'media_has_tags',
             'media_tag_id',
             'media_id'
-        )->withTimestamps();
+        );
     }
 }

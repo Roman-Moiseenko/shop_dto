@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\Storage\Presentation\Http\Controllers\Api\ClientMediaController;
+use App\Modules\Storage\Presentation\Http\Controllers\Api\GalleryController;
 use App\Modules\Storage\Presentation\Http\Controllers\Api\MediaController;
 use App\Modules\Storage\Presentation\Http\Controllers\Api\MediaTagController;
 
@@ -13,12 +14,16 @@ Route::prefix('v1/storage')->group(function () {
         Route::get('/media/{uuid}/file', [MediaController::class, 'file']); //Оригинальный файл
         Route::post('/media/upload', [MediaController::class, 'upload']);
         Route::post('/media/download', [MediaController::class, 'download']); //Загрузка в хранилище по url
-
+        Route::put('/media/{id}/tags', [MediaController::class, 'syncTags']);
         //Работа с медиа по id - изменение параметров сортировки, title и другие
         Route::put('/media/{id}', [MediaController::class, 'update']); //Редактировать поля медиа
         Route::delete('/media/{id}', [MediaController::class, 'destroy']); //Удаление по id
         Route::post('/media/clear-cache', [MediaController::class, 'clearCache']);
         Route::apiResource('media/tag', MediaTagController::class);
+
+        Route::apiResource('gallery', GalleryController::class);
+        Route::get('/gallery/{gallery}/media', [GalleryController::class, 'media']);
+        Route::get('/gallery/{gallery}/tags', [GalleryController::class, 'tags']);
     });
 
     //Для загрузки изображений клиентами - фото для отзыва

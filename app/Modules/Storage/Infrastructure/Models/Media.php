@@ -50,7 +50,7 @@ class Media extends Model
             'media_has_tags',
             'media_id',
             'media_tag_id'
-        )->withTimestamps();
+        );
     }
 
     public function getUrl(string $conversion = ''): string

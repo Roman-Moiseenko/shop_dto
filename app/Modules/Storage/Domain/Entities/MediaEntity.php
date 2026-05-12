@@ -69,6 +69,12 @@ class MediaEntity
         set => $this->updatedAt = $value;
     }
 
+    /** @var MediaTagEntity[] */
+    public array $tags = [] {
+        get => $this->tags;
+        set => $this->tags = $value;
+    }
+
     public function __construct(
         string $uuid,
         string $modelType,

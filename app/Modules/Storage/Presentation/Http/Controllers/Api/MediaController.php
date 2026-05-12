@@ -12,11 +12,13 @@ use App\Modules\Storage\Application\Actions\Media\PublicListMediaUseCase;
 use App\Modules\Storage\Application\Actions\Media\UpdateMediaUseCase;
 use App\Modules\Storage\Application\Actions\Media\UploadMediaUseCase;
 use App\Modules\Storage\Application\Actions\Media\ViewMediaUseCase;
+use App\Modules\Storage\Application\Actions\SyncMediaTagsUseCase;
 use App\Modules\Storage\Application\DTOs\Media\DownloadMediaData;
 use App\Modules\Storage\Application\DTOs\Media\IndexMediaData;
 use App\Modules\Storage\Application\DTOs\Media\MediaViewData;
 use App\Modules\Storage\Application\DTOs\Media\UpdateMediaData;
 use App\Modules\Storage\Application\DTOs\Media\UploadMediaData;
+use App\Modules\Storage\Application\DTOs\SyncMediaTagsData;
 use App\Modules\Storage\Application\Services\MediaFileService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -34,6 +36,7 @@ class MediaController extends Controller
         private readonly MediaFileService       $mediaFileService,
         private readonly ClearCacheUseCase      $clearCacheUseCase,
         private readonly PublicListMediaUseCase $publicListMediaUseCase,
+        private readonly SyncMediaTagsUseCase   $syncMediaTagsUseCase,
     )
     {
     }
@@ -140,5 +143,19 @@ class MediaController extends Controller
             'message' => "Кэш успешно очищен. Обработано записей: {$count}",
             'count' => $count,
         ]);
+    }
+
+    public function syncTags(Request $request,int $id,  UserPermission $permissions)
+    {
+        try {
+            $dto = SyncMediaTagsData::validateAndCreate($request->all());
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $this->syncMediaTagsUseCase->execute($id, $dto, $permissions);
+
+        return response()->json(['message' => 'Теги обновлены']);
+
     }
 }
