@@ -35,8 +35,6 @@ class PublicPageController extends Controller
      */
     public function show(string $slug): JsonResponse
     {
-        \Log::warning($slug);
-
         $page = $this->useCase->execute($slug);
         if (!$page) {
             return response()->json(['message' => 'Page not found'], 404);

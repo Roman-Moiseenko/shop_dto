@@ -2,6 +2,7 @@
 
 use App\Modules\Storage\Presentation\Http\Controllers\Api\ClientMediaController;
 use App\Modules\Storage\Presentation\Http\Controllers\Api\MediaController;
+use App\Modules\Storage\Presentation\Http\Controllers\Api\MediaTagController;
 
 Route::prefix('v1/storage')->group(function () {
     //Для фронтенда сайта (без авторизации)
@@ -17,6 +18,7 @@ Route::prefix('v1/storage')->group(function () {
         Route::put('/media/{id}', [MediaController::class, 'update']); //Редактировать поля медиа
         Route::delete('/media/{id}', [MediaController::class, 'destroy']); //Удаление по id
         Route::post('/media/clear-cache', [MediaController::class, 'clearCache']);
+        Route::apiResource('media/tag', MediaTagController::class);
     });
 
     //Для загрузки изображений клиентами - фото для отзыва

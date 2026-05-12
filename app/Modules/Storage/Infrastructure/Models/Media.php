@@ -3,6 +3,7 @@
 namespace App\Modules\Storage\Infrastructure\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 
 /**
@@ -19,7 +20,7 @@ use Illuminate\Support\Str;
  * @property string $disk
  * @property int $size
  * @property array $custom_properties
- *
+ * @property MediaTag[] $tags
  */
 class Media extends Model
 {
@@ -40,6 +41,16 @@ class Media extends Model
         static::creating(function (Media $media) {
             $media->uuid = (string) Str::uuid();
         });
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            MediaTag::class,
+            'media_has_tags',
+            'media_id',
+            'media_tag_id'
+        )->withTimestamps();
     }
 
     public function getUrl(string $conversion = ''): string

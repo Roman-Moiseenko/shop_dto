@@ -4,12 +4,12 @@ namespace App\Modules\Storage\Presentation\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Storage\Application\Actions\ClientDeleteMediaUseCase;
-use App\Modules\Storage\Application\Actions\ClientListMediaUseCase;
-use App\Modules\Storage\Application\Actions\ClientUploadMediaUseCase;
-use App\Modules\Storage\Application\DTOs\IndexMediaData;
-use App\Modules\Storage\Application\DTOs\MediaViewData;
-use App\Modules\Storage\Application\DTOs\UploadMediaData;
+use App\Modules\Storage\Application\Actions\Media\ClientDeleteMediaUseCase;
+use App\Modules\Storage\Application\Actions\Media\ClientListMediaUseCase;
+use App\Modules\Storage\Application\Actions\Media\ClientUploadMediaUseCase;
+use App\Modules\Storage\Application\DTOs\Media\IndexMediaData;
+use App\Modules\Storage\Application\DTOs\Media\MediaViewData;
+use App\Modules\Storage\Application\DTOs\Media\UploadMediaData;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
