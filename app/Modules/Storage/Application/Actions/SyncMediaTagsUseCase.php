@@ -7,7 +7,6 @@ use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use App\Modules\Storage\Application\DTOs\SyncMediaTagsData;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Infrastructure\Exceptions\MediaFileNotFoundException;
-use InvalidArgumentException;
 
 final readonly class SyncMediaTagsUseCase
 {

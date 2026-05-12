@@ -16,7 +16,7 @@ class ListGalleryImagesUseCase
             throw new AccessDeniedException();
         }
 
-        return $this->mediaRepository->listByEntity(
+        return $this->mediaRepository->listByEntityWithTags(
             'storage.gallery',
             $galleryId,
             $filters,

@@ -102,24 +102,33 @@ readonly class MediaRepository implements MediaRepositoryInterface
         });
     }
 
-    public function listByEntity(string $modelType, int $modelId, array $filters = []): array
+    public function listByEntity(string $modelType, int $modelId, ?string $type = null): array
+    {
+        $query = Media::query()
+            ->where('model_type', $modelType)
+            ->where('model_id', $modelId);
+
+        if ($type) {
+            $query->where('type', $type);
+        }
+
+        return $query->orderBy('sort')
+            ->get()
+            ->map(fn($model) => $this->hydrate($model))
+            ->all();
+    }
+
+    public function listByEntityWithTags(string $modelType, int $modelId, ?array $tags = null): array
     {
         $query = Media::with('tags')
             ->where('model_type', $modelType)
             ->where('model_id', $modelId);
 
-        if (!empty($filters['type'])) {
-            $query->where('type', $filters['type']);
-        }
-
-        if (!empty($filters['tag'])) {
-            $query->whereHas('tags', function ($q) use ($filters) {
-                $q->where('slug', $filters['tag']);
+        if (!empty($tagSlugs)) {
+            $query->whereHas('tags', function ($q) use ($tagSlugs) {
+                $q->whereIn('slug', $tagSlugs);
             });
         }
-
-        // Всегда подгружаем теги
-        $query->with('tags');
 
         return $query->orderBy('sort')
             ->get()
