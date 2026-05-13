@@ -5,6 +5,7 @@ use App\Modules\Content\Presentation\Http\Controllers\Api\MenuItemController;
 use App\Modules\Content\Presentation\Http\Controllers\Api\PageBlockController;
 use App\Modules\Content\Presentation\Http\Controllers\Api\PageController;
 use App\Modules\Content\Presentation\Http\Controllers\Api\PublicPageController;
+use App\Modules\Content\Presentation\Http\Controllers\Api\SiteSettingsController;
 use App\Modules\Content\Presentation\Http\Controllers\Api\WidgetController;
 use App\Modules\Content\Presentation\Http\Controllers\Api\WidgetInstanceController;
 
@@ -44,6 +45,13 @@ Route::prefix('v1/content')->group(function () {
 
             Route::post('/{item}/activate', [MenuItemController::class, 'activate']);
             Route::post('/{item}/deactivate', [MenuItemController::class, 'deactivate']);
+        });
+
+        Route::prefix('site')->group(function () {
+            Route::get('header', [SiteSettingsController::class, 'getHeader']);
+            Route::put('header', [SiteSettingsController::class, 'updateHeader']);
+            Route::get('footer', [SiteSettingsController::class, 'getFooter']);
+            Route::put('footer', [SiteSettingsController::class, 'updateFooter']);
         });
     });
 });

@@ -1,14 +1,5 @@
 <?php
 
-// use Illuminate\Support\Facades\Route;
-
-// Route::middleware([])->prefix('shared')->group(function () {
-
-//     Route::get('/api', function () {
-//         return 'shared';
-//     });
-
-// });
-
-
-
+Route::get('/', function () {
+    return ['ok' => true, 'message' => 'Welcome to the API Shop.DTO' ];
+});

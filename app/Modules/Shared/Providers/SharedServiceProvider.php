@@ -2,9 +2,11 @@
 
 namespace App\Modules\Shared\Providers;
 
+use App\Modules\Shared\Application\Interfaces\SettingRepositoryInterface;
 use App\Modules\Shared\Application\Interfaces\UserPermissionRepositoryInterface;
 use App\Modules\Shared\Domain\Services\LaravelTransactionManager;
 use App\Modules\Shared\Domain\Services\TransactionManagerInterface;
+use App\Modules\Shared\Infrastructure\Persistence\SettingRepository;
 use App\Modules\Shared\Infrastructure\Persistence\UserPermissionRepositoryFromAuth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
@@ -95,6 +97,10 @@ class SharedServiceProvider extends ServiceProvider
             TransactionManagerInterface::class,
             LaravelTransactionManager::class
         );
+        $this->app->bind(
+            SettingRepositoryInterface::class,
+            SettingRepository::class)
+        ;
     }
 
     // =====================================================================
