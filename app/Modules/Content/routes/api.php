@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Content\Presentation\Http\Controllers\Api\ContactController;
 use App\Modules\Content\Presentation\Http\Controllers\Api\MenuController;
 use App\Modules\Content\Presentation\Http\Controllers\Api\MenuItemController;
 use App\Modules\Content\Presentation\Http\Controllers\Api\PageBlockController;
@@ -52,6 +53,17 @@ Route::prefix('v1/content')->group(function () {
             Route::put('header', [SiteSettingsController::class, 'updateHeader']);
             Route::get('footer', [SiteSettingsController::class, 'getFooter']);
             Route::put('footer', [SiteSettingsController::class, 'updateFooter']);
+        });
+        Route::prefix('contact')->group(function () {
+            Route::get('/', [ContactController::class, 'index']);
+            Route::post('/', [ContactController::class, 'store']);
+            Route::get('/{id}', [ContactController::class, 'show']);
+            Route::put('/{id}', [ContactController::class, 'update']);
+            Route::delete('/{id}', [ContactController::class, 'destroy']);
+
+            Route::put('/{id}/activate', [ContactController::class, 'activate']);
+            Route::put('/{id}/deactivate', [ContactController::class, 'deactivate']);
+            Route::put('/{id}/sort', [ContactController::class, 'reorder']);
         });
     });
 });

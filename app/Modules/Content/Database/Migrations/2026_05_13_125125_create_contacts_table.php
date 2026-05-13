@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('icon_uuid')->nullable();
             $table->string('caption')->nullable();
             $table->string('analytics_field')->nullable();
-            $table->unsignedInteger('sort_order')->default(0);
+            $table->unsignedInteger('sort')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

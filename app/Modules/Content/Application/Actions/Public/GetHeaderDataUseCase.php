@@ -2,15 +2,16 @@
 
 namespace App\Modules\Content\Application\Actions\Public;
 
-use App\Modules\Content\Application\DTOs\Menu\MenuData;
+use App\Modules\Content\Application\DTOs\Contact\ContactData;
+use App\Modules\Content\Application\DTOs\Contact\ContactViewData;
 use App\Modules\Content\Application\DTOs\Menu\MenuItemTreeData;
 use App\Modules\Content\Application\DTOs\Public\HeaderData;
 use App\Modules\Content\Application\DTOs\Public\MenuFullData;
 use App\Modules\Content\Application\DTOs\Public\SearchData;
-use App\Modules\Content\Application\DTOs\SettingSite\ContactData;
 use App\Modules\Content\Application\Interfaces\ContactRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\MenuItemRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\MenuRepositoryInterface;
+use App\Modules\Content\Domain\Entities\ContactEntity;
 use App\Modules\Shared\Application\Interfaces\SettingRepositoryInterface;
 
 final readonly class GetHeaderDataUseCase
@@ -34,16 +35,17 @@ final readonly class GetHeaderDataUseCase
             if (!$menu) continue;
 
             $tree = $this->menuItemRepository->getTree($menu->id);
+            $items = array_map(fn($item) => MenuItemTreeData::fromEntity($item), $tree);
+
             $menus[] = new MenuFullData(
                 id:    $menu->id,
                 name:  $menu->name,
                 slug:  (string) $menu->slug,
-                items: MenuItemTreeData::collect($tree)->toArray(),
+                items: $items,
             );
         }
 
-        // Активные контакты
-        $contacts = $this->contactRepository->findAllActive();
+
 
         // Поиск
         $search = new SearchData(
@@ -51,13 +53,16 @@ final readonly class GetHeaderDataUseCase
             placeholder: $raw['searchPlaceholder'] ?? '',
             actionUrl:   $raw['searchActionUrl'] ?? '',
         );
+        // Активные контакты
+        $contacts = $this->contactRepository->findAllActive();
+        $contactData = array_map(fn(ContactEntity $c) => ContactViewData::fromEntity($c), $contacts);
 
         return new HeaderData(
             siteName: $raw['siteName'] ?? '',
             slogan:   $raw['slogan'] ?? null,
             logoUuid: $raw['logoUuid'] ?? null,
             menus:    $menus,
-            contacts: ContactData::collect($contacts)->toArray(),
+            contacts: $contactData,
             search:   $search,
         );
     }

@@ -10,13 +10,13 @@ class HeaderSettingsSaveData extends Data
 {
     public function __construct(
         #[Required, StringType] public readonly string $siteName,
-        #[Nullable, StringType] public readonly ?string $slogan,
-        #[Nullable, StringType] public readonly ?string $logoUuid,
+        #[Nullable, StringType] public readonly ?string $slogan = null,
+        #[Nullable, StringType] public readonly ?string $logoUuid = null,
         #[Required, ArrayType]
         /** @var MenuPositionSaveData[] */
-        public readonly array $menuPositions,
+        public readonly array $menuPositions = [],
         #[Required, BooleanType] public readonly bool $searchEnabled = false,
-        #[Nullable, StringType] public readonly ?string $searchPlaceholder,
-        #[Nullable, StringType] public readonly ?string $searchActionUrl,
+        #[Nullable, StringType] public readonly ?string $searchPlaceholder = null,
+        #[Nullable, StringType] public readonly ?string $searchActionUrl = null,
     ) {}
 }

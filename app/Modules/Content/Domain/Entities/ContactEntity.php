@@ -59,7 +59,7 @@ final class ContactEntity
         ?string $caption = null,
         ?string $analyticsField = null,
         int     $sort = 0,
-        bool    $isActive = true,
+        bool    $isActive = false,
     )
     {
         $this->type = $type;

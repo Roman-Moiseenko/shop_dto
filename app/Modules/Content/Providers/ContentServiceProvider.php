@@ -2,6 +2,7 @@
 
 namespace App\Modules\Content\Providers;
 
+use App\Modules\Content\Application\Interfaces\ContactRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\ContentBlockRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\MenuItemRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\MenuRepositoryInterface;
@@ -14,6 +15,7 @@ use App\Modules\Content\Infrastructure\Exceptions\ContentBlockNotFoundException;
 use App\Modules\Content\Infrastructure\Exceptions\PageNotFoundException;
 use App\Modules\Content\Infrastructure\Exceptions\WidgetInstanceNotFoundException;
 use App\Modules\Content\Infrastructure\Exceptions\WidgetNotFoundException;
+use App\Modules\Content\Infrastructure\Persistence\ContactRepository;
 use App\Modules\Content\Infrastructure\Persistence\ContentBlockRepository;
 use App\Modules\Content\Infrastructure\Persistence\MenuItemRepository;
 use App\Modules\Content\Infrastructure\Persistence\MenuRepository;
@@ -152,6 +154,11 @@ class ContentServiceProvider extends ServiceProvider
             MenuRepositoryInterface::class,
             MenuRepository::class,
         );
+        $this->app->bind(
+            ContactRepositoryInterface::class,
+            ContactRepository::class,
+        );
+
     }
 
     // =====================================================================

@@ -11,4 +11,5 @@ interface ContactRepositoryInterface
     public function delete(int $id): void;
     public function findAllActive(): array;
     public function all(): array;
+    public function updateSortOrder(int $contactId, int $newSort): void;
 }

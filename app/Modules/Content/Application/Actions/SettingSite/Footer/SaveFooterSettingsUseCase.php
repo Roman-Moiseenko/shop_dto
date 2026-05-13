@@ -16,6 +16,15 @@ final readonly class SaveFooterSettingsUseCase
         if (!$permissions->can('content.data.edit')) {
             throw new AccessDeniedException();
         }
-        $this->settingRepository->set('content', 'footer', $dto->toArray());
+        $data = [
+            'copyright'   => $dto->copyright,
+            'description' => $dto->description,
+            'menuPositions'=> array_map(fn($pos) => [
+                'position' => $pos->position,
+                'menuId'   => $pos->menuId,
+            ], $dto->menuPositions),
+        ];
+
+        $this->settingRepository->set('content', 'footer', $data);
     }
 }
