@@ -63,7 +63,7 @@ class UpdateClientUseCase
                 if ($this->clientRepository->emailExists($email, $clientId)) {
                     throw new ClientAlreadyExistsException('Email уже используется другим клиентом');
                 }
-                // Проверяем, что такой email не занят в User (чтобы избежать путаницы)
+                // Проверяем, что такой email не занят в User
                 $excludeUserId = $client->user?->id;
                 if ($this->userRepository->emailExists($email, $excludeUserId)) {
                     throw new ClientAlreadyExistsException('Email уже используется пользователем системы');

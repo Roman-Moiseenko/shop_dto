@@ -3,6 +3,8 @@
 namespace App\Modules\Content\Providers;
 
 use App\Modules\Content\Application\Interfaces\ContentBlockRepositoryInterface;
+use App\Modules\Content\Application\Interfaces\MenuItemRepositoryInterface;
+use App\Modules\Content\Application\Interfaces\MenuRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\PageRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\WidgetInstanceRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\WidgetRepositoryInterface;
@@ -13,6 +15,8 @@ use App\Modules\Content\Infrastructure\Exceptions\PageNotFoundException;
 use App\Modules\Content\Infrastructure\Exceptions\WidgetInstanceNotFoundException;
 use App\Modules\Content\Infrastructure\Exceptions\WidgetNotFoundException;
 use App\Modules\Content\Infrastructure\Persistence\ContentBlockRepository;
+use App\Modules\Content\Infrastructure\Persistence\MenuItemRepository;
+use App\Modules\Content\Infrastructure\Persistence\MenuRepository;
 use App\Modules\Content\Infrastructure\Persistence\PageRepository;
 use App\Modules\Content\Infrastructure\Persistence\WidgetInstanceRepository;
 use App\Modules\Content\Infrastructure\Persistence\WidgetRepository;
@@ -20,6 +24,7 @@ use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use InvalidArgumentException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\HttpFoundation\Response;
@@ -105,8 +110,12 @@ class ContentServiceProvider extends ServiceProvider
             $handler->renderable(function (WidgetNotFoundException $e) {
                 return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
             });
-
-
+            $handler->renderable(function (MenuNotFoundException $e) {
+                return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+            });
+            $handler->renderable(function (InvalidArgumentException $e) {
+                return response()->json(['message' => $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            });
         });
 
     }
@@ -134,6 +143,14 @@ class ContentServiceProvider extends ServiceProvider
         $this->app->bind(
             WidgetRepositoryInterface::class,
             WidgetRepository::class
+        );
+        $this->app->bind(
+            MenuItemRepositoryInterface::class,
+            MenuItemRepository::class
+        );
+        $this->app->bind(
+            MenuRepositoryInterface::class,
+            MenuRepository::class,
         );
     }
 

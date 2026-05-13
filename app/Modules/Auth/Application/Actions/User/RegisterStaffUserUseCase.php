@@ -9,6 +9,7 @@ use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
+use App\Modules\Auth\Domain\ValueObjects\StaffRolesAssignment;
 use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Infrastructure\Models\Staff;
 use App\Modules\Shared\Domain\Entities\UserPermission;
@@ -18,7 +19,7 @@ use InvalidArgumentException;
 readonly class RegisterStaffUserUseCase
 {
     public function __construct(private UserRepositoryInterface $userRepository,
-                                private readonly PasswordHasherInterface $passwordHasher
+                                private PasswordHasherInterface $passwordHasher
     ) {}
 
     public function execute(int $staffId, UpdateUserData $dto, UserPermission $permissions): UserEntity
@@ -37,13 +38,16 @@ readonly class RegisterStaffUserUseCase
         );
 
         $user->setProfile(Staff::class, $staffId);
-
+/*
         if (empty($dto->roleNames)) throw new InvalidArgumentException('Роли пользователя не определены');
         if (in_array(RoleName::CLIENT, $dto->roleNames))
             throw new InvalidArgumentException('Нельзя назначить роль client');
         //Если нет Роли Сотрудника, то добавляем ее
         if (!in_array(RoleName::STAFF, $dto->roleNames)) $dto->roleNames[] = RoleName::STAFF;
         $user->roles = $dto->roleNames;
+*/
+        $staffRoles = new StaffRolesAssignment($dto->roleNames);
+        $user->roles = $staffRoles->toArrayOfStrings();
 
         return $this->userRepository->save($user);
     }

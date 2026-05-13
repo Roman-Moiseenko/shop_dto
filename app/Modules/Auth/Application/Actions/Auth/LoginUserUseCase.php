@@ -10,10 +10,10 @@ use App\Modules\Auth\Infrastructure\Exceptions\InvalidCredentialsException;
 use App\Modules\Shared\Application\Interfaces\Mail\MailServiceInterface;
 use Illuminate\Support\Facades\Auth;
 
-class LoginUserUseCase
+readonly class LoginUserUseCase
 {
-    public function __construct(private readonly UserRepositoryInterface $userRepository,
-    private readonly PasswordHasherInterface $passwordHasher,) {}
+    public function __construct(private UserRepositoryInterface $userRepository,
+    private PasswordHasherInterface                             $passwordHasher,) {}
 
     public function execute(LoginData $dto): string
     {
@@ -25,7 +25,7 @@ class LoginUserUseCase
         }
 
         // Создаём Sanctum токен
-        $guard = Auth::guard('web'); // Используем guard с провайдером users
+        $guard = Auth::guard('api');
         $model = $guard->getProvider()->retrieveById($user->id);
 
         return $model->createToken('api-token')->plainTextToken;

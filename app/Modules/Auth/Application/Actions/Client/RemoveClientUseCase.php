@@ -8,10 +8,10 @@ use App\Modules\Auth\Infrastructure\Models\Staff;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 
-class RemoveClientUseCase
+readonly class RemoveClientUseCase
 {
     public function __construct(
-        private readonly ClientRepositoryInterface $clientRepository
+        private ClientRepositoryInterface $clientRepository
     )
     {
     }
@@ -19,8 +19,7 @@ class RemoveClientUseCase
     {
         if (!$permissions->can('auth.buyer.delete')) throw new AccessDeniedException();
 
-        //Проверка, можем ли удалить
-
+        //Проверка, можем ли удалить. Нужна ли? Если есть ограничение прав
         return $this->clientRepository->delete($id);
     }
 }

@@ -13,6 +13,7 @@ use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\Services\PermissionProviderInterface;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
 use App\Modules\Auth\Infrastructure\Exceptions\ClientNotFoundException;
+use App\Modules\Auth\Infrastructure\Exceptions\RoleInvalidArgumentException;
 use App\Modules\Auth\Infrastructure\Exceptions\StaffNotFoundException;
 use App\Modules\Auth\Infrastructure\Persistence\ClientRepository;
 use App\Modules\Auth\Infrastructure\Persistence\FreelanceRepository;
@@ -105,6 +106,10 @@ class AuthServiceProvider extends ServiceProvider
             $handler->renderable(function (ClientNotFoundException $e) {
                 return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
             });
+            $handler->renderable(function (RoleInvalidArgumentException $e) {
+                return response()->json(['message' => $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            });
+
 
         });
 

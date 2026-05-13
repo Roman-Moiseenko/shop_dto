@@ -6,7 +6,7 @@ use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use Illuminate\Support\Facades\Password;
 
-class SendPasswordResetLinkUseCase
+readonly class SendPasswordResetLinkUseCase
 {
     public function __construct(private UserRepositoryInterface $userRepository) {}
 

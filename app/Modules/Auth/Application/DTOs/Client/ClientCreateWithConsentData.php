@@ -10,7 +10,7 @@ use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Data;
 
 /**
- * Для создание клиента из сайта
+ * Для создания клиента из сайта
  */
 class ClientCreateWithConsentData extends Data
 {

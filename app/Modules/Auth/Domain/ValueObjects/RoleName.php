@@ -2,6 +2,8 @@
 
 namespace App\Modules\Auth\Domain\ValueObjects;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\Deprecated;
+
 final class RoleName
 {
     public const string ADMIN = 'admin'; //Профиль с полным доступом
@@ -18,7 +20,7 @@ final class RoleName
     public function __construct(string $value)
     {
         $normalized = strtolower(trim($value));
-        $this->ensureIsValid($normalized);
+        //$this->ensureIsValid($normalized);
         $this->value = $normalized;
     }
 
@@ -39,9 +41,11 @@ final class RoleName
         return empty($roles) ? [new RoleName(self::CLIENT)] : $roles;
     }
 
+    //Кол-во ролей не ограничено, создаются в админке
+    #[Deprecated]
     private function ensureIsValid(string $value): void
     {
-        if (!in_array($value, [self::ADMIN, self::CLIENT], true)) {
+        if (!in_array($value, self::BASE, true)) {
             throw new InvalidArgumentException("Недопустимое имя роли: {$value}");
         }
     }
