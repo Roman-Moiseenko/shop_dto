@@ -25,6 +25,7 @@
 - {Entity}IndexData - DTO для списков при получении данных через Index{Entity}UseCase без валидации. Обязательное поле **id**
 - {Entity}ViewData - DTO для полных данных сущности при получении данных через View{Entity}UseCase без валидации. Обязательное поле **id**
 - {Entity}OptionData - DTO для списков в компонент **\<select />** без валидации, два параметра id(:key) и name(:label)
+- {Entity}PublicData - (опционально) DTO для публичных данных на сайте
 
 Во всех {Entity}ViewData необходим метод **public static function fromEntity({Entity}Entity $entity): self**, который мапает закрытые поля в объект
 Во всех {Entity}IndexData необходимо переопределить метод from для использования коллекции

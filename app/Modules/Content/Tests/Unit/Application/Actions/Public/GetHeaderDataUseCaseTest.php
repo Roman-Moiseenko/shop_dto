@@ -5,8 +5,8 @@ namespace App\Modules\Content\Tests\Unit\Application\Actions\Public;
 use App\Modules\Content\Application\Actions\Public\GetHeaderDataUseCase;
 use App\Modules\Content\Application\DTOs\Contact\ContactViewData;
 use App\Modules\Content\Application\DTOs\Public\ContactPublicData;
-use App\Modules\Content\Application\DTOs\Public\HeaderData;
-use App\Modules\Content\Application\DTOs\Public\MenuFullData;
+use App\Modules\Content\Application\DTOs\Public\HeaderPublicData;
+use App\Modules\Content\Application\DTOs\Public\MenuPublicData;
 use App\Modules\Content\Application\DTOs\Public\SearchData;
 use App\Modules\Content\Application\Interfaces\ContactRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\MenuItemRepositoryInterface;
@@ -81,12 +81,12 @@ class GetHeaderDataUseCaseTest extends TestCase
 
         $result = $this->useCase->execute();
 
-        $this->assertInstanceOf(HeaderData::class, $result);
+        $this->assertInstanceOf(HeaderPublicData::class, $result);
         $this->assertSame('Мой магазин', $result->siteName);
         $this->assertSame('Лучшие товары', $result->slogan);
         $this->assertSame('uuid-logo', $result->logoUuid);
         $this->assertCount(1, $result->menus);
-        $this->assertInstanceOf(MenuFullData::class, $result->menus[0]);
+        $this->assertInstanceOf(MenuPublicData::class, $result->menus[0]);
         $this->assertSame(1, $result->menus[0]->id);
         $this->assertSame('Главное меню', $result->menus[0]->name);
         $this->assertCount(1, $result->contacts);

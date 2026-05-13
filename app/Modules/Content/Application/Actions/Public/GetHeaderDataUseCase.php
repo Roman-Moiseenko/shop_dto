@@ -6,8 +6,8 @@ use App\Modules\Content\Application\DTOs\Contact\ContactData;
 use App\Modules\Content\Application\DTOs\Contact\ContactViewData;
 use App\Modules\Content\Application\DTOs\Menu\MenuItemTreeData;
 use App\Modules\Content\Application\DTOs\Public\ContactPublicData;
-use App\Modules\Content\Application\DTOs\Public\HeaderData;
-use App\Modules\Content\Application\DTOs\Public\MenuFullData;
+use App\Modules\Content\Application\DTOs\Public\HeaderPublicData;
+use App\Modules\Content\Application\DTOs\Public\MenuPublicData;
 use App\Modules\Content\Application\DTOs\Public\SearchData;
 use App\Modules\Content\Application\Interfaces\ContactRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\MenuItemRepositoryInterface;
@@ -24,7 +24,7 @@ final readonly class GetHeaderDataUseCase
         private ContactRepositoryInterface     $contactRepository,
     ) {}
 
-    public function execute(): HeaderData
+    public function execute(): HeaderPublicData
     {
         // Получаем настройки хедера из общего хранилища (модуль 'content', ключ 'header')
         $raw = $this->settingRepository->get('content', 'header', []);
@@ -38,7 +38,7 @@ final readonly class GetHeaderDataUseCase
             $tree = $this->menuItemRepository->getTree($menu->id);
             $items = array_map(fn($item) => MenuItemTreeData::fromEntity($item), $tree);
 
-            $menus[] = new MenuFullData(
+            $menus[] = new MenuPublicData(
                 id:    $menu->id,
                 name:  $menu->name,
                 slug:  (string) $menu->slug,
@@ -58,7 +58,7 @@ final readonly class GetHeaderDataUseCase
         $contacts = $this->contactRepository->findAllActive();
         $contactData = array_map(fn(ContactEntity $c) => ContactPublicData::fromEntity($c), $contacts);
 
-        return new HeaderData(
+        return new HeaderPublicData(
             siteName: $raw['siteName'] ?? '',
             slogan:   $raw['slogan'] ?? null,
             logoUuid: $raw['logoUuid'] ?? null,

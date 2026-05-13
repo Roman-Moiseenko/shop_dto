@@ -12,6 +12,7 @@ use App\Modules\Content\Application\Interfaces\WidgetRepositoryInterface;
 use App\Modules\Content\Database\Seeders\ContentRoleSeeder;
 use App\Modules\Content\Database\Seeders\RequiredPagesSeeder;
 use App\Modules\Content\Infrastructure\Exceptions\ContentBlockNotFoundException;
+use App\Modules\Content\Infrastructure\Exceptions\MenuNotFoundException;
 use App\Modules\Content\Infrastructure\Exceptions\PageNotFoundException;
 use App\Modules\Content\Infrastructure\Exceptions\WidgetInstanceNotFoundException;
 use App\Modules\Content\Infrastructure\Exceptions\WidgetNotFoundException;

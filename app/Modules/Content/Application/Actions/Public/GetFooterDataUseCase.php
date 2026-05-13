@@ -6,8 +6,8 @@ use App\Modules\Content\Application\DTOs\Contact\ContactData;
 use App\Modules\Content\Application\DTOs\Contact\ContactViewData;
 use App\Modules\Content\Application\DTOs\Menu\MenuItemTreeData;
 use App\Modules\Content\Application\DTOs\Public\ContactPublicData;
-use App\Modules\Content\Application\DTOs\Public\FooterData;
-use App\Modules\Content\Application\DTOs\Public\MenuFullData;
+use App\Modules\Content\Application\DTOs\Public\FooterPublicData;
+use App\Modules\Content\Application\DTOs\Public\MenuPublicData;
 use App\Modules\Content\Application\Interfaces\ContactRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\MenuItemRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\MenuRepositoryInterface;
@@ -23,7 +23,7 @@ final readonly class GetFooterDataUseCase
         private ContactRepositoryInterface     $contactRepository,
     ) {}
 
-    public function execute(): FooterData
+    public function execute(): FooterPublicData
     {
         $raw = $this->settingRepository->get('content', 'footer', []);
 
@@ -35,7 +35,7 @@ final readonly class GetFooterDataUseCase
             $tree = $this->menuItemRepository->getTree($menu->id);
             $items = array_map(fn($item) => MenuItemTreeData::fromEntity($item), $tree);
 
-            $menus[] = new MenuFullData(
+            $menus[] = new MenuPublicData(
                 id:    $menu->id,
                 name:  $menu->name,
                 slug:  (string) $menu->slug,
@@ -46,7 +46,7 @@ final readonly class GetFooterDataUseCase
         $contacts = $this->contactRepository->findAllActive();
         $contactData = array_map(fn(ContactEntity $c) => ContactPublicData::fromEntity($c), $contacts);
 
-        return new FooterData(
+        return new FooterPublicData(
             copyright:   $raw['copyright'] ?? '',
             description: $raw['description'] ?? null,
             menus:       $menus,

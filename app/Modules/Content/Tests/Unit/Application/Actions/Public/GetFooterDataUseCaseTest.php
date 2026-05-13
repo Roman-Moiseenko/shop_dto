@@ -6,8 +6,8 @@ use App\Modules\Content\Application\Actions\Public\GetFooterDataUseCase;
 use App\Modules\Content\Application\DTOs\Contact\ContactData;
 use App\Modules\Content\Application\DTOs\Contact\ContactViewData;
 use App\Modules\Content\Application\DTOs\Public\ContactPublicData;
-use App\Modules\Content\Application\DTOs\Public\FooterData;
-use App\Modules\Content\Application\DTOs\Public\MenuFullData;
+use App\Modules\Content\Application\DTOs\Public\FooterPublicData;
+use App\Modules\Content\Application\DTOs\Public\MenuPublicData;
 use App\Modules\Content\Application\Interfaces\ContactRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\MenuItemRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\MenuRepositoryInterface;
@@ -87,11 +87,11 @@ class GetFooterDataUseCaseTest extends TestCase
 
         $result = $this->useCase->execute();
 
-        $this->assertInstanceOf(FooterData::class, $result);
+        $this->assertInstanceOf(FooterPublicData::class, $result);
         $this->assertSame('© 2026', $result->copyright);
         $this->assertSame('Footer description', $result->description);
         $this->assertCount(2, $result->menus);
-        $this->assertInstanceOf(MenuFullData::class, $result->menus[0]);
+        $this->assertInstanceOf(MenuPublicData::class, $result->menus[0]);
         $this->assertSame(1, $result->menus[0]->id);
         $this->assertSame('Main Footer', $result->menus[0]->name);
         $this->assertCount(2, $result->contacts);

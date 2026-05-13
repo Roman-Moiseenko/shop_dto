@@ -7,8 +7,8 @@ use Spatie\LaravelData\Data;
 class PageResponseData extends Data
 {
     public function __construct(
-        public readonly HeaderData $header,
-        public readonly FooterData $footer,
-        public readonly PagePublicData $page,
+        public readonly HeaderPublicData $header,
+        public readonly FooterPublicData $footer,
+        public readonly PagePublicData   $page,
     ) {}
 }
