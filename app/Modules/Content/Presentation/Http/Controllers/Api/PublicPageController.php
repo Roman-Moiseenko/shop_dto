@@ -3,8 +3,11 @@
 namespace App\Modules\Content\Presentation\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Content\Application\Actions\Public\GetFooterDataUseCase;
+use App\Modules\Content\Application\Actions\Public\GetHeaderDataUseCase;
 use App\Modules\Content\Application\Actions\Public\ViewPublicPageUseCase;
 use App\Modules\Content\Application\DTOs\Public\PagePublicData;
+use App\Modules\Content\Application\DTOs\Public\PageResponseData;
 use App\Modules\Content\Application\Interfaces\ContentBlockRepositoryInterface;
 use App\Modules\Content\Domain\ValueObjects\ContainerType;
 use Illuminate\Http\JsonResponse;
@@ -12,8 +15,10 @@ use Illuminate\Http\JsonResponse;
 class PublicPageController extends Controller
 {
     public function __construct(
-        private ViewPublicPageUseCase $useCase,
-        private ContentBlockRepositoryInterface $blockRepo
+        private readonly ViewPublicPageUseCase           $useCase,
+        private readonly GetHeaderDataUseCase            $getHeaderUseCase,
+        private readonly GetFooterDataUseCase            $getFooterUseCase,
+        private readonly ContentBlockRepositoryInterface $blockRepo
     ) {}
 
     /**
@@ -27,7 +32,12 @@ class PublicPageController extends Controller
         }
 
         $blocks = $this->blockRepo->listByContainer(ContainerType::page(), $page->id);
-        return response()->json(PagePublicData::fromEntity($page, $blocks));
+        return response()->json(
+            new PageResponseData(
+            header: $this->getHeaderUseCase->execute(),
+            footer: $this->getFooterUseCase->execute(),
+            page: PagePublicData::fromEntity($page, $blocks)
+        ));
     }
 
     /**
@@ -41,6 +51,12 @@ class PublicPageController extends Controller
         }
 
         $blocks = $this->blockRepo->listByContainer(ContainerType::page(), $page->id);
-        return response()->json(PagePublicData::fromEntity($page, $blocks));
+        return response()->json(
+            new PageResponseData(
+                header: $this->getHeaderUseCase->execute(),
+                footer: $this->getFooterUseCase->execute(),
+                page: PagePublicData::fromEntity($page, $blocks)
+            )
+        );
     }
 }
