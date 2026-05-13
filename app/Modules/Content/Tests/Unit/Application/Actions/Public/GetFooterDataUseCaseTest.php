@@ -5,6 +5,7 @@ namespace App\Modules\Content\Tests\Unit\Application\Actions\Public;
 use App\Modules\Content\Application\Actions\Public\GetFooterDataUseCase;
 use App\Modules\Content\Application\DTOs\Contact\ContactData;
 use App\Modules\Content\Application\DTOs\Contact\ContactViewData;
+use App\Modules\Content\Application\DTOs\Public\ContactPublicData;
 use App\Modules\Content\Application\DTOs\Public\FooterData;
 use App\Modules\Content\Application\DTOs\Public\MenuFullData;
 use App\Modules\Content\Application\Interfaces\ContactRepositoryInterface;
@@ -12,6 +13,7 @@ use App\Modules\Content\Application\Interfaces\MenuItemRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\MenuRepositoryInterface;
 use App\Modules\Content\Domain\Entities\ContactEntity;
 use App\Modules\Content\Domain\Entities\MenuEntity;
+use App\Modules\Content\Domain\ValueObjects\ContactType;
 use App\Modules\Shared\Application\Interfaces\SettingRepositoryInterface;
 use App\Modules\Shared\Domain\ValueObjects\Slug;
 use PHPUnit\Framework\Attributes\Test;
@@ -77,9 +79,9 @@ class GetFooterDataUseCaseTest extends TestCase
         $this->menuItemRepo->shouldReceive('getTree')->with(2)->andReturn([]);
 
         // Контакты
-        $contact1 = new ContactEntity('phone', '+123456789', sort: 0, isActive: true);
+        $contact1 = new ContactEntity(new ContactType('phone'), '+123456789', sort: 0, isActive: true);
         $contact1->id = 10;
-        $contact2 = new ContactEntity('email', 'test@test.com', sort: 1, isActive: true);
+        $contact2 = new ContactEntity(new ContactType('email'), 'test@test.com', sort: 1, isActive: true);
         $contact2->id = 11;
         $this->contactRepo->shouldReceive('findAllActive')->once()->andReturn([$contact1, $contact2]);
 
@@ -93,7 +95,7 @@ class GetFooterDataUseCaseTest extends TestCase
         $this->assertSame(1, $result->menus[0]->id);
         $this->assertSame('Main Footer', $result->menus[0]->name);
         $this->assertCount(2, $result->contacts);
-        $this->assertInstanceOf(ContactViewData::class, $result->contacts[0]);
+        $this->assertInstanceOf(ContactPublicData::class, $result->contacts[0]);
         $this->assertSame('+123456789', $result->contacts[0]->value);
     }
 

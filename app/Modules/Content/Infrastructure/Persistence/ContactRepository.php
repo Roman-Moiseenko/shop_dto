@@ -4,6 +4,7 @@ namespace App\Modules\Content\Infrastructure\Persistence;
 
 use App\Modules\Content\Application\Interfaces\ContactRepositoryInterface;
 use App\Modules\Content\Domain\Entities\ContactEntity;
+use App\Modules\Content\Domain\ValueObjects\ContactType;
 use App\Modules\Content\Infrastructure\Models\Contact;
 use App\Modules\Shared\Domain\Services\TransactionManagerInterface;
 use DateTimeImmutable;
@@ -25,13 +26,13 @@ class ContactRepository implements ContactRepositoryInterface
                 $contact->sort = $maxSort + 1;
             }
 
-            $model->type            = $contact->type;
+            $model->type = $contact->type->getValue();
             $model->value           = $contact->value;
             $model->link            = $contact->link;
             $model->icon_uuid       = $contact->iconUuid;
             $model->caption         = $contact->caption;
             $model->analytics_field = $contact->analyticsField;
-            // sort не обновляем при редактировании — для этого есть отдельный UseCase
+            $model->sort            = $contact->sort;
             $model->is_active       = $contact->isActive;
             $model->save();
 
@@ -104,13 +105,13 @@ class ContactRepository implements ContactRepositoryInterface
     private function hydrate(Contact $model): ContactEntity
     {
         $contact = new ContactEntity(
-            type:           $model->type,
+            type:           new ContactType($model->type),
             value:          $model->value,
             link:           $model->link,
             iconUuid:       $model->icon_uuid,
             caption:        $model->caption,
             analyticsField: $model->analytics_field,
-            sort:           $model->sort,
+            sort:           (int) $model->sort,
             isActive:       $model->is_active,
         );
         $contact->id        = $model->id;

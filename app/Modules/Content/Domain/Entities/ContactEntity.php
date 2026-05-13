@@ -2,6 +2,7 @@
 
 namespace App\Modules\Content\Domain\Entities;
 
+use App\Modules\Content\Domain\ValueObjects\ContactType;
 use DateTimeImmutable;
 
 final class ContactEntity
@@ -10,7 +11,7 @@ final class ContactEntity
         get => $this->id;
         set => $this->id = $value;
     }
-    public string $type {
+    public ContactType $type {
         get => $this->type;
         set => $this->type = $value;
     }
@@ -52,7 +53,7 @@ final class ContactEntity
     }
 
     public function __construct(
-        string  $type,
+        ContactType  $type,
         string  $value,
         ?string $link = null,
         ?string $iconUuid = null,

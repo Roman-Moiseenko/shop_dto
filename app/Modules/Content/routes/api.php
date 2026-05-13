@@ -64,6 +64,7 @@ Route::prefix('v1/content')->group(function () {
             Route::put('/{id}/activate', [ContactController::class, 'activate']);
             Route::put('/{id}/deactivate', [ContactController::class, 'deactivate']);
             Route::put('/{id}/sort', [ContactController::class, 'reorder']);
+            Route::get('/types', [ContactController::class, 'types']);
         });
     });
 });

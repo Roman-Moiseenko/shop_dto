@@ -2,8 +2,7 @@
 
 namespace App\Modules\Content\Application\DTOs\Public;
 
-use App\Modules\Content\Application\DTOs\Menu\MenuData;
-use App\Modules\Content\Application\DTOs\SettingSite\ContactData;
+use App\Modules\Content\Application\DTOs\Contact\ContactViewData;
 use Spatie\LaravelData\Data;
 
 class FooterData extends Data
@@ -13,7 +12,7 @@ class FooterData extends Data
         public readonly ?string $description,
         /** @var MenuFullData[] */
         public readonly array $menus,
-        /** @var ContactData[] */
+        /** @var ContactPublicData[] */
         public readonly array $contacts,
     ) {}
 }

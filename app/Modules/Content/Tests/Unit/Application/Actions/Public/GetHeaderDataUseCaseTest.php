@@ -4,6 +4,7 @@ namespace App\Modules\Content\Tests\Unit\Application\Actions\Public;
 
 use App\Modules\Content\Application\Actions\Public\GetHeaderDataUseCase;
 use App\Modules\Content\Application\DTOs\Contact\ContactViewData;
+use App\Modules\Content\Application\DTOs\Public\ContactPublicData;
 use App\Modules\Content\Application\DTOs\Public\HeaderData;
 use App\Modules\Content\Application\DTOs\Public\MenuFullData;
 use App\Modules\Content\Application\DTOs\Public\SearchData;
@@ -12,6 +13,7 @@ use App\Modules\Content\Application\Interfaces\MenuItemRepositoryInterface;
 use App\Modules\Content\Application\Interfaces\MenuRepositoryInterface;
 use App\Modules\Content\Domain\Entities\ContactEntity;
 use App\Modules\Content\Domain\Entities\MenuEntity;
+use App\Modules\Content\Domain\ValueObjects\ContactType;
 use App\Modules\Shared\Application\Interfaces\SettingRepositoryInterface;
 use App\Modules\Shared\Domain\ValueObjects\Slug;
 use PHPUnit\Framework\Attributes\Test;
@@ -73,7 +75,7 @@ class GetHeaderDataUseCaseTest extends TestCase
         $this->menuItemRepo->shouldReceive('getTree')->with(1)->andReturn([]);
 
         // Контакты
-        $contact = new ContactEntity('phone', '+79991234567', sort: 0, isActive: true);
+        $contact = new ContactEntity(new ContactType('phone'), '+79991234567', sort: 0, isActive: true);
         $contact->id = 10;
         $this->contactRepo->shouldReceive('findAllActive')->once()->andReturn([$contact]);
 
@@ -88,7 +90,7 @@ class GetHeaderDataUseCaseTest extends TestCase
         $this->assertSame(1, $result->menus[0]->id);
         $this->assertSame('Главное меню', $result->menus[0]->name);
         $this->assertCount(1, $result->contacts);
-        $this->assertInstanceOf(ContactViewData::class, $result->contacts[0]);
+        $this->assertInstanceOf(ContactPublicData::class, $result->contacts[0]);
         $this->assertSame('+79991234567', $result->contacts[0]->value);
         $this->assertInstanceOf(SearchData::class, $result->search);
         $this->assertTrue($result->search->enabled);

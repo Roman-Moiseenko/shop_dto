@@ -5,6 +5,7 @@ namespace App\Modules\Content\Application\Actions\Public;
 use App\Modules\Content\Application\DTOs\Contact\ContactData;
 use App\Modules\Content\Application\DTOs\Contact\ContactViewData;
 use App\Modules\Content\Application\DTOs\Menu\MenuItemTreeData;
+use App\Modules\Content\Application\DTOs\Public\ContactPublicData;
 use App\Modules\Content\Application\DTOs\Public\FooterData;
 use App\Modules\Content\Application\DTOs\Public\MenuFullData;
 use App\Modules\Content\Application\Interfaces\ContactRepositoryInterface;
@@ -43,7 +44,7 @@ final readonly class GetFooterDataUseCase
         }
 
         $contacts = $this->contactRepository->findAllActive();
-        $contactData = array_map(fn(ContactEntity $c) => ContactViewData::fromEntity($c), $contacts);
+        $contactData = array_map(fn(ContactEntity $c) => ContactPublicData::fromEntity($c), $contacts);
 
         return new FooterData(
             copyright:   $raw['copyright'] ?? '',

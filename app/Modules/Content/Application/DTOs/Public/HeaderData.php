@@ -2,8 +2,8 @@
 
 namespace App\Modules\Content\Application\DTOs\Public;
 
-use App\Modules\Content\Application\DTOs\Menu\MenuData;
-use App\Modules\Content\Application\DTOs\SettingSite\ContactData;
+
+use App\Modules\Content\Application\DTOs\Contact\ContactViewData;
 use Spatie\LaravelData\Data;
 
 class HeaderData extends Data
@@ -14,7 +14,7 @@ class HeaderData extends Data
         public readonly ?string $logoUuid,
         /** @var MenuFullData[] */
         public readonly array $menus,
-        /** @var ContactData[] */
+        /** @var ContactPublicData[] */
         public readonly array $contacts,
         public readonly SearchData $search,
     ) {}

@@ -7,10 +7,10 @@ use App\Modules\Content\Application\Interfaces\ContactRepositoryInterface;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 
-final class ReorderContactUseCase
+final readonly class ReorderContactUseCase
 {
     public function __construct(
-        private readonly ContactRepositoryInterface $contactRepository
+        private ContactRepositoryInterface $contactRepository
     ) {}
 
     public function execute(ReorderContactData $dto, UserPermission $permissions): void

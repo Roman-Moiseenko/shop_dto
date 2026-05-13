@@ -5,6 +5,7 @@ namespace App\Modules\Content\Application\Actions\Contact;
 use App\Modules\Content\Application\DTOs\Contact\ContactData;
 use App\Modules\Content\Application\Interfaces\ContactRepositoryInterface;
 use App\Modules\Content\Domain\Entities\ContactEntity;
+use App\Modules\Content\Domain\ValueObjects\ContactType;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 
@@ -21,7 +22,7 @@ final class CreateContactUseCase
         }
 
         $contact = new ContactEntity(
-            type:           $dto->type,
+            type:           new ContactType($dto->type),
             value:          $dto->value,
             link:           $dto->link,
             iconUuid:       $dto->iconUuid,

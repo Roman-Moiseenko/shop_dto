@@ -15,6 +15,7 @@ use App\Modules\Content\Application\DTOs\Contact\ContactData;
 use App\Modules\Content\Application\DTOs\Contact\ContactIndexData;
 use App\Modules\Content\Application\DTOs\Contact\ContactViewData;
 use App\Modules\Content\Application\DTOs\Contact\ReorderContactData;
+use App\Modules\Content\Domain\ValueObjects\ContactType;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -98,5 +99,13 @@ class ContactController extends Controller
 
         $this->reorderUseCase->execute($dto, $permissions);
         return response()->json(['message' => 'Сортировка обновлена']);
+    }
+
+    /**
+     * Получить список допустимых типов контактов.
+     */
+    public function types(UserPermission $permissions): JsonResponse
+    {
+        return response()->json(ContactType::allowed());
     }
 }
