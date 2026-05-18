@@ -37,6 +37,7 @@ Route::prefix('v1/auth')->group(function () {
 
         // маршруты для управления сотрудниками
         Route::middleware(['role:admin|staff'])->group(function () {
+            Route::get('/user', [AuthController::class, 'profile']);
             //Сотрудники Staff
             Route::apiResource('staff', StaffController::class);
             Route::post('/staff/{id}/user', [StaffController::class, 'user']);

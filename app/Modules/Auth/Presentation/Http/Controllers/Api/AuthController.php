@@ -7,8 +7,10 @@ use App\Modules\Auth\Application\Actions\Auth\LoginUserUseCase;
 use App\Modules\Auth\Application\Actions\Auth\LogoutUserUseCase;
 use App\Modules\Auth\Application\Actions\Auth\ResetPasswordUseCase;
 use App\Modules\Auth\Application\Actions\Auth\SendPasswordResetLinkUseCase;
+use App\Modules\Auth\Application\Actions\User\GetUserProfileUseCase;
 use App\Modules\Auth\Application\DTOs\LoginData;
 use App\Modules\Auth\Infrastructure\Exceptions\InvalidCredentialsException;
+use App\Modules\Auth\Infrastructure\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -22,6 +24,7 @@ class AuthController extends Controller
         private readonly LogoutUserUseCase            $logoutUser,
         private readonly SendPasswordResetLinkUseCase $sendResetLink,
         private readonly ResetPasswordUseCase         $resetPassword,
+        private readonly GetUserProfileUseCase        $getUserProfileUseCase
         //  private readonly AssignRoleToUserUseCase      $assignRoleUser,
     )
     {
@@ -96,5 +99,13 @@ class AuthController extends Controller
         return $status === Password::PASSWORD_RESET
             ? response()->json(['message' => __($status)])
             : response()->json(['message' => __($status)], Response::HTTP_BAD_REQUEST);
+    }
+
+    public function profile(): JsonResponse
+    {
+        /** @var User $authUser */
+        $authUser = auth()->user();
+        $data = $this->getUserProfileUseCase->execute($authUser->id);
+        return response()->json($data);
     }
 }
