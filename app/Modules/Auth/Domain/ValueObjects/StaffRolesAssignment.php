@@ -2,8 +2,7 @@
 
 namespace App\Modules\Auth\Domain\ValueObjects;
 
-use App\Modules\Auth\Infrastructure\Exceptions\RoleInvalidArgumentException;
-use InvalidArgumentException;
+use App\Modules\Auth\Domain\Exceptions\RoleInvalidArgumentException;
 
 /**
  * Вспомогательный класс для проверки ролей сотрудников:

@@ -1,14 +1,11 @@
 <?php
 
-use App\Modules\Auth\Infrastructure\Exceptions\StaffNotFoundException;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use App\Modules\Shared\Presentation\Http\Middlewares\LoadUserPermission;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
-use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
 
 return Application::configure(basePath: dirname(__DIR__))

@@ -6,6 +6,7 @@ use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
+use App\Modules\Auth\Domain\ValueObjects\ProfileType;
 use DateTimeImmutable;
 
 class UserEntity
@@ -28,7 +29,7 @@ class UserEntity
         get => $this->rememberToken;
         set => $this->rememberToken = $value;
     }
-    public ?string $profileableType = null {
+    public ?ProfileType $profileableType = null {
         get => $this->profileableType;
     }
     public ?int $profileableId = null {
@@ -68,9 +69,9 @@ class UserEntity
 
     // Сеттеры (используются репозиторием)
 
-    public function setProfile(?string $type, ?int $id): void
+    public function setProfile(?ProfileType $type, ?int $id): void
     {
-        $this->profileableType = $type;
+        $this->profileableType = $type;       // Храним 'staff', 'client' или 'freelance'
         $this->profileableId = $id;
     }
 
@@ -116,9 +117,19 @@ class UserEntity
         return $this->hasRole(RoleName::ADMIN);
     }
 
+    public function isStaff(): bool
+    {
+        return $this->profileableType === ProfileType::STAFF;
+    }
+
+    public function isFreelance(): bool
+    {
+        return $this->profileableType === ProfileType::FREELANCE;
+    }
+
     public function isClient(): bool
     {
-        return $this->hasRole(RoleName::CLIENT);
+        return $this->profileableType === ProfileType::CLIENT;
     }
 
     public function setBannedAt(DateTimeImmutable $date): void

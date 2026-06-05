@@ -6,8 +6,8 @@ use App\Modules\Content\Application\DTOs\Menu\MenuData;
 use App\Modules\Content\Application\Interfaces\MenuRepositoryInterface;
 use App\Modules\Content\Domain\Entities\MenuEntity;
 use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use App\Modules\Shared\Domain\ValueObjects\Slug;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 
 final readonly class CreateMenuUseCase
 {

@@ -5,14 +5,14 @@ namespace App\Modules\Auth\Application\Actions\User;
 use App\Modules\Auth\Application\DTOs\User\UpdateUserData;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
+use App\Modules\Auth\Domain\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
+use App\Modules\Auth\Domain\ValueObjects\ProfileType;
 use App\Modules\Auth\Domain\ValueObjects\StaffRolesAssignment;
-use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
-use App\Modules\Auth\Infrastructure\Models\Staff;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 
 
 readonly class RegisterStaffUserUseCase
@@ -36,7 +36,7 @@ readonly class RegisterStaffUserUseCase
             HashedPassword::fromPlainText($dto->password, $this->passwordHasher),
         );
 
-        $user->setProfile(Staff::class, $staffId);
+        $user->setProfile(ProfileType::STAFF, $staffId);
         $staffRoles = new StaffRolesAssignment($dto->roleNames);
         $user->roles = $staffRoles->toArrayOfStrings();
 

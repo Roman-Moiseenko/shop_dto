@@ -5,7 +5,7 @@ namespace App\Modules\Content\Infrastructure\Persistence;
 use App\Modules\Content\Application\Interfaces\MenuRepositoryInterface;
 use App\Modules\Content\Domain\Entities\MenuEntity;
 use App\Modules\Content\Infrastructure\Models\Menu;
-use App\Modules\Shared\Domain\Services\TransactionManagerInterface;
+use App\Modules\Shared\Application\Interfaces\TransactionManagerInterface;
 use App\Modules\Shared\Domain\ValueObjects\Slug;
 use DateTimeImmutable;
 

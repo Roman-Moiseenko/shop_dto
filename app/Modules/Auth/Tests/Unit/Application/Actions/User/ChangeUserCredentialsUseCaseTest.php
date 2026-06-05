@@ -5,17 +5,16 @@ use App\Modules\Auth\Application\Actions\User\ChangeUserCredentialsUseCase;
 use App\Modules\Auth\Application\DTOs\User\ChangeUserCredentialsData;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
+use App\Modules\Auth\Domain\Exceptions\InvalidCredentialsException;
+use App\Modules\Auth\Domain\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
-use App\Modules\Auth\Infrastructure\Exceptions\InvalidCredentialsException;
-use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
 use App\Modules\Shared\Application\Interfaces\Mail\MailServiceInterface;
-use PHPUnit\Framework\TestCase;
-use Mockery;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Config;
+use Mockery;
+use PHPUnit\Framework\TestCase;
+
 class ChangeUserCredentialsUseCaseTest extends TestCase
 {
     private UserRepositoryInterface $userRepo;

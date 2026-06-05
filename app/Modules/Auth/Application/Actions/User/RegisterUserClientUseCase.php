@@ -6,16 +6,16 @@ use App\Modules\Auth\Application\DTOs\User\RegisterUserData;
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
+use App\Modules\Auth\Domain\Exceptions\ClientNotFoundException;
+use App\Modules\Auth\Domain\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
-use App\Modules\Auth\Infrastructure\Exceptions\ClientNotFoundException;
-use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
-use App\Modules\Auth\Infrastructure\Models\Client;
+use App\Modules\Auth\Domain\ValueObjects\ProfileType;
 use App\Modules\Shared\Application\Interfaces\Mail\MailServiceInterface;
 use App\Modules\Shared\Domain\Entities\Mail\Recipient;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use Illuminate\Support\Str;
 
 /**
@@ -54,7 +54,7 @@ readonly class RegisterUserClientUseCase
             HashedPassword::fromPlainText($dto->password, $this->passwordHasher),
         );
 
-        $user->setProfile(Client::class, $clientId);
+        $user->setProfile(ProfileType::CLIENT, $clientId);
         $user->roles = ['client'];
 
         $savedUser = $this->userRepository->save($user);

@@ -9,7 +9,7 @@ use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Application\Interfaces\MediaTagRepositoryInterface;
 use App\Modules\Storage\Application\Services\StorageConfig;
 use App\Modules\Storage\Database\Seeders\StorageRoleSeeder;
-use App\Modules\Storage\Infrastructure\Exceptions\MediaFileNotFoundException;
+use App\Modules\Storage\Domain\Exceptions\MediaFileNotFoundException;
 use App\Modules\Storage\Infrastructure\Persistence\GalleryRepository;
 use App\Modules\Storage\Infrastructure\Persistence\MediaRepository;
 use App\Modules\Storage\Infrastructure\Persistence\MediaTagRepository;

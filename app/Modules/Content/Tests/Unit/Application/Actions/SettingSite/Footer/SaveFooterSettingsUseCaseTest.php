@@ -6,10 +6,10 @@ use App\Modules\Content\Application\Actions\SettingSite\Footer\SaveFooterSetting
 use App\Modules\Content\Application\DTOs\SettingSite\Footer\FooterSettingsSaveData;
 use App\Modules\Content\Application\DTOs\SettingSite\MenuPositionSaveData;
 use App\Modules\Shared\Application\Interfaces\SettingRepositoryInterface;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Mockery;
 use Tests\Trait\MockPermission;
 
 class SaveFooterSettingsUseCaseTest extends TestCase

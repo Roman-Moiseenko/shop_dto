@@ -6,7 +6,7 @@ use App\Modules\Content\Application\Interfaces\ContactRepositoryInterface;
 use App\Modules\Content\Domain\Entities\ContactEntity;
 use App\Modules\Content\Domain\ValueObjects\ContactType;
 use App\Modules\Content\Infrastructure\Models\Contact;
-use App\Modules\Shared\Domain\Services\TransactionManagerInterface;
+use App\Modules\Shared\Application\Interfaces\TransactionManagerInterface;
 use DateTimeImmutable;
 
 class ContactRepository implements ContactRepositoryInterface

@@ -18,6 +18,7 @@ class PermissionProvider implements PermissionProviderInterface
         return $systemRoles->map(function ($role) {
             return [
                 'role' => $role->name,
+                'description' => $role->description,
                 'permissions' => $role->permissions->pluck('name')->toArray(),
             ];
         })->toArray();

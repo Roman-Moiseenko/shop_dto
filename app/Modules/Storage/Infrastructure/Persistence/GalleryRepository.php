@@ -2,7 +2,7 @@
 
 namespace App\Modules\Storage\Infrastructure\Persistence;
 
-use App\Modules\Shared\Domain\Services\TransactionManagerInterface;
+use App\Modules\Shared\Application\Interfaces\TransactionManagerInterface;
 use App\Modules\Shared\Domain\ValueObjects\Slug;
 use App\Modules\Storage\Application\Interfaces\GalleryRepositoryInterface;
 use App\Modules\Storage\Domain\Entities\GalleryEntity;

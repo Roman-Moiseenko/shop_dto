@@ -8,7 +8,7 @@ use App\Modules\Content\Domain\Entities\MenuItemEntity;
 use App\Modules\Content\Domain\ValueObjects\MenuItemStyle;
 use App\Modules\Content\Domain\ValueObjects\ReferenceType;
 use App\Modules\Content\Infrastructure\Models\MenuItem;
-use App\Modules\Shared\Domain\Services\TransactionManagerInterface;
+use App\Modules\Shared\Application\Interfaces\TransactionManagerInterface;
 use DateTimeImmutable;
 
 class MenuItemRepository implements MenuItemRepositoryInterface

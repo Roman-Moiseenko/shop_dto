@@ -5,11 +5,11 @@ namespace App\Modules\Auth\Application\Actions\Client;
 use App\Modules\Auth\Application\DTOs\Client\ClientCreateWithConsentData;
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\ClientEntity;
+use App\Modules\Auth\Domain\Exceptions\ClientAlreadyExistsException;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
 use App\Modules\Auth\Domain\ValueObjects\PersonalDataConsent;
 use App\Modules\Auth\Domain\ValueObjects\PhoneNumber;
-use App\Modules\Auth\Infrastructure\Exceptions\ClientAlreadyExistsException;
 
 /**
  * Создание клиента из сайта клиентом

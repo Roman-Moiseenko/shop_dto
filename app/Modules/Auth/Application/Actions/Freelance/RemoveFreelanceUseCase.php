@@ -4,7 +4,7 @@ namespace App\Modules\Auth\Application\Actions\Freelance;
 
 use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 
 class RemoveFreelanceUseCase
 {

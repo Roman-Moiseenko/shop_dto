@@ -6,7 +6,7 @@ use App\Modules\Content\Application\Actions\ContentBlocks\AddBlockToPageUseCase;
 use App\Modules\Content\Application\DTOs\ContentBlocks\AddContentBlockData;
 use App\Modules\Content\Application\Interfaces\ContentBlockRepositoryInterface;
 use App\Modules\Content\Domain\Entities\ContentBlockEntity;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

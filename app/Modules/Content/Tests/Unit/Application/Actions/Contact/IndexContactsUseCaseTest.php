@@ -6,10 +6,10 @@ use App\Modules\Content\Application\Actions\Contact\IndexContactsUseCase;
 use App\Modules\Content\Application\Interfaces\ContactRepositoryInterface;
 use App\Modules\Content\Domain\Entities\ContactEntity;
 use App\Modules\Content\Domain\ValueObjects\ContactType;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Mockery;
 use Tests\Trait\MockPermission;
 
 class IndexContactsUseCaseTest extends TestCase

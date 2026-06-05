@@ -5,9 +5,10 @@ use App\Modules\Auth\Application\Actions\Client\CreateClientWithConsentUseCase;
 use App\Modules\Auth\Application\DTOs\Client\ClientCreateWithConsentData;
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\ClientEntity;
-use App\Modules\Auth\Infrastructure\Exceptions\ClientAlreadyExistsException;
-use PHPUnit\Framework\TestCase;
+use App\Modules\Auth\Domain\Exceptions\ClientAlreadyExistsException;
 use Mockery;
+use PHPUnit\Framework\TestCase;
+
 class CreateClientWithConsentUseCaseTest extends TestCase
 {
     private ClientRepositoryInterface $clientRepo;

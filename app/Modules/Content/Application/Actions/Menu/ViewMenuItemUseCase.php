@@ -4,10 +4,9 @@ namespace App\Modules\Content\Application\Actions\Menu;
 
 use App\Modules\Content\Application\Interfaces\MenuItemRepositoryInterface;
 use App\Modules\Content\Domain\Entities\MenuItemEntity;
-use App\Modules\Content\Infrastructure\Exceptions\MenuNotFoundException;
+use App\Modules\Content\Domain\Exceptions\MenuNotFoundException;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
-use InvalidArgumentException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 
 final readonly class ViewMenuItemUseCase
 {

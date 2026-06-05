@@ -5,14 +5,14 @@ namespace App\Modules\Content\Application\Actions\Pages;
 use App\Modules\Content\Application\DTOs\Page\PageUpdateData;
 use App\Modules\Content\Application\Interfaces\PageRepositoryInterface;
 use App\Modules\Content\Domain\Entities\PageEntity;
+use App\Modules\Content\Domain\Exceptions\PageNotFoundException;
 use App\Modules\Content\Domain\ValueObjects\ContentType;
 use App\Modules\Content\Domain\ValueObjects\Meta;
 use App\Modules\Content\Domain\ValueObjects\PageStatus;
 use App\Modules\Content\Domain\ValueObjects\PageTemplate;
-use App\Modules\Content\Infrastructure\Exceptions\PageNotFoundException;
 use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use App\Modules\Shared\Domain\ValueObjects\Slug;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 
 class UpdatePageUseCase
 {

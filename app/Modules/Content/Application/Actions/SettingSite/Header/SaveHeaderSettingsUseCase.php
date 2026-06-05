@@ -5,7 +5,7 @@ namespace App\Modules\Content\Application\Actions\SettingSite\Header;
 use App\Modules\Content\Application\DTOs\SettingSite\Header\HeaderSettingsSaveData;
 use App\Modules\Shared\Application\Interfaces\SettingRepositoryInterface;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 
 final readonly class SaveHeaderSettingsUseCase
 {

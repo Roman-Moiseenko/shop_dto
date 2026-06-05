@@ -6,16 +6,13 @@ use App\Modules\Auth\Application\DTOs\User\UserProfileData;
 use App\Modules\Auth\Application\Interfaces\FreelanceRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\StaffRepositoryInterface;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
-use App\Modules\Auth\Infrastructure\Models\Freelance;
-use App\Modules\Auth\Infrastructure\Models\Staff;
-use App\Modules\Auth\Infrastructure\Models\User;
 
-final class GetUserProfileUseCase
+final readonly class GetUserProfileUseCase
 {
     public function __construct(
-        private readonly UserRepositoryInterface $userRepository,
-        private readonly StaffRepositoryInterface $staffRepository,
-        private readonly FreelanceRepositoryInterface $freelanceRepository,
+        private UserRepositoryInterface      $userRepository,
+        private StaffRepositoryInterface     $staffRepository,
+        private FreelanceRepositoryInterface $freelanceRepository,
     ) {}
 
     public function execute(int $userId): UserProfileData
@@ -29,16 +26,16 @@ final class GetUserProfileUseCase
         $position = null;
 
         // Загружаем Eloquent‑модель, чтобы узнать тип профиля
-        $eloquentUser = User::find($userId);
+        $user = $this->userRepository->findById($userId);
 
-        if ($eloquentUser->profileable_type === Staff::class) {
-            $staff = $this->staffRepository->findById($eloquentUser->profileable_id);
+        if ($user->isStaff()) {
+            $staff = $this->staffRepository->findById($user->profileableId);
             if ($staff) {
                 $fullName = (string) $staff->fullName->getValue();
                 $position = $staff->position;
             }
-        } elseif ($eloquentUser->profileable_type === Freelance::class) {
-            $freelance = $this->freelanceRepository->findById($eloquentUser->profileable_id);
+        } elseif ($user->isFreelance()) {
+            $freelance = $this->freelanceRepository->findById($user->profileableId);
             if ($freelance) {
                 $fullName = (string) $freelance->fullName->getValue();
                 $position = $freelance->position;

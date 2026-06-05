@@ -9,7 +9,7 @@ use App\Modules\Content\Domain\ValueObjects\Meta;
 use App\Modules\Content\Domain\ValueObjects\PageStatus;
 use App\Modules\Content\Domain\ValueObjects\PageTemplate;
 use App\Modules\Content\Infrastructure\Models\Page;
-use App\Modules\Shared\Domain\Services\TransactionManagerInterface;
+use App\Modules\Shared\Application\Interfaces\TransactionManagerInterface;
 use App\Modules\Shared\Domain\ValueObjects\Slug;
 use DateTimeImmutable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;

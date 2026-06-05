@@ -4,10 +4,9 @@ namespace App\Modules\Content\Application\Actions\Pages;
 
 use App\Modules\Content\Application\Interfaces\PageRepositoryInterface;
 use App\Modules\Content\Domain\Entities\PageEntity;
-use App\Modules\Content\Infrastructure\Exceptions\PageNotFoundException;
+use App\Modules\Content\Domain\Exceptions\PageNotFoundException;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
-use InvalidArgumentException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 
 class ViewPageUseCase
 {

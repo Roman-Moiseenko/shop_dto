@@ -19,6 +19,7 @@ use App\Modules\Auth\Application\DTOs\Client\ClientViewData;
 use App\Modules\Auth\Application\DTOs\User\ChangeUserCredentialsData;
 use App\Modules\Auth\Application\DTOs\User\RegisterUserData;
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
+use App\Modules\Auth\Domain\ValueObjects\ProfileType;
 use App\Modules\Auth\Infrastructure\Models\Client;
 use App\Modules\Auth\Infrastructure\Models\User;
 use App\Modules\Shared\Domain\Entities\UserPermission;
@@ -104,7 +105,8 @@ class ClientController extends Controller
     {
         $user = $request->user();
         // 1. Проверяем, что пользователь привязан к профилю клиента
-        if ($user->profileable_type !== Client::class) {
+        $profileType = ProfileType::fromModelClass($user->profileable_type);
+        if ($profileType !== ProfileType::CLIENT) {
             return response()->json(['message' => 'Доступ запрещён'], 403);
         }
 
@@ -210,7 +212,8 @@ class ClientController extends Controller
         $user = $request->user();
 
         // 1. Проверяем, что пользователь привязан к профилю клиента
-        if ($user->profileable_type !== Client::class) {
+        $profileType = ProfileType::fromModelClass($user->profileable_type);
+        if ($profileType !== ProfileType::CLIENT) {
             return response()->json(['message' => 'Доступ запрещён'], 403);
         }
 

@@ -7,7 +7,7 @@ use App\Modules\Content\Application\Interfaces\ContactRepositoryInterface;
 use App\Modules\Content\Domain\Entities\ContactEntity;
 use App\Modules\Content\Domain\ValueObjects\ContactType;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use InvalidArgumentException;
 
 final readonly class UpdateContactUseCase

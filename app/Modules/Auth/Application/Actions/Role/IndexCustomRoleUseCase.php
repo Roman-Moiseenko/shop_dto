@@ -4,7 +4,7 @@ namespace App\Modules\Auth\Application\Actions\Role;
 
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use Illuminate\Database\Eloquent\Collection;
 use Spatie\Permission\Models\Role;
 

@@ -2,13 +2,14 @@
 
 namespace App\Modules\Storage\Infrastructure\Persistence;
 
-use App\Modules\Shared\Domain\Services\TransactionManagerInterface;
+use App\Modules\Shared\Application\Interfaces\TransactionManagerInterface;
 use App\Modules\Shared\Domain\ValueObjects\Slug;
 use App\Modules\Storage\Application\Interfaces\MediaTagRepositoryInterface;
 use App\Modules\Storage\Domain\Entities\MediaTagEntity;
 use App\Modules\Storage\Domain\ValueObjects\TagName;
 use App\Modules\Storage\Infrastructure\Models\MediaTag;
 use DateTimeImmutable;
+
 class MediaTagRepository implements MediaTagRepositoryInterface
 {
     public function __construct(

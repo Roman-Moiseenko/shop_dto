@@ -5,11 +5,10 @@ namespace App\Modules\Content\Application\Actions\Menu;
 use App\Modules\Content\Application\DTOs\Menu\MenuData;
 use App\Modules\Content\Application\Interfaces\MenuRepositoryInterface;
 use App\Modules\Content\Domain\Entities\MenuEntity;
-use App\Modules\Content\Infrastructure\Exceptions\MenuNotFoundException;
+use App\Modules\Content\Domain\Exceptions\MenuNotFoundException;
 use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use App\Modules\Shared\Domain\ValueObjects\Slug;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
-use InvalidArgumentException;
 
 final readonly class UpdateMenuUseCase
 {

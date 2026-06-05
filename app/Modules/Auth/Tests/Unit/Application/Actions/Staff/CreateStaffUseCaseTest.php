@@ -7,7 +7,7 @@ use App\Modules\Auth\Application\DTOs\Staff\StaffCreateData;
 use App\Modules\Auth\Application\Interfaces\StaffRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\StaffEntity;
 use App\Modules\Auth\Domain\ValueObjects\FullName;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Tests\Trait\MockPermission;

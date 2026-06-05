@@ -5,12 +5,12 @@ use App\Modules\Auth\Application\Actions\User\RegisterFreelanceUserUseCase;
 use App\Modules\Auth\Application\DTOs\User\UpdateUserData;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
+use App\Modules\Auth\Domain\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
+use App\Modules\Auth\Domain\ValueObjects\ProfileType;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
-use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
-use App\Modules\Auth\Infrastructure\Models\Freelance;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
@@ -80,7 +80,7 @@ class RegisterFreelanceUserUseCaseTest extends TestCase
         $this->assertEquals('freelancer@example.com', $result->email->value);
         $this->assertSame('hashed_password123', $result->getPasswordHash());
         $this->assertEquals(['editor', 'moderator', RoleName::STAFF], $result->roles);
-        $this->assertEquals(Freelance::class, $result->profileableType);
+        $this->assertEquals(ProfileType::FREELANCE, $result->profileableType);
         $this->assertEquals($freelanceId, $result->profileableId);
     }
 

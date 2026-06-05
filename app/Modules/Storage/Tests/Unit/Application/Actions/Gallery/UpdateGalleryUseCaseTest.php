@@ -2,17 +2,17 @@
 
 namespace App\Modules\Storage\Tests\Unit\Application\Actions\Gallery;
 
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use App\Modules\Shared\Domain\ValueObjects\Slug;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use App\Modules\Storage\Application\Actions\Gallery\UpdateGalleryUseCase;
 use App\Modules\Storage\Application\DTOs\Gallery\GalleryData;
 use App\Modules\Storage\Application\Interfaces\GalleryRepositoryInterface;
 use App\Modules\Storage\Domain\Entities\GalleryEntity;
 use App\Modules\Storage\Domain\ValueObjects\GalleryName;
+use InvalidArgumentException;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Mockery;
-use InvalidArgumentException;
 use Tests\Trait\MockPermission;
 
 class UpdateGalleryUseCaseTest extends TestCase

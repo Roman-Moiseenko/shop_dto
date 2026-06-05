@@ -4,7 +4,7 @@ namespace App\Modules\Auth\Tests\Unit\Application\Actions\Role;
 use App\Modules\Auth\Application\Actions\Role\UpdateCustomRoleUseCase;
 use App\Modules\Auth\Application\DTOs\Role\RoleUpdateData;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

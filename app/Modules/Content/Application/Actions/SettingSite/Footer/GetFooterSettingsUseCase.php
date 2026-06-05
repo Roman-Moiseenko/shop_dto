@@ -6,7 +6,7 @@ use App\Modules\Content\Application\DTOs\SettingSite\Footer\FooterSettingsData;
 use App\Modules\Content\Application\Interfaces\MenuRepositoryInterface;
 use App\Modules\Shared\Application\Interfaces\SettingRepositoryInterface;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 
 final readonly class GetFooterSettingsUseCase
 {

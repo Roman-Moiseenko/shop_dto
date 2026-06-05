@@ -5,7 +5,7 @@ namespace App\Modules\Storage\Application\Actions\Media;
 use App\Modules\Shared\Domain\Entities\UserPermission;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Application\Services\MediaFileService;
-use App\Modules\Storage\Infrastructure\Exceptions\MediaFileNotFoundException;
+use App\Modules\Storage\Domain\Exceptions\MediaFileNotFoundException;
 
 readonly class ClientDeleteMediaUseCase
 {

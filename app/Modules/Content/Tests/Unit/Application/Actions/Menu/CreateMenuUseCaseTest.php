@@ -6,10 +6,10 @@ use App\Modules\Content\Application\Actions\Menu\CreateMenuUseCase;
 use App\Modules\Content\Application\DTOs\Menu\MenuData;
 use App\Modules\Content\Application\Interfaces\MenuRepositoryInterface;
 use App\Modules\Content\Domain\Entities\MenuEntity;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Mockery;
 use Tests\Trait\MockPermission;
 
 class CreateMenuUseCaseTest extends TestCase

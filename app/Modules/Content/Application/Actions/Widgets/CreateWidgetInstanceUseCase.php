@@ -6,7 +6,7 @@ use App\Modules\Content\Application\DTOs\Widget\WidgetInstanceData;
 use App\Modules\Content\Application\Interfaces\WidgetInstanceRepositoryInterface;
 use App\Modules\Content\Domain\Entities\WidgetInstanceEntity;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 
 readonly class CreateWidgetInstanceUseCase
 {

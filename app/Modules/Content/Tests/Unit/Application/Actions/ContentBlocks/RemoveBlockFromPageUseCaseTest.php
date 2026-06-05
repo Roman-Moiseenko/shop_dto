@@ -5,12 +5,12 @@ namespace App\Modules\Content\Tests\Unit\Application\Actions\ContentBlocks;
 use App\Modules\Content\Application\Actions\ContentBlocks\RemoveBlockFromPageUseCase;
 use App\Modules\Content\Application\Interfaces\ContentBlockRepositoryInterface;
 use App\Modules\Content\Domain\Entities\ContentBlockEntity;
+use App\Modules\Content\Domain\Exceptions\ContentBlockNotFoundException;
 use App\Modules\Content\Domain\ValueObjects\ContainerType;
-use App\Modules\Content\Infrastructure\Exceptions\ContentBlockNotFoundException;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Mockery;
 use Tests\Trait\MockPermission;
 
 class RemoveBlockFromPageUseCaseTest extends TestCase

@@ -7,7 +7,7 @@ use App\Modules\Content\Application\Interfaces\MenuItemRepositoryInterface;
 use App\Modules\Content\Domain\Entities\MenuItemEntity;
 use App\Modules\Content\Domain\ValueObjects\ReferenceType;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 
 final readonly class CreateMenuItemUseCase
 {

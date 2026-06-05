@@ -2,17 +2,17 @@
 
 namespace App\Modules\Storage\Tests\Unit\Application\Actions\Tag;
 
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use App\Modules\Shared\Domain\ValueObjects\Slug;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use App\Modules\Storage\Application\Actions\Tag\UpdateMediaTagUseCase;
 use App\Modules\Storage\Application\DTOs\Tag\MediaTagData;
 use App\Modules\Storage\Application\Interfaces\MediaTagRepositoryInterface;
 use App\Modules\Storage\Domain\Entities\MediaTagEntity;
 use App\Modules\Storage\Domain\ValueObjects\TagName;
+use InvalidArgumentException;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Mockery;
-use InvalidArgumentException;
 use Tests\Trait\MockPermission;
 
 class UpdateMediaTagUseCaseTest extends TestCase

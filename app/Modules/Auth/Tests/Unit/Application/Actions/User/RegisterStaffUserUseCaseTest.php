@@ -5,12 +5,12 @@ use App\Modules\Auth\Application\Actions\User\RegisterStaffUserUseCase;
 use App\Modules\Auth\Application\DTOs\User\UpdateUserData;
 use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
+use App\Modules\Auth\Domain\Exceptions\UserAlreadyExistsException;
 use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
+use App\Modules\Auth\Domain\ValueObjects\ProfileType;
 use App\Modules\Auth\Domain\ValueObjects\RoleName;
-use App\Modules\Auth\Infrastructure\Exceptions\UserAlreadyExistsException;
-use App\Modules\Auth\Infrastructure\Models\Staff;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
@@ -80,7 +80,7 @@ class RegisterStaffUserUseCaseTest extends TestCase
         $this->assertEquals('staff@example.com', $result->email->value);
         $this->assertSame('hashed_password123', $result->getPasswordHash());
         $this->assertEquals(['staff', 'editor'], $result->roles);
-        $this->assertEquals(Staff::class, $result->profileableType);
+        $this->assertEquals(ProfileType::STAFF, $result->profileableType);
         $this->assertEquals($staffId, $result->profileableId);
     }
 

@@ -2,8 +2,8 @@
 
 namespace App\Modules\Auth\Tests\Unit\Domain\ValueObjects;
 
+use App\Modules\Auth\Domain\Exceptions\RoleInvalidArgumentException;
 use App\Modules\Auth\Domain\ValueObjects\StaffRolesAssignment;
-use App\Modules\Auth\Infrastructure\Exceptions\RoleInvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

@@ -5,10 +5,10 @@ namespace App\Modules\Content\Tests\Unit\Application\Actions\Contact;
 use App\Modules\Content\Application\Actions\Contact\ReorderContactUseCase;
 use App\Modules\Content\Application\DTOs\Contact\ReorderContactData;
 use App\Modules\Content\Application\Interfaces\ContactRepositoryInterface;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Mockery;
 use Tests\Trait\MockPermission;
 
 class ReorderContactUseCaseTest extends TestCase

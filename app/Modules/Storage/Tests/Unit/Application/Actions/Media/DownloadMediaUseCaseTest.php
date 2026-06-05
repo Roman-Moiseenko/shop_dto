@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Modules\Storage\Tests\Unit\Application\Actions\Media;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use App\Modules\Storage\Application\Actions\Media\DownloadMediaUseCase;
 use App\Modules\Storage\Application\DTOs\Media\DownloadMediaData;
 use App\Modules\Storage\Application\Interfaces\HttpClientInterface;

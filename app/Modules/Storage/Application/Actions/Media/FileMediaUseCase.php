@@ -3,10 +3,10 @@
 namespace App\Modules\Storage\Application\Actions\Media;
 
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use App\Modules\Storage\Application\Interfaces\FileStorageInterface;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
-use App\Modules\Storage\Infrastructure\Exceptions\MediaFileNotFoundException;
+use App\Modules\Storage\Domain\Exceptions\MediaFileNotFoundException;
 
 readonly class FileMediaUseCase
 {

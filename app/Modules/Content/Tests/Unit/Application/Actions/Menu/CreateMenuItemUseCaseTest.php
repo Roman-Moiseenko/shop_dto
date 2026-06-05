@@ -7,10 +7,10 @@ use App\Modules\Content\Application\DTOs\Menu\MenuItemCreateData;
 use App\Modules\Content\Application\Interfaces\MenuItemRepositoryInterface;
 use App\Modules\Content\Domain\Entities\MenuItemEntity;
 use App\Modules\Content\Domain\ValueObjects\ReferenceType;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Mockery;
 use Tests\Trait\MockPermission;
 
 class CreateMenuItemUseCaseTest extends TestCase

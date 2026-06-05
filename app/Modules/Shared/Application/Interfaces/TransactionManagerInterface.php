@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Shared\Domain\Services;
+namespace App\Modules\Shared\Application\Interfaces;
 
 use Closure;
 
@@ -11,3 +11,4 @@ interface TransactionManagerInterface
 {
     public function execute(Closure $callback): mixed;
 }
+

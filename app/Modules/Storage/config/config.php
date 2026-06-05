@@ -51,7 +51,8 @@ return [
     'thumbs' => [
         // entity_type -> type -> список нарезок
         //Модуль => Сущности
-
+/*
+ * Пример для каталога товаров
         'catalog.product' => [
             'image' => [
                 'card' => ['width' => 600, 'height' => 600, 'fit' => true, 'watermark' => true],
@@ -71,7 +72,7 @@ return [
                 'thumb' => ['width' => 80, 'height' => 80],
             ],
         ],
-
+*/
 
         'auth.client' => [
             'image' => [

@@ -2,7 +2,7 @@
 
 namespace App\Modules\Storage\Tests\Unit\Application\Actions\Media;
 
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use App\Modules\Storage\Application\Actions\Media\UploadMediaUseCase;
 use App\Modules\Storage\Application\DTOs\Media\UploadMediaData;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;

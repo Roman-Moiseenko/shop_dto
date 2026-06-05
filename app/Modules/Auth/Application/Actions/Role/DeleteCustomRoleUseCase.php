@@ -3,8 +3,9 @@
 namespace App\Modules\Auth\Application\Actions\Role;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use InvalidArgumentException;
+
 readonly class DeleteCustomRoleUseCase
 {
     public function __construct(

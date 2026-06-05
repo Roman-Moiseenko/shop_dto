@@ -3,10 +3,8 @@
 namespace App\Modules\Auth\Application\Actions\Client;
 
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
-use App\Modules\Auth\Application\Interfaces\StaffRepositoryInterface;
-use App\Modules\Auth\Infrastructure\Models\Staff;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 
 readonly class RemoveClientUseCase
 {

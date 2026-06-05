@@ -3,9 +3,9 @@
 namespace App\Modules\Content\Application\Actions\ContentBlocks;
 
 use App\Modules\Content\Application\Interfaces\ContentBlockRepositoryInterface;
-use App\Modules\Content\Infrastructure\Exceptions\ContentBlockNotFoundException;
+use App\Modules\Content\Domain\Exceptions\ContentBlockNotFoundException;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 
 readonly class RemoveBlockFromPageUseCase
 {

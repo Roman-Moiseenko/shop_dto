@@ -11,11 +11,11 @@ use App\Modules\Content\Application\Interfaces\WidgetInstanceRepositoryInterface
 use App\Modules\Content\Application\Interfaces\WidgetRepositoryInterface;
 use App\Modules\Content\Database\Seeders\ContentRoleSeeder;
 use App\Modules\Content\Database\Seeders\RequiredPagesSeeder;
-use App\Modules\Content\Infrastructure\Exceptions\ContentBlockNotFoundException;
-use App\Modules\Content\Infrastructure\Exceptions\MenuNotFoundException;
-use App\Modules\Content\Infrastructure\Exceptions\PageNotFoundException;
-use App\Modules\Content\Infrastructure\Exceptions\WidgetInstanceNotFoundException;
-use App\Modules\Content\Infrastructure\Exceptions\WidgetNotFoundException;
+use App\Modules\Content\Domain\Exceptions\ContentBlockNotFoundException;
+use App\Modules\Content\Domain\Exceptions\MenuNotFoundException;
+use App\Modules\Content\Domain\Exceptions\PageNotFoundException;
+use App\Modules\Content\Domain\Exceptions\WidgetInstanceNotFoundException;
+use App\Modules\Content\Domain\Exceptions\WidgetNotFoundException;
 use App\Modules\Content\Infrastructure\Persistence\ContactRepository;
 use App\Modules\Content\Infrastructure\Persistence\ContentBlockRepository;
 use App\Modules\Content\Infrastructure\Persistence\MenuItemRepository;

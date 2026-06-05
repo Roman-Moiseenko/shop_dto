@@ -4,7 +4,7 @@ namespace App\Modules\Content\Application\Actions\Pages;
 
 use App\Modules\Content\Application\Interfaces\PageRepositoryInterface;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 readonly class IndexPageUseCase

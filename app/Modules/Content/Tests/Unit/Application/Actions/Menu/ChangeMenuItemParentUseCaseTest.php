@@ -5,11 +5,11 @@ use App\Modules\Content\Application\Actions\Menu\ChangeMenuItemParentUseCase;
 use App\Modules\Content\Application\DTOs\Menu\ChangeMenuItemParentData;
 use App\Modules\Content\Application\Interfaces\MenuItemRepositoryInterface;
 use App\Modules\Content\Domain\Entities\MenuItemEntity;
-use App\Modules\Content\Infrastructure\Exceptions\MenuNotFoundException;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Content\Domain\Exceptions\MenuNotFoundException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Mockery;
 use Tests\Trait\MockPermission;
 
 class ChangeMenuItemParentUseCaseTest extends TestCase

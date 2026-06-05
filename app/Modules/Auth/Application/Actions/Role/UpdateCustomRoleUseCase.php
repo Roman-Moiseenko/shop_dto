@@ -2,13 +2,13 @@
 
 namespace App\Modules\Auth\Application\Actions\Role;
 
-use App\Modules\Auth\Application\DTOs\Role\RoleCreateData;
 use App\Modules\Auth\Application\DTOs\Role\RoleUpdateData;
 use App\Modules\Auth\Domain\Services\RoleRepositoryInterface;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use InvalidArgumentException;
 use Spatie\Permission\Models\Role;
+
 readonly class UpdateCustomRoleUseCase
 {
     public function __construct(

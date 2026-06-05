@@ -2,13 +2,13 @@
 
 namespace App\Modules\Storage\Tests\Unit\Application\Actions\Gallery;
 
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use App\Modules\Storage\Application\Actions\Gallery\ListGalleryImagesUseCase;
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Mockery;
 use Tests\Trait\MockPermission;
 
 class ListGalleryImagesUseCaseTest extends TestCase

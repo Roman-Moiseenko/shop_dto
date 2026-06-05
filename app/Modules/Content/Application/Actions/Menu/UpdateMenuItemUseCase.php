@@ -8,7 +8,7 @@ use App\Modules\Content\Domain\Entities\MenuItemEntity;
 use App\Modules\Content\Domain\ValueObjects\MenuItemStyle;
 use App\Modules\Content\Domain\ValueObjects\ReferenceType;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use InvalidArgumentException;
 
 final readonly class UpdateMenuItemUseCase

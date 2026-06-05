@@ -5,7 +5,7 @@ use App\Modules\Content\Application\Actions\Widgets\CreateWidgetUseCase;
 use App\Modules\Content\Application\DTOs\Widget\WidgetUpdateData;
 use App\Modules\Content\Application\Interfaces\WidgetRepositoryInterface;
 use App\Modules\Content\Domain\Entities\WidgetEntity;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

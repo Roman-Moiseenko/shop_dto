@@ -3,10 +3,9 @@
 namespace App\Modules\Content\Application\Actions\Widgets;
 
 use App\Modules\Content\Application\Interfaces\WidgetRepositoryInterface;
-use App\Modules\Content\Infrastructure\Exceptions\WidgetNotFoundException;
+use App\Modules\Content\Domain\Exceptions\WidgetNotFoundException;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
-use InvalidArgumentException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 
 readonly class DeleteWidgetUseCase
 {

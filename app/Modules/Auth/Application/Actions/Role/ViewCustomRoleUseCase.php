@@ -3,7 +3,7 @@
 namespace App\Modules\Auth\Application\Actions\Role;
 
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use Spatie\Permission\Models\Role;
 
 class ViewCustomRoleUseCase

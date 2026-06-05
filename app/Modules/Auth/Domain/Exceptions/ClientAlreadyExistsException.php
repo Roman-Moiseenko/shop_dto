@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Auth\Infrastructure\Exceptions;
+namespace App\Modules\Auth\Domain\Exceptions;
 
 class ClientAlreadyExistsException extends \DomainException {
 

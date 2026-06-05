@@ -9,7 +9,7 @@ use App\Modules\Auth\Application\Actions\Auth\ResetPasswordUseCase;
 use App\Modules\Auth\Application\Actions\Auth\SendPasswordResetLinkUseCase;
 use App\Modules\Auth\Application\Actions\User\GetUserProfileUseCase;
 use App\Modules\Auth\Application\DTOs\LoginData;
-use App\Modules\Auth\Infrastructure\Exceptions\InvalidCredentialsException;
+use App\Modules\Auth\Domain\Exceptions\InvalidCredentialsException;
 use App\Modules\Auth\Infrastructure\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

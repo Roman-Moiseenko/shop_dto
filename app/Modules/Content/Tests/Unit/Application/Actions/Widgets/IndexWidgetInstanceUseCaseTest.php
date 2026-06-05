@@ -4,7 +4,7 @@ namespace App\Modules\Content\Tests\Unit\Application\Actions\Widgets;
 use App\Modules\Content\Application\Actions\Widgets\IndexWidgetInstanceUseCase;
 use App\Modules\Content\Application\Interfaces\WidgetInstanceRepositoryInterface;
 use App\Modules\Content\Domain\Entities\WidgetInstanceEntity;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

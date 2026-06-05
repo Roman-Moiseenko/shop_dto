@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Content\Infrastructure\Exceptions;
+namespace App\Modules\Content\Domain\Exceptions;
 
 class PageNotFoundException extends \DomainException
 {

@@ -4,9 +4,9 @@ namespace App\Modules\Auth\Application\Actions\Client;
 
 use App\Modules\Auth\Application\Interfaces\ClientRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\ClientEntity;
-use App\Modules\Auth\Infrastructure\Exceptions\ClientNotFoundException;
+use App\Modules\Auth\Domain\Exceptions\ClientNotFoundException;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 
 readonly class ViewClientUseCase
 {

@@ -3,8 +3,8 @@
 namespace App\Modules\Storage\Application\Actions\Tag;
 
 use App\Modules\Shared\Domain\Entities\UserPermission;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use App\Modules\Shared\Domain\ValueObjects\Slug;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
 use App\Modules\Storage\Application\DTOs\Tag\MediaTagData;
 use App\Modules\Storage\Application\Interfaces\MediaTagRepositoryInterface;
 use App\Modules\Storage\Domain\Entities\MediaTagEntity;

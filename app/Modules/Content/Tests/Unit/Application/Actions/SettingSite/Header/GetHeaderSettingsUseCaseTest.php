@@ -7,11 +7,11 @@ use App\Modules\Content\Application\DTOs\SettingSite\Header\HeaderSettingsData;
 use App\Modules\Content\Application\Interfaces\MenuRepositoryInterface;
 use App\Modules\Content\Domain\Entities\MenuEntity;
 use App\Modules\Shared\Application\Interfaces\SettingRepositoryInterface;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use App\Modules\Shared\Domain\ValueObjects\Slug;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Mockery;
 use Tests\Trait\MockPermission;
 
 class GetHeaderSettingsUseCaseTest extends TestCase

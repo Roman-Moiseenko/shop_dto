@@ -4,7 +4,7 @@ namespace App\Modules\Content\Application\Actions\Widgets;
 
 use App\Modules\Content\Application\Interfaces\WidgetRepositoryInterface;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 
 readonly class IndexWidgetUseCase
 {

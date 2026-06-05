@@ -6,7 +6,7 @@ use App\Modules\Content\Application\Actions\Pages\CreatePageUseCase;
 use App\Modules\Content\Application\DTOs\Page\PageCreateData;
 use App\Modules\Content\Application\Interfaces\PageRepositoryInterface;
 use App\Modules\Content\Domain\Entities\PageEntity;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

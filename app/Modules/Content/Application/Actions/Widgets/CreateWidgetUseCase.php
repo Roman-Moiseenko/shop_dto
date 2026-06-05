@@ -8,7 +8,7 @@ use App\Modules\Content\Domain\Entities\WidgetEntity;
 use App\Modules\Content\Domain\ValueObjects\WidgetCategory;
 use App\Modules\Content\Domain\ValueObjects\WidgetSchema;
 use App\Modules\Shared\Domain\Entities\UserPermission;
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 
 readonly class CreateWidgetUseCase
 {

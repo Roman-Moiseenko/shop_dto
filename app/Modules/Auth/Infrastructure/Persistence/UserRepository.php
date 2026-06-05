@@ -6,7 +6,10 @@ use App\Modules\Auth\Application\Interfaces\UserRepositoryInterface;
 use App\Modules\Auth\Domain\Entities\UserEntity;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
+use App\Modules\Auth\Domain\ValueObjects\ProfileType;
+use App\Modules\Auth\Infrastructure\Models\Client;
 use App\Modules\Auth\Infrastructure\Models\EmailVerification;
+use App\Modules\Auth\Infrastructure\Models\Freelance;
 use App\Modules\Auth\Infrastructure\Models\Staff;
 use App\Modules\Auth\Infrastructure\Models\User;
 
@@ -27,7 +30,7 @@ class UserRepository implements UserRepositoryInterface
         $model->password = $user->getPasswordHash();
         $model->email_verified_at = $user->emailVerifiedAt;
         $model->remember_token = $user->rememberToken;
-        $model->profileable_type = $user->profileableType;
+        $model->profileable_type = $user->profileableType->getModelClass() ?? null;
         $model->profileable_id = $user->profileableId;
         $model->banned_at = $user->getBannedAt();
         //$model->
@@ -78,7 +81,12 @@ class UserRepository implements UserRepositoryInterface
             $user->emailVerifiedAt = DateTimeImmutable::createFromMutable($model->email_verified_at);
         }
         $user->rememberToken = $model->remember_token;
-        $user->setProfile($model->profileable_type, $model->profileable_id);
+
+        // --- Обратный маппинг: Eloquent class → Enum ---
+        $user->setProfile(
+            ProfileType::fromModelClass($model->profileable_type),
+            $model->profileable_id
+        );
 
         if ($model->banned_at) {
             $user->setBannedAt(DateTimeImmutable::createFromMutable($model->banned_at));

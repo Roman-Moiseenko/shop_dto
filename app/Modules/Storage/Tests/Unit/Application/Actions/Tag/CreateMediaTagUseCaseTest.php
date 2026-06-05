@@ -2,14 +2,14 @@
 
 namespace App\Modules\Storage\Tests\Unit\Application\Actions\Tag;
 
-use App\Modules\Shared\Infrastructure\Exceptions\AccessDeniedException;
+use App\Modules\Shared\Domain\Exceptions\AccessDeniedException;
 use App\Modules\Storage\Application\Actions\Tag\CreateMediaTagUseCase;
 use App\Modules\Storage\Application\DTOs\Tag\MediaTagData;
 use App\Modules\Storage\Application\Interfaces\MediaTagRepositoryInterface;
 use App\Modules\Storage\Domain\Entities\MediaTagEntity;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Mockery;
 use Tests\Trait\MockPermission;
 
 class CreateMediaTagUseCaseTest extends TestCase

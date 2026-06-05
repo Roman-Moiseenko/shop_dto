@@ -6,6 +6,7 @@ use App\Modules\Auth\Domain\Entities\UserEntity;
 use App\Modules\Auth\Domain\Services\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObjects\Email;
 use App\Modules\Auth\Domain\ValueObjects\HashedPassword;
+use App\Modules\Auth\Domain\ValueObjects\ProfileType;
 use DateTimeImmutable;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -143,9 +144,9 @@ class UserTest extends TestCase
     public function it_can_set_profileable_relation(): void
     {
         $user = new UserEntity( $this->email, $this->password);
-        $user->setProfile('Modules\Staff\Models\Staff', 100);
+        $user->setProfile(ProfileType::STAFF, 100);
 
-        $this->assertEquals('Modules\Staff\Models\Staff', $user->profileableType);
+        $this->assertEquals(ProfileType::STAFF, $user->profileableType);
         $this->assertEquals(100, $user->profileableId);
     }
 

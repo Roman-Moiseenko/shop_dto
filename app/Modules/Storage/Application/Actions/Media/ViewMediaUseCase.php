@@ -4,7 +4,7 @@ namespace App\Modules\Storage\Application\Actions\Media;
 
 use App\Modules\Storage\Application\Interfaces\MediaRepositoryInterface;
 use App\Modules\Storage\Domain\Entities\MediaEntity;
-use App\Modules\Storage\Infrastructure\Exceptions\MediaFileNotFoundException;
+use App\Modules\Storage\Domain\Exceptions\MediaFileNotFoundException;
 
 readonly class ViewMediaUseCase
 {
